@@ -159,18 +159,13 @@ app = <span class="fn">FastAPI</span>()
       <div class="platform"><div><div class="platform-title">Ubuntu 24.04 LTS · AMD64</div><div class="platform-sub">v0.2.9 · Python 3.12 · FULL DEVSEC PASS</div></div><span class="badge ok">VERIFIED</span></div>
     </div><p class="note" data-i18n="platform.note">Officially verified: Windows Server 2022 AMD64 / Python 3.12 and Ubuntu 24.04 LTS AMD64 / Python 3.12. Ubuntu 22.04, Debian 12, other Linux distributions, and ARM64 are NOT_VERIFIED.</p></div></section>
 
-    <section class="section" id="license"><div class="wrap"><div class="section-head"><div class="eyebrow" data-i18n="license.eyebrow">Commercial License</div><h2 data-i18n-html="license.title">Deploy in production.<br>License by application Unit.</h2><p data-i18n="license.intro">Purchase 1–20 annual Units online. Each Unit covers one independent application installation.</p></div><div class="license-grid">
-      <div class="license-card"><div class="badge ok" data-i18n="license.badge">ANNUAL COMMERCIAL</div><div class="license-price">US$1,200 <small data-i18n="license.per">/ Unit / year</small></div><p data-i18n="license.body">For commercial production use. Select the required quantity securely on PayPal.</p><div class="license-list"><span data-i18n="license.f1">1 Unit = 1 independent application installation</span><span data-i18n="license.f2">Choose 1–20 Units at checkout</span><span data-i18n="license.f3">Runtime and security updates during the license term</span><span data-i18n="license.f4">Activation and protected download after payment verification</span></div><a class="buy-button" href="https://www.paypal.com/ncp/payment/3JX2AHE4Y5C6U" target="_blank" rel="noopener noreferrer" data-i18n="license.buy">Buy Commercial License</a><div class="license-foot" data-i18n="license.foot">Secure checkout is processed by PayPal. License issuance requires verified payment.</div></div>
-      <div class="license-card"><div class="badge ok" data-i18n="monthly.badge">MONTHLY COMMERCIAL</div><div class="license-price">US$120 <small data-i18n="monthly.per">/ Unit / month</small></div><p data-i18n="monthly.body">Monthly subscription that renews automatically until canceled.</p><div class="unit-picker"><label for="monthlyUnits" data-i18n="monthly.units">Select Units (1–20)</label><input id="monthlyUnits" type="number" min="1" max="20" step="1" value="1" inputmode="numeric"></div><div class="monthly-total"><span data-i18n="monthly.total">Monthly total</span>: <strong id="monthlyTotal">US$120</strong></div><div id="paypal-button-container-P-0KH15934J61937739NKMFTCA" class="paypal-wrap"></div><div class="license-foot" data-i18n="monthly.foot">Renews monthly until canceled. License activation requires server-side subscription verification.</div></div>
-      <div class="license-card secondary"><div class="eyebrow" data-i18n="volume.eyebrow">Volume License</div><div class="license-price">21–200 <small data-i18n="volume.units">Units</small></div><p data-i18n="volume.body">For larger deployments, contact ODRE for volume licensing, deployment scope and activation planning.</p><div class="license-list"><span data-i18n="volume.f1">Custom quotation and deployment scope</span><span data-i18n="volume.f2">License Unit planning</span><span data-i18n="volume.f3">Enterprise activation assistance</span></div><a href="mailto:odreai2025@gmail.com?subject=ODRE%20PQC%20Volume%20License%20Inquiry" class="btn-ghost" data-i18n="volume.contact">Contact Sales</a></div>
-    </div></div></section>
+    <section class="section" id="license"><div class="wrap"><div class="cta"><div><div class="eyebrow" data-i18n="license.eyebrow">Commercial License</div><h2 data-i18n-html="license.title">Choose monthly, annual,<br>or volume licensing.</h2><p data-i18n="license.intro">Compare plans, select 1–20 Units and continue to secure PayPal checkout on the dedicated license page.</p></div><a href="/license/" class="btn-primary" data-i18n="license.buy">View License Plans</a></div></div></section>
 
     <section class="section" id="contact"><div class="wrap"><div class="cta"><div><div class="eyebrow" data-i18n="contact.eyebrow">Enterprise Preview</div><h2>Post-Quantum Security,<br>Embedded in Your Application.</h2><p data-i18n="contact.body">ODRE PQC is not a primitive-only cryptography library. It is designed as an Application-Embedded Security Boundary spanning installation, diagnosis, verification and operation.</p></div><a href="mailto:odreai2025@gmail.com" class="btn-primary" data-i18n="contact.button">Enterprise PoC Inquiry</a></div></div></section>
   </main>
 
   <footer><div class="wrap footer-inner"><div>ODRE PQC · POST-QUANTUM SECURITY BOUNDARY</div><div data-i18n="footer">ODRE AI · Korea</div></div></footer>
 
-<script src="https://www.paypal.com/sdk/js?client-id=BAAWfLvCoIhyabBAjLqB4_cx8fEzV9rpcfXZChUO9eXtjOwmWYUIom_yrLc6LNANK4yfc78cE-WXvgtrwU&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
 <script>
 (() => {
   const dict = {
@@ -184,7 +179,7 @@ app = <span class="fn">FastAPI</span>()
       proof:{eyebrow:"Verification Evidence",title:"Nicht nur behaupten - Verifikation zeigen.",intro:"ODRE PQC v0.2.9 hat die vollständige Development-Security-Prüfung auf beiden unterstützten Plattformen bestanden.",p1:"Windows Server 2022 Full DevSec Audit PASS",p2:"Ubuntu 24.04 Full DevSec Audit PASS",p3:"Neue ungelöste Critical / High / Medium Findings: 0 / 0 / 0",p4:"Windows Native Stress: 3.000 Load Attempts · Compromise 0",note:"v0.2.9: Windows PASS, Ubuntu PASS, neue ungelöste C/H/M 0/0/0, Windows Replay 1.280, Ubuntu Replay 2.880, Windows Native Stress 3.000 Load Attempts mit Compromise 0. Scoped Verification ist keine Garantie absoluter Sicherheit."},
       start:{eyebrow:"One-Line Integration",title:"You install it.<br>ODRE handles the complexity.",body:"After the Wheel installation passes Doctor and Verify, the public integration API for an existing FastAPI application remains a single call."},
       platform:{eyebrow:"Verified Platforms",title:"Same API. Same security contract.<br>Verified on Windows and Ubuntu.",intro:"ODRE PQC v0.2.9 uses the same wheel and install(app) API on both officially supported environments.",note:"Officially verified: Windows Server 2022 AMD64 / Python 3.12 and Ubuntu 24.04 LTS AMD64 / Python 3.12. Ubuntu 22.04, Debian 12, other Linux distributions, and ARM64 are NOT_VERIFIED."},
-      license:{eyebrow:"Commercial License",title:"Deploy in production.<br>License by application Unit.",intro:"Choose annual payment or a monthly subscription for 1–20 Units. Each Unit covers one independent application installation.",badge:"ANNUAL COMMERCIAL",per:"/ Unit / year",body:"For commercial production use. Select the required quantity securely on PayPal.",f1:"1 Unit = 1 independent application installation",f2:"Choose 1–20 Units at checkout",f3:"Runtime and security updates during the license term",f4:"Activation and protected download after payment verification",buy:"Buy Annual License",foot:"Secure checkout is processed by PayPal. License issuance requires verified payment."},monthly:{badge:"MONTHLY COMMERCIAL",per:"/ Unit / month",body:"Monthly subscription that renews automatically until canceled.",units:"Select Units (1–20)",total:"Monthly total",foot:"Renews monthly until canceled. License activation requires server-side subscription verification."},volume:{eyebrow:"Volume License",units:"Units",body:"For larger deployments, contact ODRE for volume licensing, deployment scope and activation planning.",f1:"Custom quotation and deployment scope",f2:"License Unit planning",f3:"Enterprise activation assistance",contact:"Contact Sales"},
+      license:{eyebrow:"Commercial License",title:"Choose monthly, annual,<br>or volume licensing.",intro:"Compare plans, select 1–20 Units and continue to secure PayPal checkout on the dedicated license page.",buy:"View License Plans"},
       contact:{eyebrow:"Enterprise Preview",body:"ODRE PQC is not a primitive-only cryptography library. It is designed as an Application-Embedded Security Boundary spanning installation, diagnosis, verification and operation.",button:"Enterprise PoC Inquiry"},footer:"ODRE AI · Korea"
     },
     ko: {
@@ -197,7 +192,7 @@ app = <span class="fn">FastAPI</span>()
       proof:{eyebrow:"Verification Evidence",title:"주장보다, 검증 결과를 보여줍니다.",intro:"ODRE PQC v0.2.9은 두 공식 지원 플랫폼에서 독립 검증을 완료했습니다.",p1:"Windows Server 2022 전체 보안감사 PASS",p2:"Ubuntu 24.04 전체 보안감사 PASS",p3:"신규 Critical · High · Medium = 0 · 0 · 0",p4:"Windows Native Stress · 3,000회",note:"※ v0.2.9 전체 개발 보안감사: Windows Server 2022 PASS, Ubuntu 24.04 PASS, 신규 Critical/High/Medium 0, Replay Race Windows 1,280 / Ubuntu 2,880건, Windows Native Stress 3,000회, 자동 Classical downgrade 0. 검증 결과는 정의된 범위의 근거이며 절대적 보안을 의미하지 않습니다."},
       start:{eyebrow:"One-Line Integration",title:"고객은 설치합니다.<br>ODRE가 복잡함을 처리합니다.",body:"Wheel 설치 후 Doctor와 Verify를 통과하면 기존 FastAPI 애플리케이션에는 공개 API 하나만 연결합니다."},
       platform:{eyebrow:"Verified Platforms",title:"같은 API. 같은 보안 계약.<br>Windows와 Ubuntu에서 검증 완료.",intro:"ODRE PQC v0.2.9은 두 공식 지원 환경에서 동일 wheel과 install(app) API를 사용합니다.",note:"공식 VERIFIED: Windows Server 2022 AMD64 / Python 3.12, Ubuntu 24.04 LTS AMD64 / Python 3.12. Ubuntu 22.04, Debian 12, 기타 Linux 및 ARM64는 NOT_VERIFIED입니다."},
-      license:{eyebrow:"상용 라이선스",title:"프로덕션에 배포하고,<br>애플리케이션 Unit별로 라이선스합니다.",intro:"1–20 Units는 연간 결제 또는 월간 구독을 선택할 수 있습니다. 1 Unit은 독립 애플리케이션 설치본 1개입니다.",badge:"연간 상용 라이선스",per:"/ Unit / 연",body:"상용 프로덕션 사용 라이선스입니다. PayPal 결제창에서 필요한 수량을 선택하세요.",f1:"1 Unit = 독립 애플리케이션 설치본 1개",f2:"결제 시 1–20 Units 선택",f3:"라이선스 기간 중 Runtime 및 보안 업데이트",f4:"결제 확인 후 활성화 및 보호된 다운로드 제공",buy:"연간 라이선스 구매",foot:"결제는 PayPal에서 안전하게 처리되며, 확인된 결제를 기준으로 라이선스가 발급됩니다."},monthly:{badge:"월간 상용 라이선스",per:"/ Unit / 월",body:"취소할 때까지 매월 자동 갱신되는 상용 구독입니다.",units:"Unit 수량 선택 (1–20)",total:"월 결제액",foot:"취소할 때까지 매월 갱신됩니다. 서버 측 구독 확인 후 라이선스가 활성화됩니다."},volume:{eyebrow:"볼륨 라이선스",units:"Units",body:"대규모 배포는 ODRE에 문의하여 볼륨 라이선스, 배포 범위 및 활성화 계획을 협의하세요.",f1:"맞춤 견적 및 배포 범위",f2:"라이선스 Unit 계획",f3:"Enterprise 활성화 지원",contact:"영업 문의"},
+      license:{eyebrow:"상용 라이선스",title:"월간·연간·볼륨<br>라이선스를 선택하세요.",intro:"전용 라이선스 페이지에서 요금제를 비교하고 1–20 Units를 선택한 뒤 PayPal 결제로 진행할 수 있습니다.",buy:"라이선스 요금제 보기"},
       contact:{eyebrow:"Enterprise Preview",body:"ODRE PQC는 암호 primitive를 던져주는 라이브러리가 아니라, 설치·진단·검증·운영까지 이어지는 Application-Embedded Security Boundary를 지향합니다.",button:"Enterprise PoC 문의"},footer:"ODRE AI · Korea"
     },
     ja: {
@@ -210,7 +205,7 @@ app = <span class="fn">FastAPI</span>()
       proof:{eyebrow:"Verification Evidence",title:"主張ではなく、検証結果を示します。",intro:"ODRE PQC v0.2.9は、両方の正式サポート環境で独立検証を完了しました。",p1:"Windows Server 2022 フルセキュリティ監査 PASS",p2:"Ubuntu 24.04 フルセキュリティ監査 PASS",p3:"新規 Critical · High · Medium = 0 · 0 · 0",p4:"Windows Native Stress · 3,000회",note:"※ v0.2.9 フル開発セキュリティ監査: Windows Server 2022 PASS、Ubuntu 24.04 PASS、新規Critical/High/Medium 0、Replay Race Windows 1,280 / Ubuntu 2,880、Windows Native Stress 3,000回、自動Classical downgrade 0。定義された範囲の証拠であり絶対的安全性の保証ではありません。"},
       start:{eyebrow:"One-Line Integration",title:"お客様は導入するだけ。<br>複雑さはODREが処理します。",body:"Wheelの導入後、DoctorとVerifyを通過すれば、既存のFastAPIアプリケーションに接続する公開APIは1つだけです。"},
       platform:{eyebrow:"Verified Platforms",title:"同じAPI。同じセキュリティ契約。<br>WindowsとUbuntuで検証済み。",intro:"ODRE PQC v0.2.9は、両方の正式サポート環境で同一wheelとinstall(app) APIを使用します。",note:"正式VERIFIED: Windows Server 2022 AMD64 / Python 3.12、Ubuntu 24.04 LTS AMD64 / Python 3.12。Ubuntu 22.04、Debian 12、その他Linux、ARM64はNOT_VERIFIEDです。"},
-      license:{eyebrow:"商用ライセンス",title:"本番環境へ導入。<br>アプリケーションUnit単位でライセンス。",intro:"1–20 Unitsは年間支払いまたは月間購読を選択できます。1 Unitは独立したアプリケーション導入1件です。",badge:"年間商用ライセンス",per:"/ Unit / 年",body:"商用本番利用向けです。PayPalで必要な数量を選択してください。",f1:"1 Unit = 独立したアプリケーション導入1件",f2:"決済時に1–20 Unitsを選択",f3:"期間中のRuntime・セキュリティ更新",f4:"決済確認後に有効化と保護されたダウンロードを提供",buy:"年間ライセンスを購入",foot:"決済はPayPalで安全に処理され、確認済み決済に基づきライセンスを発行します。"},monthly:{badge:"月間商用ライセンス",per:"/ Unit / 月",body:"キャンセルするまで毎月自動更新される商用購読です。",units:"Unit数を選択 (1–20)",total:"月額合計",foot:"キャンセルまで毎月更新されます。サーバー側の購読確認後にライセンスを有効化します。"},volume:{eyebrow:"ボリュームライセンス",units:"Units",body:"大規模導入は、ボリュームライセンス、導入範囲、有効化計画についてODREへお問い合わせください。",f1:"個別見積と導入範囲",f2:"ライセンスUnit計画",f3:"Enterprise有効化支援",contact:"営業へ問い合わせ"},
+      license:{eyebrow:"商用ライセンス",title:"月間・年間・ボリューム<br>ライセンスを選択。",intro:"専用ライセンスページでプランを比較し、1～20 Unitsを選んでPayPal決済へ進めます。",buy:"ライセンスプランを見る"},
       contact:{eyebrow:"Enterprise Preview",body:"ODRE PQCは暗号primitiveだけを提供するライブラリではなく、導入・診断・検証・運用までを一体化したApplication-Embedded Security Boundaryを目指します。",button:"Enterprise PoC お問い合わせ"},footer:"ODRE AI · Korea"
     },
     de: {
@@ -223,7 +218,7 @@ app = <span class="fn">FastAPI</span>()
       proof:{eyebrow:"Verification Evidence",title:"Nicht nur behaupten - Verifikation zeigen.",intro:"ODRE PQC v0.2.9 wurde auf beiden offiziell unterstützten Plattformen unabhängig verifiziert.",p1:"Windows Server 2022 Full Security Audit PASS",p2:"Ubuntu 24.04 Full Security Audit PASS",p3:"Neue Critical · High · Medium = 0 · 0 · 0",p4:"Windows Native Stress · 3,000 Load-Versuche",note:"※ v0.2.9 Full Development Security Audit: Windows Server 2022 PASS, Ubuntu 24.04 PASS, neue Critical/High/Medium Findings 0, Replay Race Windows 1.280 / Ubuntu 2.880, Windows Native Stress 3.000, automatischer Classical Downgrade 0. Scoped Evidence, keine Garantie absoluter Sicherheit."},
       start:{eyebrow:"One-Line Integration",title:"Sie installieren.<br>ODRE übernimmt die Komplexität.",body:"Nach Installation des Wheels und erfolgreichem Doctor/Verify bleibt für eine bestehende FastAPI-Anwendung nur ein einziger öffentlicher Integrationsaufruf."},
       platform:{eyebrow:"Verified Platforms",title:"Gleiche API. Gleicher Sicherheitsvertrag.<br>Unter Windows und Ubuntu verifiziert.",intro:"ODRE PQC v0.2.9 verwendet in beiden offiziell unterstützten Umgebungen dasselbe Wheel und dieselbe install(app)-API.",note:"Offiziell VERIFIED: Windows Server 2022 AMD64 / Python 3.12 und Ubuntu 24.04 LTS AMD64 / Python 3.12. Ubuntu 22.04, Debian 12, andere Linux-Distributionen und ARM64 sind NOT_VERIFIED."},
-      license:{eyebrow:"Kommerzielle Lizenz",title:"In Produktion einsetzen.<br>Lizenzierung pro Application Unit.",intro:"Für 1–20 Units stehen Jahreszahlung oder Monatsabo zur Wahl. Eine Unit deckt eine unabhängige Anwendungsinstallation ab.",badge:"JÄHRLICH KOMMERZIELL",per:"/ Unit / Jahr",body:"Für kommerzielle Produktionsnutzung. Wählen Sie die benötigte Anzahl sicher bei PayPal.",f1:"1 Unit = 1 unabhängige Anwendungsinstallation",f2:"1–20 Units beim Checkout wählen",f3:"Runtime- und Sicherheitsupdates während der Laufzeit",f4:"Aktivierung und geschützter Download nach Zahlungsprüfung",buy:"Jahreslizenz kaufen",foot:"Die Zahlung wird sicher von PayPal verarbeitet. Lizenzen werden nach verifizierter Zahlung ausgestellt."},monthly:{badge:"MONATLICH KOMMERZIELL",per:"/ Unit / Monat",body:"Monatliches Abonnement mit automatischer Verlängerung bis zur Kündigung.",units:"Units wählen (1–20)",total:"Monatssumme",foot:"Verlängert sich monatlich bis zur Kündigung. Aktivierung nach serverseitiger Abo-Prüfung."},volume:{eyebrow:"Volumenlizenz",units:"Units",body:"Für größere Bereitstellungen kontaktieren Sie ODRE bezüglich Volumenlizenz, Umfang und Aktivierungsplanung.",f1:"Individuelles Angebot und Bereitstellungsumfang",f2:"Lizenz-Unit-Planung",f3:"Enterprise-Aktivierungsunterstützung",contact:"Vertrieb kontaktieren"},
+      license:{eyebrow:"Kommerzielle Lizenz",title:"Monats-, Jahres- oder<br>Volumenlizenz wählen.",intro:"Vergleichen Sie Pläne, wählen Sie 1–20 Units und wechseln Sie auf der Lizenzseite zur sicheren PayPal-Zahlung.",buy:"Lizenzpläne ansehen"},
       contact:{eyebrow:"Enterprise Preview",body:"ODRE PQC ist keine Bibliothek, die nur kryptografische Primitives bereitstellt. Ziel ist eine Application-Embedded Security Boundary von Installation und Diagnose bis Verifikation und Betrieb.",button:"Enterprise PoC Anfrage"},footer:"ODRE AI · Korea"
     }
   };
@@ -283,32 +278,6 @@ app = <span class="fn">FastAPI</span>()
   });
   apply(initial, false);
 
-  const unitInput = document.getElementById('monthlyUnits');
-  const totalOutput = document.getElementById('monthlyTotal');
-  const getMonthlyUnits = () => {
-    const units = Math.max(1, Math.min(20, Number.parseInt(unitInput.value, 10) || 1));
-    unitInput.value = String(units);
-    return units;
-  };
-  const updateMonthlyTotal = () => { totalOutput.textContent = `US$${(getMonthlyUnits() * 120).toLocaleString('en-US')}`; };
-  unitInput.addEventListener('input', updateMonthlyTotal);
-  unitInput.addEventListener('change', updateMonthlyTotal);
-  updateMonthlyTotal();
-
-  if (window.paypal) {
-    paypal.Buttons({
-      style:{shape:'rect',color:'blue',layout:'vertical',label:'subscribe',height:46},
-      createSubscription:(data,actions)=>actions.subscription.create({
-        plan_id:'P-0KH15934J61937739NKMFTCA',
-        quantity:String(getMonthlyUnits())
-      }),
-      onApprove:data=>{
-        const units=getMonthlyUnits();
-        location.href=`/payment/success/?subscription_id=${encodeURIComponent(data.subscriptionID)}&plan=monthly&units=${units}`;
-      },
-      onError:()=>alert('PayPal subscription checkout could not be started. Please try again or contact ODRE license support.')
-    }).render('#paypal-button-container-P-0KH15934J61937739NKMFTCA');
-  }
 })();
 </script>
 </body>
