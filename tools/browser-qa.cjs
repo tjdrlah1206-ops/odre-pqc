@@ -36,12 +36,10 @@ async function launch(label) {
           await page.waitForTimeout(120);
           const overflow = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
           if (overflow.sw > overflow.cw + 1) failures.push(`${browserName} ${viewport.name} ${route}: overflow ${overflow.sw}/${overflow.cw}`);
-          if (route !== '/payment/register/') {
-            if (viewport.width >= 1024) {
-              if (!await page.locator('.desktop-nav').isVisible()) failures.push(`${browserName} ${viewport.name} ${route}: desktop nav hidden`);
-            } else {
-              if (!await page.locator('#mobile-toggle').isVisible()) failures.push(`${browserName} ${viewport.name} ${route}: mobile toggle hidden`);
-            }
+          if (viewport.width >= 1024) {
+            if (!await page.locator('.desktop-nav').isVisible()) failures.push(`${browserName} ${viewport.name} ${route}: desktop nav hidden`);
+          } else {
+            if (!await page.locator('#mobile-toggle').isVisible()) failures.push(`${browserName} ${viewport.name} ${route}: mobile toggle hidden`);
           }
           if (route === '/' && viewport.width < 1024) {
             await page.locator('#mobile-toggle').click();
@@ -68,11 +66,11 @@ async function launch(label) {
             await page.locator('.docs-mobile-toggle').click();
             if (!await page.locator('.docs-sidebar').isVisible()) failures.push(`${browserName} ${viewport.name}: docs contents did not open`);
           }
-          if (browserName === 'chrome' && viewport.name === '1440' && ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/license/', '/terms/'].includes(route)) {
+          if (browserName === 'chrome' && viewport.name === '1440') {
             const name = route === '/' ? 'home' : route.split('/').filter(Boolean).join('-');
             await page.screenshot({ path: path.join(output, `${name}-1440.png`), fullPage: true });
           }
-          if (browserName === 'chrome' && viewport.name === '390' && ['/', '/docs/', '/pricing/', '/license/'].includes(route)) {
+          if (browserName === 'chrome' && viewport.name === '390') {
             const name = route === '/' ? 'home' : route.split('/').filter(Boolean).join('-');
             await page.screenshot({ path: path.join(output, `${name}-390.png`), fullPage: true });
           }

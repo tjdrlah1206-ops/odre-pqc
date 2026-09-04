@@ -6,7 +6,6 @@ from urllib.parse import urlparse, unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = sorted(ROOT.rglob('*.html'))
-EXEMPT_SHARED = {ROOT / 'payment' / 'register' / 'index.html'}
 
 class Page(HTMLParser):
     def __init__(self):
@@ -64,7 +63,7 @@ for file,p in pages.items():
         for key in ['og:title','og:description','og:url','twitter:card']:
             if not p.meta.get(key): metadata.append(f'{file.relative_to(ROOT)} missing {key}')
         if p.hreflang != {'en','ko','ja','de','es','x-default'}: metadata.append(f'{file.relative_to(ROOT)} incomplete hreflang')
-    if file not in EXEMPT_SHARED and (not p.header or not p.footer): shared.append(str(file.relative_to(ROOT)))
+    if not p.header or not p.footer: shared.append(str(file.relative_to(ROOT)))
 
 text='\n'.join(f.read_text(encoding='utf-8',errors='ignore') for f in ROOT.rglob('*') if f.is_file() and f.suffix.lower() not in {'.pdf','.zip','.png','.jpg','.jpeg','.webp'} and '.git' not in f.parts and 'tools' not in f.parts)
 old_price=len(re.findall(r'(?:\$|USD\s*)1[,.]?200\b',text,re.I))
@@ -75,8 +74,7 @@ for pattern in [r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',r'\bsk_live
 
 result={
   'html_pages':len(HTML),'broken_links':broken,'metadata_findings':metadata,'shared_layout_findings':shared,
-  'old_price_findings':old_price,'banned_copy_findings':banned,'secret_findings':secrets,
-  'payment_register_reverted': (ROOT/'payment/register/index.html').read_bytes()==bytes.fromhex('') if False else True
+  'old_price_findings':old_price,'banned_copy_findings':banned,'secret_findings':secrets
 }
 print(json.dumps(result,ensure_ascii=False,indent=2))
 if broken or metadata or shared or old_price or banned or secrets: sys.exit(1)

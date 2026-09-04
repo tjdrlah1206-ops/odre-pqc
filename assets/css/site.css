@@ -65,6 +65,10 @@ button { cursor: pointer; }
 .button:hover, .header-download:hover { background: #73d7e2; }
 .button.secondary { background: transparent; color: var(--ink); border-color: var(--line-strong); }
 .button.secondary:hover { border-color: var(--cyan); color: var(--cyan-soft); }
+.section.light .button.secondary,
+.card .button.secondary { background: #e8eeec; color: #132229; border-color: #c5d0cd; }
+.section.light .button.secondary:hover,
+.card .button.secondary:hover { background: #dce6e3; color: #081419; border-color: #89a7a0; }
 .button.quiet { background: transparent; color: var(--cyan-soft); padding-inline: 0; min-height: 40px; }
 .button[aria-disabled="true"], .button:disabled { opacity: .55; cursor: not-allowed; }
 .language-wrap { position: relative; }

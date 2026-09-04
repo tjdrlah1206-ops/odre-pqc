@@ -2,6 +2,7 @@
   'use strict';
   var PADDLE_CHECKOUT = Object.freeze({
     environment: 'sandbox',
+    publicCheckoutEnabled: false,
     clientToken: 'test_aea926287a8b0b55a8409ff49fb',
     priceIds: Object.freeze({
       monthly: 'pri_01m1p5ygmnxy4h6zb69c8jp5yh',
@@ -27,15 +28,15 @@
     window.setTimeout(function () { location.assign('/payment/success/?' + params.toString()); }, 1400);
   }
   try {
-    if (window.Paddle) {
+    if (PADDLE_CHECKOUT.publicCheckoutEnabled && PADDLE_CHECKOUT.environment === 'live' && window.Paddle) {
       window.Paddle.Environment.set(PADDLE_CHECKOUT.environment);
       window.Paddle.Initialize({ token: PADDLE_CHECKOUT.clientToken, eventCallback: handlePaddleEvent });
       paddleReady = true;
     }
-  } catch (error) { console.error('Paddle sandbox initialization failed', error); }
+  } catch (error) { console.error('Checkout initialization failed'); }
   function unavailableMessage() {
     var language = document.documentElement.lang;
-    return ({ en: 'Paddle Sandbox checkout could not be loaded. Please try again.', ko: 'Paddle 샌드박스 결제를 불러오지 못했습니다. 다시 시도하세요.', ja: 'Paddle Sandboxを読み込めませんでした。もう一度お試しください。', de: 'Paddle Sandbox konnte nicht geladen werden. Bitte erneut versuchen.', es: 'No se pudo cargar Paddle Sandbox. Inténtelo de nuevo.' })[language] || 'Paddle Sandbox checkout could not be loaded. Please try again.';
+    return ({ en: 'Online checkout is not currently accepting orders. Contact Commercial for purchase assistance.', ko: '현재 온라인 결제를 이용할 수 없습니다. 구매는 상업 문의 채널을 이용하세요.', ja: '現在オンライン決済は利用できません。購入については商用窓口へお問い合わせください。', de: 'Der Online-Checkout nimmt derzeit keine Bestellungen an. Wenden Sie sich für den Kauf an den Vertrieb.', es: 'El pago en línea no acepta pedidos actualmente. Contacte con el área comercial para comprar.' })[language] || 'Online checkout is not currently accepting orders. Contact Commercial for purchase assistance.';
   }
   function openCheckout(plan) {
     if (!paddleReady) { window.alert(unavailableMessage()); return; }
@@ -46,6 +47,10 @@
   }
   monthlyCheckout.addEventListener('click', function () { openCheckout('monthly'); });
   annualCheckout.addEventListener('click', function () { openCheckout('annual'); });
+  if (!PADDLE_CHECKOUT.publicCheckoutEnabled || PADDLE_CHECKOUT.environment !== 'live') {
+    monthlyCheckout.disabled = true; monthlyCheckout.setAttribute('aria-disabled', 'true');
+    annualCheckout.disabled = true; annualCheckout.setAttribute('aria-disabled', 'true');
+  }
   var requested = new URLSearchParams(location.search).get('plan');
   if (requested === 'annual') annualUnits.focus(); else if (requested === 'monthly') units.focus();
 }());
