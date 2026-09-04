@@ -1,0 +1,8 @@
+{
+  "name": "odre-pqc-site",
+  "private": true,
+  "version": "0.2.9",
+  "scripts": {
+    "check": "node scripts/check-site.mjs"
+  }
+}
