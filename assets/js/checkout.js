@@ -15,9 +15,29 @@
   var annualTotal = document.getElementById('annualTotal');
   var monthlyCheckout = document.getElementById('monthlyCheckout');
   var annualCheckout = document.getElementById('annualCheckout');
+  var quantityButtons = Array.prototype.slice.call(document.querySelectorAll('[data-quantity-target][data-quantity-delta]'));
   if (!units || !annualUnits) return;
   function boundedQuantity(input) { var n = Math.max(1, Math.min(20, Number.parseInt(input.value, 10) || 1)); input.value = n; return n; }
-  function updateTotals() { total.textContent = '$' + (boundedQuantity(units) * 120).toLocaleString('en-US'); annualTotal.textContent = '$' + (boundedQuantity(annualUnits) * 1300).toLocaleString('en-US'); }
+  function updateStepButtons(input) {
+    var quantity = Number.parseInt(input.value, 10) || 1;
+    quantityButtons.filter(function (button) { return button.dataset.quantityTarget === input.id; }).forEach(function (button) {
+      var delta = Number.parseInt(button.dataset.quantityDelta, 10);
+      button.disabled = (delta < 0 && quantity <= 1) || (delta > 0 && quantity >= 20);
+    });
+  }
+  function updateTotals() {
+    total.textContent = '$' + (boundedQuantity(units) * 120).toLocaleString('en-US');
+    annualTotal.textContent = '$' + (boundedQuantity(annualUnits) * 1300).toLocaleString('en-US');
+    updateStepButtons(units); updateStepButtons(annualUnits);
+  }
+  quantityButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      var input = document.getElementById(button.dataset.quantityTarget);
+      if (!input) return;
+      input.value = Math.max(1, Math.min(20, boundedQuantity(input) + Number.parseInt(button.dataset.quantityDelta, 10)));
+      updateTotals();
+    });
+  });
   units.addEventListener('input', updateTotals); units.addEventListener('change', updateTotals); annualUnits.addEventListener('input', updateTotals); annualUnits.addEventListener('change', updateTotals); updateTotals();
   var activeCheckout = { plan: 'monthly', units: 1 };
   var paddleReady = false;

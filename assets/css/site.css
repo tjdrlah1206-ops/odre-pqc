@@ -25,6 +25,7 @@
 }
 
 * { box-sizing: border-box; }
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 html { background: var(--navy-950); scroll-behavior: smooth; scroll-padding-top: calc(var(--header) + 24px); }
 body { margin: 0; min-width: 320px; background: var(--navy-950); color: var(--ink); line-height: 1.65; text-rendering: optimizeLegibility; }
 body.nav-open { overflow: hidden; }
@@ -241,6 +242,15 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
 .field.full { grid-column: 1 / -1; }
 .field label { display: block; margin-bottom: 8px; color: #cbd8dc; font-size: 13px; font-weight: 600; }
 .field input, .field select, .field textarea { width: 100%; min-height: 50px; border: 1px solid var(--line-strong); border-radius: 0; background: #07121a; color: var(--ink); padding: 11px 13px; }
+.quantity-stepper { display: grid; grid-template-columns: 50px minmax(0, 1fr) 50px; min-height: 50px; border: 1px solid var(--line-strong); background: #07121a; }
+.quantity-stepper input[type="number"] { min-width: 0; border: 0; border-inline: 1px solid var(--line-strong); text-align: center; font-variant-numeric: tabular-nums; appearance: textfield; }
+.quantity-stepper input[type="number"]::-webkit-inner-spin-button,
+.quantity-stepper input[type="number"]::-webkit-outer-spin-button { margin: 0; appearance: none; }
+.quantity-step { min-width: 50px; min-height: 50px; border: 0; background: #101f28; color: var(--ink); font-size: 24px; line-height: 1; }
+.quantity-step:hover:not(:disabled) { background: #18303b; color: var(--cyan-soft); }
+.quantity-step:disabled { color: #53636a; cursor: not-allowed; }
+.quantity-step:focus-visible,
+.quantity-stepper input:focus-visible { position: relative; z-index: 1; outline: 2px solid var(--cyan); outline-offset: -2px; }
 .field textarea { min-height: 150px; resize: vertical; }
 .field small { display: block; margin-top: 7px; color: var(--muted-2); }
 .checkbox { display: flex; gap: 11px; align-items: flex-start; color: var(--muted); font-size: 13px; }
