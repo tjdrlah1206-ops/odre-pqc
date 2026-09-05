@@ -1,2 +1,67 @@
 const { chromium } = require('playwright');
-(async()=>{const failures=[];for(const item of [{name:'Chrome',channel:'chrome'},{name:'Edge',channel:'msedge'}]){const browser=await chromium.launch({channel:item.channel,headless:true});let context=await browser.newContext({viewport:{width:1440,height:900},locale:'fr-FR'});let page=await context.newPage();await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});if(await page.getAttribute('html','lang')!=='en')failures.push(item.name+' unsupported language did not fall back to English');const labels=await page.locator('.desktop-nav > .nav-group > .nav-trigger, .desktop-nav > .nav-direct').allTextContents();if(JSON.stringify(labels.map(x=>x.trim()))!==JSON.stringify(['Product','Security','Documentation','Pricing','Trust Center','Company']))failures.push(item.name+' desktop nav order: '+JSON.stringify(labels));const first=page.locator('.nav-trigger').first();await first.click();await page.keyboard.press('Escape');if(!(await first.evaluate(n=>document.activeElement===n)))failures.push(item.name+' desktop focus not restored');await page.locator('#language-button').click();await page.locator('[data-language-choice="es"]').first().click();if(await page.getAttribute('html','lang')!=='es')failures.push(item.name+' language selector failed');await page.reload({waitUntil:'domcontentloaded'});if(await page.getAttribute('html','lang')!=='es')failures.push(item.name+' language preference not persisted');await page.goto('http://127.0.0.1:4173/license/?lang=ko',{waitUntil:'domcontentloaded'});const monthlyMinus=page.locator('[data-quantity-target="monthlyUnits"][data-quantity-delta="-1"]');const monthlyPlus=page.locator('[data-quantity-target="monthlyUnits"][data-quantity-delta="1"]');if(!(await monthlyMinus.isDisabled()))failures.push(item.name+' monthly minus enabled below minimum');await monthlyPlus.click();if(await page.locator('#monthlyUnits').inputValue()!=='2'||await page.locator('#monthlyTotal').textContent()!=='$240')failures.push(item.name+' monthly plus or total failed');await monthlyMinus.click();if(await page.locator('#monthlyUnits').inputValue()!=='1'||await page.locator('#monthlyTotal').textContent()!=='$120')failures.push(item.name+' monthly minus or total failed');await page.locator('#monthlyUnits').fill('20');if(!(await monthlyPlus.isDisabled()))failures.push(item.name+' monthly plus enabled above maximum');const annualPlus=page.locator('[data-quantity-target="annualUnits"][data-quantity-delta="1"]');await annualPlus.click();if(await page.locator('#annualUnits').inputValue()!=='2'||await page.locator('#annualTotal').textContent()!=='$2,600')failures.push(item.name+' annual plus or total failed');await context.close();context=await browser.newContext({viewport:{width:390,height:844},locale:'en-US'});page=await context.newPage();await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});await page.locator('#mobile-toggle').click();if(await page.locator('#mobile-toggle').getAttribute('aria-expanded')!=='true')failures.push(item.name+' mobile aria-expanded');await page.locator('.mobile-group-head').first().click();if(await page.locator('.mobile-group-head').first().getAttribute('aria-expanded')!=='true')failures.push(item.name+' submenu aria-expanded');await page.locator('[data-language-choice="ko"]').last().click();if(await page.getAttribute('html','lang')!=='ko')failures.push(item.name+' mobile language selector');await page.keyboard.press('Escape');if(await page.locator('#mobile-drawer').getAttribute('aria-hidden')!=='true')failures.push(item.name+' mobile aria-hidden after ESC');await context.close();await browser.close();}console.log(JSON.stringify({browsers:['Chrome','Edge'],failures},null,2));if(failures.length)process.exit(1);})().catch(error=>{console.error(error);process.exit(1)});
+
+(async () => {
+  const failures = [];
+  const browsers = [
+    { name: 'Chrome', channel: 'chrome' },
+    { name: 'Edge', channel: 'msedge' },
+  ];
+  const expectedNav = ['Product', 'Security', 'Documentation', 'Pricing', 'License', 'Trust Center', 'Company'];
+
+  for (const item of browsers) {
+    const browser = await chromium.launch({ channel: item.channel, headless: true });
+    let context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'fr-FR' });
+    let page = await context.newPage();
+    await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded' });
+
+    if (await page.getAttribute('html', 'lang') !== 'en') failures.push(item.name + ' unsupported language did not fall back to English');
+    const labels = await page.locator('.desktop-nav > .nav-group > .nav-trigger, .desktop-nav > .nav-direct').allTextContents();
+    if (JSON.stringify(labels.map(value => value.trim())) !== JSON.stringify(expectedNav)) failures.push(item.name + ' desktop nav order: ' + JSON.stringify(labels));
+
+    const first = page.locator('.nav-trigger').first();
+    await first.click();
+    await page.keyboard.press('Escape');
+    if (!await first.evaluate(node => document.activeElement === node)) failures.push(item.name + ' desktop focus not restored');
+
+    await page.locator('#language-button').click();
+    await page.locator('[data-language-choice="es"]').first().click();
+    if (await page.getAttribute('html', 'lang') !== 'es') failures.push(item.name + ' language selector failed');
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    if (await page.getAttribute('html', 'lang') !== 'es') failures.push(item.name + ' language preference not persisted');
+
+    await page.goto('http://127.0.0.1:4173/license/?lang=ko', { waitUntil: 'domcontentloaded' });
+    const monthlyMinus = page.locator('[data-quantity-target="monthlyUnits"][data-quantity-delta="-1"]');
+    const monthlyPlus = page.locator('[data-quantity-target="monthlyUnits"][data-quantity-delta="1"]');
+    if (!await monthlyMinus.isDisabled()) failures.push(item.name + ' monthly minus enabled below minimum');
+    await monthlyPlus.click();
+    if (await page.locator('#monthlyUnits').inputValue() !== '2' || await page.locator('#monthlyTotal').textContent() !== '$240') failures.push(item.name + ' monthly plus or total failed');
+    await monthlyMinus.click();
+    if (await page.locator('#monthlyUnits').inputValue() !== '1' || await page.locator('#monthlyTotal').textContent() !== '$120') failures.push(item.name + ' monthly minus or total failed');
+    await page.locator('#monthlyUnits').fill('20');
+    if (!await monthlyPlus.isDisabled()) failures.push(item.name + ' monthly plus enabled above maximum');
+    const annualPlus = page.locator('[data-quantity-target="annualUnits"][data-quantity-delta="1"]');
+    await annualPlus.click();
+    if (await page.locator('#annualUnits').inputValue() !== '2' || await page.locator('#annualTotal').textContent() !== '$2,600') failures.push(item.name + ' annual plus or total failed');
+    await context.close();
+
+    context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US' });
+    page = await context.newPage();
+    await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded' });
+    await page.locator('#mobile-toggle').click();
+    if (await page.locator('#mobile-toggle').getAttribute('aria-expanded') !== 'true') failures.push(item.name + ' mobile aria-expanded');
+    await page.locator('.mobile-group-head').first().click();
+    if (await page.locator('.mobile-group-head').first().getAttribute('aria-expanded') !== 'true') failures.push(item.name + ' submenu aria-expanded');
+    await page.locator('[data-language-choice="ko"]').last().click();
+    if (await page.getAttribute('html', 'lang') !== 'ko') failures.push(item.name + ' mobile language selector');
+    await page.keyboard.press('Escape');
+    if (await page.locator('#mobile-drawer').getAttribute('aria-hidden') !== 'true') failures.push(item.name + ' mobile aria-hidden after ESC');
+    await context.close();
+    await browser.close();
+  }
+
+  console.log(JSON.stringify({ browsers: browsers.map(item => item.name), failures }, null, 2));
+  if (failures.length) process.exit(1);
+})().catch(error => {
+  console.error(error);
+  process.exit(1);
+});
