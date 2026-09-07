@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  // First-party, tab-scoped operational statistics. No cookies, form access,
+  // First-party, tab-scoped operational statistics. No tracking cookies, form access,
   // fingerprint, query strings, URL fragments or raw user-agent persistence.
   if (window.__odrePqcAnalytics || location.origin !== 'https://pqc.odreai.com') return;
   // The authenticated admin dashboard offers this explicit inspection link.
@@ -107,6 +107,7 @@
   var visitAccepted = false;
   var visitAttempts = 0;
   var sendingVisit = false;
+  var collectionStopped = false;
   var lastActivityKey = '';
   function activeMs() {
     if (visibleSince !== null) {
@@ -124,12 +125,21 @@
   }
   function post(route, payload) {
     try {
-      return fetch(endpoint + route, { method: 'POST', mode: 'cors', credentials: 'omit', referrerPolicy: 'no-referrer', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(payload), keepalive: true, cache: 'no-store' })
-        .then(function (response) { return response.status === 202; }, function () { return false; });
-    } catch (error) { return Promise.resolve(false); }
+      // Match native sendBeacon's credential behavior. Only the exact first-party
+      // collector can receive existing HttpOnly admin cookies, used solely to
+      // exclude administrators. The tracker never reads or stores those cookies.
+      return fetch(endpoint + route, { method: 'POST', mode: 'cors', credentials: 'include', referrerPolicy: 'no-referrer', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(payload), keepalive: true, cache: 'no-store', redirect: 'error' })
+        .then(function (response) {
+          if (response.status !== 202) return null;
+          return response.json().then(function (result) {
+            if (result && result.accepted === false) { collectionStopped = true; return false; }
+            return result && result.accepted === true ? true : null;
+          }, function () { return null; });
+        }, function () { return null; });
+    } catch (error) { return Promise.resolve(null); }
   }
   function sendVisit(final) {
-    if (visitAccepted) return;
+    if (collectionStopped || visitAccepted) return;
     var payload = Object.assign({}, visit, { active_ms: activeMs() }, languageFields());
     if (final && beacon('visit', payload)) return;
     if (sendingVisit || visitAttempts >= 3) return;
@@ -137,13 +147,17 @@
     visitAttempts += 1;
     post('visit', payload).then(function (accepted) {
       sendingVisit = false;
-      visitAccepted = accepted;
+      if (collectionStopped) return;
+      visitAccepted = accepted === true;
       if (accepted) sendActivity(false, true);
       else if (visitAttempts < 3) setTimeout(function () { sendVisit(false); }, visitAttempts * 3000);
     });
   }
   function sendActivity(final, force) {
-    if (!visitAccepted) sendVisit(final);
+    if (collectionStopped) return;
+    // Do not race an unregistered activity against an in-flight initial visit.
+    // A final visit already carries cumulative time and is idempotent.
+    if (!visitAccepted) { sendVisit(final); return; }
     var payload = Object.assign({}, ids, { active_ms: activeMs() }, languageFields());
     var key = JSON.stringify(payload);
     if (!force && key === lastActivityKey) return;

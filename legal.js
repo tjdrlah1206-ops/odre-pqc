@@ -51,6 +51,11 @@ es:{updated:'Última actualización: 7 de septiembre de 2026',title:'8. Estadís
 'Solo administradores autenticados consultan las estadísticas. La retención es configurable, pero aún no se ha adoptado un plazo fijo; la eliminación automática por caducidad sigue desactivada hasta configurar una política aprobada. Siguen vigentes las disposiciones anteriores sobre obligaciones legales, seguridad y solicitudes. Los registros normales de hosting y acceso se tratan por separado de la base de estadísticas.'
 ]}
 };
+analyticsPrivacy.en.paragraphs.push('No analytics cookie is created. If you are signed in as an ODRE administrator in the same browser, the server uses the existing authentication cookie only to exclude your visit from these statistics. The tracker does not read or store that cookie.');
+analyticsPrivacy.ko.paragraphs.push('통계용 쿠키를 만들지 않습니다. 같은 브라우저에서 ODRE 관리자로 로그인한 경우, 서버는 기존 인증 쿠키를 방문 통계 제외 판정에만 사용합니다. 추적 코드는 해당 쿠키를 읽거나 저장하지 않습니다.');
+analyticsPrivacy.ja.paragraphs.push('統計用Cookieは作成しません。同じブラウザーでODRE管理者としてログインしている場合、サーバーは既存の認証Cookieを統計からの除外判定のみに使います。トラッカーはそのCookieを読み取り・保存しません。');
+analyticsPrivacy.de.paragraphs.push('Es wird kein Statistik-Cookie gesetzt. Wenn Sie im selben Browser als ODRE-Administrator angemeldet sind, verwendet der Server das vorhandene Authentifizierungs-Cookie nur, um Ihren Besuch von der Statistik auszuschließen. Der Tracker liest oder speichert dieses Cookie nicht.');
+analyticsPrivacy.es.paragraphs.push('No se crea ninguna cookie de estadísticas. Si ha iniciado sesión como administrador de ODRE en el mismo navegador, el servidor usa la cookie de autenticación existente solo para excluir su visita de estas estadísticas. El rastreador no lee ni guarda esa cookie.');
 function applyAnalyticsPrivacy(lang){
   const section=document.getElementById('analytics-privacy');
   if(!section)return;

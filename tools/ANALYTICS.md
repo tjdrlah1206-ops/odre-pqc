@@ -17,7 +17,15 @@ the tab preference; unknown public visitors are never assumed to be admins.
 The isolated collection routes are `POST
 https://odreai.com/odre-pqc/analytics/v1/visit` and `/activity`. Both accept bounded
 JSON in `text/plain` for unload-safe `sendBeacon`. Requests carry no API secret.
-Fetch omits credentials and referrer. Server Origin validation, authenticated
+Fetch omits referrer and rejects redirects. Fetch and native Beacon both allow
+the browser to send existing first-party HttpOnly admin cookies; the server uses
+them only to exclude authenticated administrators. No analytics cookie is set,
+and the script never reads, copies or stores authentication cookies. Credentialed
+CORS is restricted to the exact website Origin and the two collection routes,
+not administrator APIs. An explicit `202 {"accepted":false}` stops collection
+for the current document, including queued retries and lifecycle handlers.
+Malformed responses and network failures are not treated as acceptance.
+Server Origin validation, authenticated
 statistics access, strict field validation, rate limits and SQL binding remain
 server responsibilities. Do not include request bodies or query strings in
 analytics access/error logs.

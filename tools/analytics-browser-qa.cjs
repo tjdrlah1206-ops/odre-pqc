@@ -15,12 +15,16 @@ fs.mkdirSync(out, { recursive: true });
 
 (async () => {
   const findings = [], visits = [], activities = [], errors = [];
-  let origin, blockedProxyRequests = 0;
+  let origin, blockedProxyRequests = 0, excludedAdminRequests = 0, headlessNativeRequests = 0;
   const server = http.createServer((request, response) => {
     const url = new URL(request.url, origin);
     if (url.origin !== origin) { blockedProxyRequests++; response.writeHead(403); response.end(); return; }
     response.setHeader('Cache-Control', 'no-store');
     if (request.method === 'POST' && /^\/odre-pqc\/analytics\/v1\/(visit|activity)$/.test(url.pathname)) {
+      if (/headless/i.test(request.headers['user-agent'] || '')) headlessNativeRequests++;
+      if (String(request.headers.cookie || '').includes('isolated_analytics_admin=local-only-fixture')) {
+        excludedAdminRequests++; request.resume(); response.writeHead(202, {'Content-Type':'application/json'}); response.end('{"accepted":false}'); return;
+      }
       const chunks = []; let bytes = 0;
       request.on('data', chunk => { bytes += chunk.length; if (bytes > 4096) request.destroy(); else chunks.push(chunk); });
       request.on('end', () => {
@@ -40,7 +44,7 @@ fs.mkdirSync(out, { recursive: true });
   server.on('connect', (_request, socket) => { blockedProxyRequests++; socket.end('HTTP/1.1 403 Forbidden\r\n\r\n'); });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   origin = `http://127.0.0.1:${server.address().port}`;
-  const browser = await chromium.launch({ channel: 'chrome', headless: true, proxy:{server:origin}, args:['--proxy-bypass-list=<-loopback>', '--disable-background-networking'] });
+  const browser = await chromium.launch({ channel: 'chrome', headless: true, proxy:{server:origin}, args:['--proxy-bypass-list=<-loopback>', '--disable-background-networking', '--user-agent=' + ua] });
   async function contextFor(locale = 'en-US', width = 1280) {
     const context = await browser.newContext({ locale, userAgent: ua, viewport: { width, height: 900 }, serviceWorkers:'block' });
     await context.route('**/*', async route => {
@@ -59,6 +63,14 @@ fs.mkdirSync(out, { recursive: true });
     await page.waitForTimeout(200);
   }
   try {
+    const administrator = await contextFor();
+    await administrator.addCookies([{name:'isolated_analytics_admin',value:'local-only-fixture',url:origin,httpOnly:true,sameSite:'Strict'}]);
+    const inspection = await administrator.newPage(); await inspection.goto(origin + '/', {waitUntil:'domcontentloaded'});
+    for (let index=0; index<40 && excludedAdminRequests===0; index++) await inspection.waitForTimeout(100);
+    assert.equal(excludedAdminRequests,1); await inspection.waitForTimeout(200);
+    await inspection.evaluate(()=>document.dispatchEvent(new Event('odre:language')));
+    await inspection.goto('about:blank'); await administrator.close();
+    assert.equal(excludedAdminRequests,1); assert.equal(visits.length,0); assert.equal(activities.length,0);
     const context = await contextFor(); const page = await context.newPage();
     for (const route of routes) {
       const before = visits.length;
@@ -99,6 +111,7 @@ fs.mkdirSync(out, { recursive: true });
     assert.deepEqual(errors, [], 'no browser page errors'); assert.deepEqual(findings, [], 'no layout findings');
     fs.writeFileSync(path.join(out, 'analytics-browser-payloads.json'), JSON.stringify({ visits, activities }, null, 2));
     assert.ok(activities.length > 29, 'native lifecycle Beacons reached the loopback collector');
-    console.log(JSON.stringify({ public_pages: routes.length, language_cases: 5, privacy_mobile_width: 360, findings, browser_errors: errors, telemetry_destination:'loopback-only runtime fixture', native_lifecycle_capture:true, blocked_proxy_requests:blockedProxyRequests, visit_count:visits.length, activity_count:activities.length, result: 'PASS' }, null, 2));
+    assert.equal(headlessNativeRequests,0, 'native exit events preserve the synthetic ordinary-browser UA');
+    console.log(JSON.stringify({ public_pages: routes.length, language_cases: 5, privacy_mobile_width: 360, findings, browser_errors: errors, telemetry_destination:'loopback-only runtime fixture', native_lifecycle_capture:true, blocked_proxy_requests:blockedProxyRequests, excluded_admin_requests:excludedAdminRequests, headless_native_requests:headlessNativeRequests, visit_count:visits.length, activity_count:activities.length, result: 'PASS' }, null, 2));
   } finally { await browser.close(); await new Promise(resolve => setTimeout(resolve, 100)); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
