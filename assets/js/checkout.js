@@ -2,7 +2,7 @@
   'use strict';
   var PADDLE_CHECKOUT = Object.freeze({
     environment: 'sandbox',
-    publicCheckoutEnabled: false,
+    publicCheckoutEnabled: true,
     clientToken: 'test_aea926287a8b0b55a8409ff49fb',
     priceIds: Object.freeze({
       monthly: 'pri_01m1p5ygmnxy4h6zb69c8jp5yh',
@@ -41,19 +41,57 @@
   units.addEventListener('input', updateTotals); units.addEventListener('change', updateTotals); annualUnits.addEventListener('input', updateTotals); annualUnits.addEventListener('change', updateTotals); updateTotals();
   var activeCheckout = { plan: 'monthly', units: 1 };
   var paddleReady = false;
+  var sandboxLabels = {
+    en: { title: 'Sandbox checkout is enabled for testing.', copy: 'Test transactions only. No real charge will be made.', monthly: 'Monthly sandbox checkout', annual: 'Annual sandbox checkout' },
+    ko: { title: '테스트용 샌드박스 결제가 활성화되었습니다.', copy: '테스트 거래만 생성되며 실제 요금은 청구되지 않습니다.', monthly: '월간 샌드박스 결제', annual: '연간 샌드박스 결제' },
+    ja: { title: 'テスト用サンドボックス決済が有効です。', copy: 'テスト取引のみで、実際の請求は発生しません。', monthly: '月間サンドボックス決済', annual: '年間サンドボックス決済' },
+    de: { title: 'Der Sandbox-Checkout ist zum Testen aktiviert.', copy: 'Nur Testtransaktionen; es erfolgt keine echte Belastung.', monthly: 'Monatlicher Sandbox-Checkout', annual: 'Jährlicher Sandbox-Checkout' },
+    es: { title: 'El pago sandbox está habilitado para pruebas.', copy: 'Solo transacciones de prueba; no se realizará ningún cargo real.', monthly: 'Pago sandbox mensual', annual: 'Pago sandbox anual' }
+  };
+  function setCheckoutEnabled(enabled) {
+    [monthlyCheckout, annualCheckout].forEach(function (button) {
+      button.disabled = !enabled;
+      button.setAttribute('aria-disabled', String(!enabled));
+    });
+  }
+  function applySandboxLabels() {
+    if (!paddleReady || PADDLE_CHECKOUT.environment !== 'sandbox') return;
+    var labels = sandboxLabels[document.documentElement.lang] || sandboxLabels.en;
+    var title = document.querySelector('[data-i18n="availabilityTitle"]');
+    var copy = document.querySelector('[data-i18n="availabilityCopy"]');
+    if (title) title.textContent = labels.title;
+    if (copy) copy.textContent = labels.copy;
+    monthlyCheckout.textContent = labels.monthly;
+    annualCheckout.textContent = labels.annual;
+  }
   function handlePaddleEvent(event) {
     var id = event && event.name === 'checkout.completed' && event.data ? String(event.data.transaction_id || '') : '';
     if (!/^txn_[a-z0-9]{20,64}$/i.test(id)) return;
     var params = new URLSearchParams({ transaction_id: id, plan: activeCheckout.plan, units: String(activeCheckout.units) });
     window.setTimeout(function () { location.assign('/payment/success/?' + params.toString()); }, 1400);
   }
-  try {
-    if (PADDLE_CHECKOUT.publicCheckoutEnabled && PADDLE_CHECKOUT.environment === 'live' && window.Paddle) {
+  function initializePaddle() {
+    try {
+      if (!PADDLE_CHECKOUT.publicCheckoutEnabled || !window.Paddle) return;
+      if (['sandbox', 'live'].indexOf(PADDLE_CHECKOUT.environment) < 0) throw new Error('Unsupported Paddle environment');
       window.Paddle.Environment.set(PADDLE_CHECKOUT.environment);
       window.Paddle.Initialize({ token: PADDLE_CHECKOUT.clientToken, eventCallback: handlePaddleEvent });
       paddleReady = true;
-    }
-  } catch (error) { console.error('Checkout initialization failed'); }
+      setCheckoutEnabled(true);
+      applySandboxLabels();
+    } catch (error) { console.error('Checkout initialization failed'); }
+  }
+  function loadPaddle() {
+    setCheckoutEnabled(false);
+    if (!PADDLE_CHECKOUT.publicCheckoutEnabled) return;
+    if (window.Paddle) { initializePaddle(); return; }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    script.async = true;
+    script.onload = initializePaddle;
+    script.onerror = function () { console.error('Checkout initialization failed'); };
+    document.head.appendChild(script);
+  }
   function unavailableMessage() {
     var language = document.documentElement.lang;
     return ({ en: 'Online checkout is not currently accepting orders. Contact Commercial for purchase assistance.', ko: '현재 온라인 결제를 이용할 수 없습니다. 구매는 상업 문의 채널을 이용하세요.', ja: '現在オンライン決済は利用できません。購入については商用窓口へお問い合わせください。', de: 'Der Online-Checkout nimmt derzeit keine Bestellungen an. Wenden Sie sich für den Kauf an den Vertrieb.', es: 'El pago en línea no acepta pedidos actualmente. Contacte con el área comercial para comprar.' })[language] || 'Online checkout is not currently accepting orders. Contact Commercial for purchase assistance.';
@@ -67,10 +105,8 @@
   }
   monthlyCheckout.addEventListener('click', function () { openCheckout('monthly'); });
   annualCheckout.addEventListener('click', function () { openCheckout('annual'); });
-  if (!PADDLE_CHECKOUT.publicCheckoutEnabled || PADDLE_CHECKOUT.environment !== 'live') {
-    monthlyCheckout.disabled = true; monthlyCheckout.setAttribute('aria-disabled', 'true');
-    annualCheckout.disabled = true; annualCheckout.setAttribute('aria-disabled', 'true');
-  }
+  document.addEventListener('odre:language', applySandboxLabels);
+  loadPaddle();
   var requested = new URLSearchParams(location.search).get('plan');
   if (requested === 'annual') annualUnits.focus(); else if (requested === 'monthly') units.focus();
 }());
