@@ -14,13 +14,13 @@ const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 fs.mkdirSync(out, { recursive: true });
 
 (async () => {
-  const findings = [], visits = [], activities = [], errors = [];
+  const findings = [], visits = [], activities = [], downloads = [], errors = [];
   let origin, blockedProxyRequests = 0, excludedAdminRequests = 0, headlessNativeRequests = 0;
   const server = http.createServer((request, response) => {
     const url = new URL(request.url, origin);
     if (url.origin !== origin) { blockedProxyRequests++; response.writeHead(403); response.end(); return; }
     response.setHeader('Cache-Control', 'no-store');
-    if (request.method === 'POST' && /^\/odre-pqc\/analytics\/v1\/(visit|activity)$/.test(url.pathname)) {
+    if (request.method === 'POST' && /^\/odre-pqc\/analytics\/v1\/(visit|activity|download-click)$/.test(url.pathname)) {
       if (/headless/i.test(request.headers['user-agent'] || '')) headlessNativeRequests++;
       if (String(request.headers.cookie || '').includes('isolated_analytics_admin=local-only-fixture')) {
         excludedAdminRequests++; request.resume(); response.writeHead(202, {'Content-Type':'application/json'}); response.end('{"accepted":false}'); return;
@@ -28,7 +28,7 @@ fs.mkdirSync(out, { recursive: true });
       const chunks = []; let bytes = 0;
       request.on('data', chunk => { bytes += chunk.length; if (bytes > 4096) request.destroy(); else chunks.push(chunk); });
       request.on('end', () => {
-        try { const payload = JSON.parse(Buffer.concat(chunks)); (url.pathname.endsWith('/visit') ? visits : activities).push(payload); response.writeHead(202, {'Content-Type':'application/json'}); response.end('{"accepted":true}'); }
+        try { const payload = JSON.parse(Buffer.concat(chunks)); (url.pathname.endsWith('/visit') ? visits : url.pathname.endsWith('/download-click') ? downloads : activities).push(payload); response.writeHead(202, {'Content-Type':'application/json'}); response.end('{"accepted":true}'); }
         catch (_) { response.writeHead(400); response.end(); }
       });
       return;
@@ -36,6 +36,8 @@ fs.mkdirSync(out, { recursive: true });
     const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
     const local = path.resolve(root, relative, url.pathname.endsWith('/') ? 'index.html' : '');
     if (request.method !== 'GET' || !local.startsWith(root + path.sep) || !fs.existsSync(local) || !fs.statSync(local).isFile()) { response.writeHead(404); response.end(); return; }
+    // Keep navigation native without downloading PDF bytes in isolated QA.
+    if (path.extname(local).toLowerCase() === '.pdf') { response.writeHead(204); response.end(); return; }
     let body = fs.readFileSync(local);
     if (url.pathname === '/assets/js/analytics.js') body = Buffer.from(body.toString().replaceAll('https://pqc.odreai.com', origin).replaceAll('https://odreai.com/odre-pqc/analytics/v1/', origin + '/odre-pqc/analytics/v1/'));
     if (path.extname(local) === '.html') body = Buffer.from(body.toString().replaceAll('connect-src https://odreai.com;', 'connect-src ' + origin + ';'));
@@ -65,12 +67,14 @@ fs.mkdirSync(out, { recursive: true });
   try {
     const administrator = await contextFor();
     await administrator.addCookies([{name:'isolated_analytics_admin',value:'local-only-fixture',url:origin,httpOnly:true,sameSite:'Strict'}]);
-    const inspection = await administrator.newPage(); await inspection.goto(origin + '/', {waitUntil:'domcontentloaded'});
+    const inspection = await administrator.newPage(); await inspection.goto(origin + '/docs/', {waitUntil:'domcontentloaded'});
     for (let index=0; index<40 && excludedAdminRequests===0; index++) await inspection.waitForTimeout(100);
     assert.equal(excludedAdminRequests,1); await inspection.waitForTimeout(200);
     await inspection.evaluate(()=>document.dispatchEvent(new Event('odre:language')));
+    await inspection.locator('a[href$=".pdf"]').first().click();
     await inspection.goto('about:blank'); await administrator.close();
     assert.equal(excludedAdminRequests,1); assert.equal(visits.length,0); assert.equal(activities.length,0);
+    assert.equal(downloads.length,0);
     const context = await contextFor(); const page = await context.newPage();
     for (const route of routes) {
       const before = visits.length;
@@ -107,11 +111,25 @@ fs.mkdirSync(out, { recursive: true });
     assert.ok(await pay.locator('#activationView').isVisible());
     assert.equal(await pay.locator('#activationTab').getAttribute('aria-selected'), 'true');
     await payment.close();
+    const pdfContext = await contextFor('ko-KR', 360); const pdfPage = await pdfContext.newPage();
+    for (const route of ['/docs/', '/security/', '/trust/', '/releases/']) {
+      await loaded(pdfPage, origin + route);
+      const links = pdfPage.locator('a[href$=".pdf"]'); const count = await links.count();
+      for (let index=0; index<count; index++) {
+        const before=downloads.length; await links.nth(index).click();
+        for (let wait=0; wait<40 && downloads.length===before; wait++) await pdfPage.waitForTimeout(50);
+        assert.equal(downloads.length,before+1, 'one event for each real PDF activation');
+        assert.equal(downloads.at(-1).path,route); assert.equal(downloads.at(-1).rendered_language,'ko');
+      }
+    }
+    assert.equal(downloads.length,14); assert.equal(new Set(downloads.map(item=>item.pdf_id)).size,10);
+    assert.equal(new Set(downloads.map(item=>item.event_id)).size,14);
+    await pdfContext.close();
     await new Promise(resolve => setTimeout(resolve, 200));
     assert.deepEqual(errors, [], 'no browser page errors'); assert.deepEqual(findings, [], 'no layout findings');
-    fs.writeFileSync(path.join(out, 'analytics-browser-payloads.json'), JSON.stringify({ visits, activities }, null, 2));
+    fs.writeFileSync(path.join(out, 'analytics-browser-payloads.json'), JSON.stringify({ visits, activities, downloads }, null, 2));
     assert.ok(activities.length > 29, 'native lifecycle Beacons reached the loopback collector');
     assert.equal(headlessNativeRequests,0, 'native exit events preserve the synthetic ordinary-browser UA');
-    console.log(JSON.stringify({ public_pages: routes.length, language_cases: 5, privacy_mobile_width: 360, findings, browser_errors: errors, telemetry_destination:'loopback-only runtime fixture', native_lifecycle_capture:true, blocked_proxy_requests:blockedProxyRequests, excluded_admin_requests:excludedAdminRequests, headless_native_requests:headlessNativeRequests, visit_count:visits.length, activity_count:activities.length, result: 'PASS' }, null, 2));
+    console.log(JSON.stringify({ public_pages: routes.length, language_cases: 5, privacy_mobile_width: 360, findings, browser_errors: errors, telemetry_destination:'loopback-only runtime fixture', native_lifecycle_capture:true, blocked_proxy_requests:blockedProxyRequests, excluded_admin_requests:excludedAdminRequests, headless_native_requests:headlessNativeRequests, visit_count:visits.length, activity_count:activities.length, pdf_clicks:downloads.length, unique_pdfs:new Set(downloads.map(item=>item.pdf_id)).size, result: 'PASS' }, null, 2));
   } finally { await browser.close(); await new Promise(resolve => setTimeout(resolve, 100)); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

@@ -21,6 +21,18 @@
   window.__odrePqcAnalytics = true;
 
   var endpoint = 'https://odreai.com/odre-pqc/analytics/v1/';
+  var pdfIds = {
+    '/ODRE_PQC_v0.2.9_Product_Overview_Security_Architecture_EN.pdf': 'v029_overview_en',
+    '/ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf': 'v029_whitepaper_en',
+    '/ODRE_PQC_v0.2.9_제품_개요_및_보안_아키텍처_KO.pdf': 'v029_overview_ko',
+    '/ODRE_PQC_v0.2.9_공개_기술_백서_KO.pdf': 'v029_whitepaper_ko',
+    '/ODRE_PQC_v0.2.9_製品概要_セキュリティアーキテクチャ_JA.pdf': 'v029_overview_ja',
+    '/ODRE_PQC_v0.2.9_公開技術白書_JA.pdf': 'v029_whitepaper_ja',
+    '/ODRE_PQC_v0.2.9_Produktuebersicht_Sicherheitsarchitektur_DE.pdf': 'v029_overview_de',
+    '/ODRE_PQC_v0.2.9_Oeffentliches_Technisches_Whitepaper_DE.pdf': 'v029_whitepaper_de',
+    '/ODRE_PQC_v0.2.9_Descripcion_del_Producto_Arquitectura_de_Seguridad_ES.pdf': 'v029_overview_es',
+    '/ODRE_PQC_v0.2.9_Libro_Blanco_Tecnico_Publico_ES.pdf': 'v029_whitepaper_es'
+  };
   var storageKey = 'odre-pqc-analytics-session-v1';
   var uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
   var supported = ['en', 'ko', 'ja', 'de', 'es'];
@@ -57,14 +69,16 @@
       if (referrer.origin === location.origin) referrerPath = safePath(referrer.pathname);
     }
   } catch (error) {}
+  // Match the browser locale that selected this document's initial language.
+  // Display/manual choices remain live; teardown must not change its provenance.
+  var browserLanguage = String(navigator.language || 'en');
+  if (!/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(browserLanguage) || browserLanguage.length > 35) browserLanguage = 'und';
   function languageFields() {
     var language = window.ODRE_SITE && window.ODRE_SITE.analyticsLanguage ? window.ODRE_SITE.analyticsLanguage() : {};
-    var browser = String(navigator.language || 'en');
-    if (!/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(browser) || browser.length > 35) browser = 'und';
     var rendered = supported.indexOf(document.documentElement.lang) >= 0 ? document.documentElement.lang : 'en';
     return {
-      browser_language: browser,
-      browser_primary_language: browser.split('-')[0].toLowerCase(),
+      browser_language: browserLanguage,
+      browser_primary_language: browserLanguage.split('-')[0].toLowerCase(),
       selected_language: supported.indexOf(language.selected_language) >= 0 ? language.selected_language : null,
       rendered_language: rendered,
       language_source: ['manual', 'browser', 'fallback', 'unknown'].indexOf(language.language_source) >= 0 ? language.language_source : 'unknown',
@@ -175,6 +189,30 @@
       sendActivity(false, true);
     }
   }
+  function pdfClicked(event) {
+    if (collectionStopped || event.isTrusted !== true || event.defaultPrevented) return;
+    if (event.type === 'auxclick' ? event.button !== 1 : event.button != null && event.button !== 0) return;
+    var anchor = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+    if (!anchor) return;
+    try {
+      var url = new URL(anchor.getAttribute('href'), location.origin + location.pathname);
+      if (url.origin !== location.origin || url.username || url.password) return;
+      var pdfId = pdfIds[decodeURIComponent(url.pathname)];
+      if (!pdfId) return;
+      // Observe only: never cancel/delay navigation or claim a completed download.
+      // A self-contained click can arrive before its initial visit; only fixed
+      // public PDF IDs and coarse values leave the page, never the href or text.
+      var payload = Object.assign({}, ids, { event_id: uuid(), pdf_id: pdfId, path: path,
+        device: visit.device, rendered_language: languageFields().rendered_language });
+      if (!beacon('download-click', payload)) {
+        post('download-click', payload).then(function (accepted) {
+          if (accepted === null && !collectionStopped) beacon('download-click', payload);
+        });
+      }
+    } catch (error) { /* Analytics must never interrupt PDF navigation. */ }
+  }
+  document.addEventListener('click', pdfClicked);
+  document.addEventListener('auxclick', pdfClicked);
   document.addEventListener('visibilitychange', visibilityChanged);
   window.addEventListener('pagehide', function () {
     if (visibleSince !== null) { activeMs(); visibleSince = null; }
