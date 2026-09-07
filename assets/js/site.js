@@ -32,6 +32,38 @@
     return supported.indexOf(browser) >= 0 ? browser : 'en';
   }
   var current = initialLanguage();
+  // A legacy saved language may have been selected automatically. Never label it
+  // as a manual choice without provenance from the actual language selector.
+  function initialLanguageState() {
+    var query = new URLSearchParams(location.search).get('lang');
+    if (supported.indexOf(query) >= 0) return { source: 'unknown', selected: null };
+    var browser = String(navigator.language || 'en').slice(0, 2).toLowerCase();
+    var stored = storedLanguage();
+    if (supported.indexOf(stored) >= 0) {
+      try {
+        var saved = JSON.parse(localStorage.getItem('odre-pqc-language-provenance'));
+        if (saved && saved.language === stored && ['manual', 'browser', 'fallback', 'unknown'].indexOf(saved.source) >= 0) {
+          if ((saved.source === 'browser' && stored !== browser) ||
+              (saved.source === 'fallback' && (supported.indexOf(browser) >= 0 || stored !== 'en'))) {
+            return { source: 'unknown', selected: null };
+          }
+          return { source: saved.source, selected: saved.source === 'manual' ? stored : null };
+        }
+      } catch (error) {}
+      return { source: 'unknown', selected: null };
+    }
+    return { source: supported.indexOf(browser) >= 0 ? 'browser' : 'fallback', selected: null };
+  }
+  var languageState = initialLanguageState();
+  function analyticsLanguage() {
+    return {
+      selected_language: languageState.selected,
+      rendered_language: document.documentElement.lang,
+      language_source: languageState.source,
+      translated_view: document.documentElement.lang !== 'en',
+      fallback_used: languageState.source === 'fallback' && document.documentElement.lang === 'en'
+    };
+  }
   var englishTitle = document.title;
   var englishDescriptionNode = document.querySelector('meta[name="description"]');
   var englishDescription = englishDescriptionNode ? englishDescriptionNode.getAttribute('content') : '';
@@ -163,11 +195,15 @@
     if (!open) languageMenu.querySelector('button').focus();
   });
 
-  function applyLanguage(code) {
+  function applyLanguage(code, source) {
     if (supported.indexOf(code) < 0) code = 'en';
+    if (source === 'manual') languageState = { source: 'manual', selected: code };
     current = code;
     document.documentElement.lang = code;
-    try { localStorage.setItem('odre-pqc-lang', code); } catch (error) {}
+    try {
+      localStorage.setItem('odre-pqc-lang', code);
+      localStorage.setItem('odre-pqc-language-provenance', JSON.stringify({ language: code, source: languageState.source }));
+    } catch (error) {}
     document.querySelectorAll('[data-common]').forEach(function (node) { node.textContent = t(node.getAttribute('data-common')); });
     if (window.ODRE_PAGE_I18N && window.ODRE_PAGE_I18N[code]) {
       var page = window.ODRE_PAGE_I18N[code];
@@ -195,11 +231,11 @@
       var englishOgDescription = document.querySelector('meta[property="og:description"]'); if (englishOgDescription) englishOgDescription.setAttribute('content', englishDescription);
     }
     var ogTitle = document.querySelector('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', document.title);
-    document.dispatchEvent(new CustomEvent('odre:language', { detail: { language: code } }));
+    document.dispatchEvent(new CustomEvent('odre:language', { detail: Object.assign({ language: code }, analyticsLanguage()) }));
   }
   document.addEventListener('click', function (event) {
     var choice = event.target.closest('[data-language-choice]');
-    if (choice) { applyLanguage(choice.getAttribute('data-language-choice')); if (languageMenu) { languageMenu.hidden = true; languageButton.setAttribute('aria-expanded','false'); } }
+    if (choice) { applyLanguage(choice.getAttribute('data-language-choice'), 'manual'); if (languageMenu) { languageMenu.hidden = true; languageButton.setAttribute('aria-expanded','false'); } }
     if (languageMenu && !event.target.closest('.language-wrap')) { languageMenu.hidden = true; languageButton.setAttribute('aria-expanded','false'); }
   });
 
@@ -232,5 +268,15 @@
   window.addEventListener('scroll', function () { if (header) header.classList.toggle('is-scrolled', window.scrollY > 12); }, { passive: true });
   window.addEventListener('resize', function () { if (window.innerWidth >= 1024 && mobileDrawer && mobileDrawer.classList.contains('open')) closeMobile(); });
   applyLanguage(current);
-  window.ODRE_SITE = { language: function () { return current; }, setLanguage: applyLanguage };
+  window.ODRE_SITE = { language: function () { return current; }, setLanguage: function (code) { applyLanguage(code, 'manual'); }, analyticsLanguage: analyticsLanguage };
+  // One asynchronous common inclusion covers all public pages. The tracker
+  // itself has an explicit path/origin allowlist and cannot block navigation.
+  if (!document.querySelector('script[data-odre-analytics]')) {
+    var analytics = document.createElement('script');
+    analytics.src = '/assets/js/analytics.js';
+    analytics.async = true;
+    analytics.referrerPolicy = 'no-referrer';
+    analytics.setAttribute('data-odre-analytics', '');
+    document.head.appendChild(analytics);
+  }
 }());
