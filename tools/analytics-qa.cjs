@@ -45,7 +45,8 @@ function environment(options = {}) {
     fetch: (url, request) => {
       requests.push({ url, ...request, json: JSON.parse(request.body) });
       if (options.network === 'pending') return new Promise(() => {});
-      return options.network === 'fail' ? Promise.reject(new Error('offline')) : Promise.resolve({ status: 202 });
+      const reply = options.reply ? options.reply({ url, request, number: requests.length }) : { status: 202, body: { accepted: true } };
+      return options.network === 'fail' ? Promise.reject(new Error('offline')) : Promise.resolve({ status: reply.status, json: () => reply.invalidJson ? Promise.reject(new Error('invalid JSON')) : Promise.resolve(reply.body) });
     }
   };
   context.window = context;
@@ -61,7 +62,7 @@ function environment(options = {}) {
     select: code => emit(docEvents, 'click', { target: { closest: selector => selector === '[data-language-choice]' ? { getAttribute: () => code } : null } })
   };
 }
-const flush = async () => { for (let index = 0; index < 8; index += 1) await Promise.resolve(); };
+const flush = async () => { for (let index = 0; index < 16; index += 1) await Promise.resolve(); };
 let assertions = 0;
 async function test(name, body) { await body(); assertions += 1; process.stdout.write(`PASS ${name}\n`); }
 
@@ -118,7 +119,7 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     const env = environment({ path: '/payment/success/', query: `?transaction_id=${secret}&email=${secret}`, hash: `#${secret}`, referrer: `https://search.example/results?subscription_id=${secret}#${secret}` });
     env.start(); await flush();
     assert.equal(env.requests[0].json.path, '/payment/success/'); assert.equal(env.requests[0].json.referrer_hostname, 'search.example');
-    for (const request of env.requests) { assert.ok(!request.body.includes(secret)); assert.equal(request.credentials, 'omit'); assert.equal(request.referrerPolicy, 'no-referrer'); }
+    for (const request of env.requests) { assert.ok(!request.body.includes(secret)); assert.equal(request.credentials, 'include'); assert.equal(request.referrerPolicy, 'no-referrer'); assert.equal(request.redirect, 'error'); }
     assert.ok(!JSON.stringify([...env.session.values]).includes(secret));
     assert.ok(!JSON.stringify(env.requests.map(item => item.json)).includes('Mozilla'));
   });
@@ -138,6 +139,53 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     const finalVisit = env.beacons.find(item => item.url.endsWith('/visit'));
     assert.ok(finalVisit); const value = JSON.parse(await finalVisit.blob.text());
     assert.equal(value.pageview_id, env.requests[0].json.pageview_id); assert.equal(value.active_ms, 2500);
+    assert.equal(env.beacons.filter(item => item.url.endsWith('/activity')).length, 0);
+  });
+  await test('excluded administrator stops all document telemetry without persisting exclusion', async () => {
+    const session = storage();
+    const env = environment({ session, reply: () => ({ status: 202, body: { accepted: false } }) }); env.start(); await flush();
+    env.advance(60000); env.heartbeat(); env.select('ko'); env.visibility('hidden'); env.emitWindow('pagehide'); env.visibility('visible'); env.emitWindow('pageshow');
+    while (env.timers.length) env.timers.shift()();
+    await flush(); assert.equal(env.requests.length, 1); assert.equal(env.beacons.length, 0);
+    assert.equal(session.getItem('odre-pqc-analytics-optout'), null);
+    const loggedOut = environment({ session }); loggedOut.start(); await flush();
+    assert.equal(loggedOut.requests.filter(item => item.url.endsWith('/visit')).length, 1);
+    assert.equal(loggedOut.requests.filter(item => item.url.endsWith('/activity')).length, 1);
+  });
+  await test('later administrator exclusion stops heartbeat, language and exit updates', async () => {
+    const env = environment({ reply: ({ number }) => ({ status: 202, body: { accepted: number < 3 } }) }); env.start(); await flush();
+    env.advance(60000); env.heartbeat(); await flush(); assert.equal(env.requests.length, 3);
+    env.advance(60000); env.heartbeat(); env.select('ja'); env.visibility('hidden'); env.emitWindow('pagehide'); await flush();
+    assert.equal(env.requests.length, 3); assert.equal(env.beacons.length, 0);
+  });
+  await test('malformed 202 responses never masquerade as acceptance or permanent exclusion', async () => {
+    for (const reply of [{ status: 202, body: {} }, { status: 202, body: { accepted: 'false' } }, { status: 202, invalidJson: true }]) {
+      const env = environment({ reply: () => reply }); env.start();
+      for (let index = 0; index < 5; index++) { await flush(); if (env.timers.length) env.timers.shift()(); }
+      assert.equal(env.requests.length, 3); assert.ok(env.requests.every(item => item.url.endsWith('/visit')));
+    }
+  });
+  await test('transient failure can recover but queued retries cannot undo exclusion', async () => {
+    for (const accepted of [true, false]) {
+      const env = environment({ reply: ({ number }) => number === 1 ? { status: 503 } : { status: 202, body: { accepted } } });
+      env.start(); await flush(); const queued = env.timers.shift(); assert.ok(queued); queued(); await flush();
+      const count = env.requests.length; queued(); env.visibility('hidden'); await flush();
+      assert.equal(env.requests.length, count); assert.equal(count, accepted ? 3 : 2);
+      if (!accepted) assert.equal(env.beacons.length, 0);
+    }
+  });
+  await test('Android and iPhone visible 60 seconds survive hide without counting background', async () => {
+    for (const ua of ['Mozilla/5.0 (Linux; Android 14) Chrome/130.0.0.0 Mobile Safari/537.36', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Version/17.0 Mobile/15E148 Safari/604.1']) {
+      const env = environment({ ua, maxTouchPoints: 5 }); env.start(); await flush();
+      env.advance(60000); env.heartbeat(); await flush();
+      assert.equal(env.requests.at(-1).json.active_ms, 60000); assert.equal(env.requests[0].json.device, 'mobile');
+      assert.ok(env.requests.every(item => item.credentials === 'include'));
+      env.advance(5000); env.visibility('hidden'); env.emitWindow('pagehide');
+      assert.equal(env.beacons.length, 1); const last = JSON.parse(await env.beacons[0].blob.text());
+      assert.equal(last.active_ms, 65000); assert.equal(last.pageview_id, env.requests[0].json.pageview_id);
+      const count = env.requests.length; env.advance(600000); env.heartbeat(); await flush(); assert.equal(env.requests.length, count);
+      env.visibility('visible'); await flush(); assert.equal(env.requests.at(-1).json.active_ms, 65000);
+    }
   });
   await test('computer suspension cannot add hours of unobserved visible dwell', async () => {
     const env = environment(); env.start(); await flush(); env.advance(10800000); env.heartbeat(); await flush();
