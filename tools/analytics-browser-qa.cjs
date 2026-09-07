@@ -1,8 +1,11 @@
-// Full browser rendering with every request intercepted. No Production contact.
+// Browser QA served exclusively from loopback. Runtime-only JS copies point
+// telemetry at loopback, including native lifecycle Beacons. Production files
+// are not rewritten. A non-forwarding proxy remains active during teardown.
 const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
+const http = require('node:http');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, '.qa-artifacts');
 const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/enterprise/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
@@ -11,33 +14,55 @@ const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 fs.mkdirSync(out, { recursive: true });
 
 (async () => {
-  const browser = await chromium.launch({ channel: 'chrome', headless: true });
   const findings = [], visits = [], activities = [], errors = [];
+  let origin, blockedProxyRequests = 0;
+  const server = http.createServer((request, response) => {
+    const url = new URL(request.url, origin);
+    if (url.origin !== origin) { blockedProxyRequests++; response.writeHead(403); response.end(); return; }
+    response.setHeader('Cache-Control', 'no-store');
+    if (request.method === 'POST' && /^\/odre-pqc\/analytics\/v1\/(visit|activity)$/.test(url.pathname)) {
+      const chunks = []; let bytes = 0;
+      request.on('data', chunk => { bytes += chunk.length; if (bytes > 4096) request.destroy(); else chunks.push(chunk); });
+      request.on('end', () => {
+        try { const payload = JSON.parse(Buffer.concat(chunks)); (url.pathname.endsWith('/visit') ? visits : activities).push(payload); response.writeHead(202, {'Content-Type':'application/json'}); response.end('{"accepted":true}'); }
+        catch (_) { response.writeHead(400); response.end(); }
+      });
+      return;
+    }
+    const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
+    const local = path.resolve(root, relative, url.pathname.endsWith('/') ? 'index.html' : '');
+    if (request.method !== 'GET' || !local.startsWith(root + path.sep) || !fs.existsSync(local) || !fs.statSync(local).isFile()) { response.writeHead(404); response.end(); return; }
+    let body = fs.readFileSync(local);
+    if (url.pathname === '/assets/js/analytics.js') body = Buffer.from(body.toString().replaceAll('https://pqc.odreai.com', origin).replaceAll('https://odreai.com/odre-pqc/analytics/v1/', origin + '/odre-pqc/analytics/v1/'));
+    if (path.extname(local) === '.html') body = Buffer.from(body.toString().replaceAll('connect-src https://odreai.com;', 'connect-src ' + origin + ';'));
+    response.writeHead(200, {'Content-Type':types[path.extname(local)] || 'application/octet-stream'}); response.end(body);
+  });
+  server.on('connect', (_request, socket) => { blockedProxyRequests++; socket.end('HTTP/1.1 403 Forbidden\r\n\r\n'); });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  origin = `http://127.0.0.1:${server.address().port}`;
+  const browser = await chromium.launch({ channel: 'chrome', headless: true, proxy:{server:origin}, args:['--proxy-bypass-list=<-loopback>', '--disable-background-networking'] });
   async function contextFor(locale = 'en-US', width = 1280) {
-    const context = await browser.newContext({ locale, userAgent: ua, viewport: { width, height: 900 } });
+    const context = await browser.newContext({ locale, userAgent: ua, viewport: { width, height: 900 }, serviceWorkers:'block' });
     await context.route('**/*', async route => {
       const url = new URL(route.request().url());
-      if (url.origin === 'https://pqc.odreai.com') {
-        const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
-        const local = path.resolve(root, relative, url.pathname.endsWith('/') ? 'index.html' : '');
-        if (!local.startsWith(root + path.sep) || !fs.existsSync(local) || !fs.statSync(local).isFile()) return route.fulfill({ status: 404, body: 'not found' });
-        return route.fulfill({ status: 200, contentType: types[path.extname(local)] || 'application/octet-stream', body: fs.readFileSync(local) });
-      }
-      if (url.origin === 'https://odreai.com' && /^\/odre-pqc\/analytics\/v1\/(visit|activity)$/.test(url.pathname)) {
-        const body = JSON.parse(route.request().postData());
-        (url.pathname.endsWith('/visit') ? visits : activities).push(body);
-        return route.fulfill({ status: 202, headers: { 'Access-Control-Allow-Origin': 'https://pqc.odreai.com' }, contentType: 'application/json', body: '{"accepted":true}' });
-      }
+      if (url.origin === origin) return route.continue();
       return route.abort();
     });
     context.on('page', page => page.on('pageerror', error => errors.push(error.message)));
     return context;
   }
+  async function loaded(page, url) {
+    const before=visits.length;
+    await page.goto(url, {waitUntil:'domcontentloaded'});
+    for (let i=0; i<40 && visits.length===before; i++) await page.waitForTimeout(100);
+    assert.ok(visits.length>before, 'loopback visit received');
+    await page.waitForTimeout(200);
+  }
   try {
     const context = await contextFor(); const page = await context.newPage();
     for (const route of routes) {
       const before = visits.length;
-      await page.goto('https://pqc.odreai.com' + route, { waitUntil: 'networkidle' });
+      await loaded(page, origin + route);
       assert.equal(visits.length - before, 1, `one pageview ${route}`);
       assert.equal(visits.at(-1).path, route);
       assert.equal(await page.locator('script[data-odre-analytics]').count(), 1);
@@ -45,7 +70,7 @@ fs.mkdirSync(out, { recursive: true });
     await context.close();
     for (const [locale, rendered, source, fallback] of [['de-DE', 'de', 'browser', false], ['fr-FR', 'en', 'fallback', true], ['ko-KR', 'ko', 'browser', false], ['ja-JP', 'ja', 'browser', false], ['es-ES', 'es', 'browser', false]]) {
       const local = await contextFor(locale, 360); const view = await local.newPage();
-      await view.goto('https://pqc.odreai.com/privacy/', { waitUntil: 'networkidle' });
+      await loaded(view, origin + '/privacy/');
       const visit = visits.at(-1);
       assert.equal(visit.browser_language, locale); assert.equal(visit.rendered_language, rendered); assert.equal(visit.language_source, source); assert.equal(visit.fallback_used, fallback);
       assert.equal(await view.locator('#analytics-privacy h2').count(), 1);
@@ -63,15 +88,17 @@ fs.mkdirSync(out, { recursive: true });
     }
     const payment = await contextFor(); const pay = await payment.newPage();
     const sentinel = 'PQC_OFFLINE_PRIVACY_SENTINEL';
-    await pay.goto(`https://pqc.odreai.com/payment/success/?transaction_id=${sentinel}&subscription_id=${sentinel}#${sentinel}`, { waitUntil: 'networkidle' });
+    await loaded(pay, `${origin}/payment/success/?transaction_id=${sentinel}&subscription_id=${sentinel}#${sentinel}`);
     assert.ok(!JSON.stringify(visits.concat(activities)).includes(sentinel));
     assert.ok(await pay.locator('#recover').isVisible());
-    await pay.goto('https://pqc.odreai.com/payment/register/?flow=activate', { waitUntil: 'networkidle' });
+    await loaded(pay, origin + '/payment/register/?flow=activate');
     assert.ok(await pay.locator('#activationView').isVisible());
     assert.equal(await pay.locator('#activationTab').getAttribute('aria-selected'), 'true');
     await payment.close();
+    await new Promise(resolve => setTimeout(resolve, 200));
     assert.deepEqual(errors, [], 'no browser page errors'); assert.deepEqual(findings, [], 'no layout findings');
     fs.writeFileSync(path.join(out, 'analytics-browser-payloads.json'), JSON.stringify({ visits, activities }, null, 2));
-    console.log(JSON.stringify({ public_pages: routes.length, language_cases: 5, privacy_mobile_width: 360, findings, browser_errors: errors, network_contact: 0, result: 'PASS' }, null, 2));
-  } finally { await browser.close(); }
+    assert.ok(activities.length > 29, 'native lifecycle Beacons reached the loopback collector');
+    console.log(JSON.stringify({ public_pages: routes.length, language_cases: 5, privacy_mobile_width: 360, findings, browser_errors: errors, telemetry_destination:'loopback-only runtime fixture', native_lifecycle_capture:true, blocked_proxy_requests:blockedProxyRequests, visit_count:visits.length, activity_count:activities.length, result: 'PASS' }, null, 2));
+  } finally { await browser.close(); await new Promise(resolve => setTimeout(resolve, 100)); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

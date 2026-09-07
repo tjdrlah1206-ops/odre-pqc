@@ -3,7 +3,9 @@
 `assets/js/site.js` asynchronously loads `assets/js/analytics.js` once. All 17
 public pages already use the common file. The tracker only runs at
 `https://pqc.odreai.com` and on the explicit public-path allowlist. Local QA uses
-offline network doubles and does not send development visits to Production.
+loopback fixture copies of the tracker origin/endpoint and a non-forwarding
+local proxy. Native lifecycle Beacons also terminate at the loopback collector;
+request interception alone is not a sufficient unload-network isolation boundary.
 
 The existing authenticated admin UI provides a site-inspection link ending in
 `#odre-analytics-off`. The tracker handles that exact control marker before any
@@ -73,3 +75,9 @@ promised and analytics code cannot read forms, tokens, license data or keystroke
 
 Run `node tools/analytics-qa.cjs` for the offline contract suite. Existing website,
 language and payment QA must also pass before publishing.
+
+`node tools/analytics-browser-qa.cjs` verifies all public pages, five languages,
+mobile privacy layout and native lifecycle collection. It rewrites the tracker
+constants and the payment page's matching CSP destination only in served test
+copies; production sources are unchanged. It reports received event counts and
+blocked proxy requests instead of asserting an unmeasured zero-contact constant.
