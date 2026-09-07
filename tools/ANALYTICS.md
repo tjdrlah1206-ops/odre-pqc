@@ -22,7 +22,8 @@ the browser to send existing first-party HttpOnly admin cookies; the server uses
 them only to exclude authenticated administrators. No analytics cookie is set,
 and the script never reads, copies or stores authentication cookies. Credentialed
 CORS is restricted to the exact website Origin and the two collection routes,
-not administrator APIs. An explicit `202 {"accepted":false}` stops collection
+not administrator APIs. The same boundary also covers `/download-click`.
+An explicit `202 {"accepted":false}` stops collection
 for the current document, including queued retries and lifecycle handlers.
 Malformed responses and network failures are not treated as acceptance.
 Server Origin validation, authenticated
@@ -50,6 +51,32 @@ analytics access/error logs.
   daily visitor hashes. Client wall clock is only used to expire tab storage.
 - Country is an approximate server-local network-address lookup. Clients do
   not submit country and no visitor IP is sent to an external lookup service.
+
+## Public PDF clicks
+
+The 14 existing PDF anchors reference ten v0.2.9 public documents: overview/
+security architecture and technical whitepaper, each in EN/KO/JA/DE/ES. A trusted
+click or middle-button activation of an exact same-origin allowlisted pathname
+emits one `download-click` event. Keyboard Enter and touch use the normal click
+event. Right-click/context-menu actions, scripted clicks, external links and the
+`/docs/#downloads` menu shortcut are not counted. Navigation is never cancelled
+or delayed; PDFs and their links are unchanged.
+
+The payload contains random event/session/pageview/visitor IDs, source pathname,
+fixed versioned PDF ID, coarse device and current screen language. Never send
+href, query/hash, link text or file contents. The server derives document type,
+version and PDF language from its registry. Screen language and PDF language
+can differ. A fallback retry reuses the same event ID; a later deliberate click
+uses a new ID. Sending/queuing does not prove delivery, completion or file save.
+
+Clicks have their own server-time snapshots and never alter pageviews, sessions
+or dwell. They can arrive before a pageview and are retained independently;
+existing pageview/session ownership is checked when available. Dates use the
+Seoul click date, not original session-start date. Filters use the click-time
+country/device/screen-language/path snapshots. Distinct clicking sessions are
+not verified people and must not be summed across document rows. Administrator,
+bot, Origin, size and rate-limit exclusions also apply to clicks. No historical
+clicks are fabricated before collection starts.
 
 ## Language provenance
 

@@ -56,6 +56,11 @@ analyticsPrivacy.ko.paragraphs.push('통계용 쿠키를 만들지 않습니다.
 analyticsPrivacy.ja.paragraphs.push('統計用Cookieは作成しません。同じブラウザーでODRE管理者としてログインしている場合、サーバーは既存の認証Cookieを統計からの除外判定のみに使います。トラッカーはそのCookieを読み取り・保存しません。');
 analyticsPrivacy.de.paragraphs.push('Es wird kein Statistik-Cookie gesetzt. Wenn Sie im selben Browser als ODRE-Administrator angemeldet sind, verwendet der Server das vorhandene Authentifizierungs-Cookie nur, um Ihren Besuch von der Statistik auszuschließen. Der Tracker liest oder speichert dieses Cookie nicht.');
 analyticsPrivacy.es.paragraphs.push('No se crea ninguna cookie de estadísticas. Si ha iniciado sesión como administrador de ODRE en el mismo navegador, el servidor usa la cookie de autenticación existente solo para excluir su visita de estas estadísticas. El rastreador no lee ni guarda esa cookie.');
+analyticsPrivacy.en.paragraphs.push('We also count clicks on approved public PDF links using a fixed document identifier, document language and the screen language at click time. This measures link activations, not completed downloads or saved files. PDF URLs, query strings and link text are not stored in these click statistics.');
+analyticsPrivacy.ko.paragraphs.push('허용된 공개 PDF 링크의 클릭도 고정 문서 식별자, 문서 언어, 클릭 당시 화면 언어로 집계합니다. 링크를 누른 횟수이며 다운로드 완료나 파일 저장을 의미하지 않습니다. 클릭 통계에 PDF URL, query string, 링크 문구는 저장하지 않습니다.');
+analyticsPrivacy.ja.paragraphs.push('許可された公開PDFリンクのクリックを固定文書ID、文書言語、クリック時の画面言語で集計します。リンク操作の回数であり、ダウンロード完了や保存を意味しません。PDFのURL、query string、リンク文言はクリック統計に保存しません。');
+analyticsPrivacy.de.paragraphs.push('Klicks auf freigegebene öffentliche PDF-Links werden mit fester Dokumentkennung, Dokumentsprache und Anzeigesprache zum Klickzeitpunkt gezählt. Dies misst Linkaktivierungen, keine abgeschlossenen Downloads oder gespeicherten Dateien. PDF-URLs, Query-Strings und Linktexte werden dafür nicht gespeichert.');
+analyticsPrivacy.es.paragraphs.push('También contamos clics en enlaces PDF públicos autorizados mediante un identificador fijo, el idioma del documento y el idioma de pantalla en ese momento. Son activaciones del enlace, no descargas completadas ni archivos guardados. No se guardan URLs del PDF, cadenas de consulta ni textos del enlace en estas estadísticas.');
 function applyAnalyticsPrivacy(lang){
   const section=document.getElementById('analytics-privacy');
   if(!section)return;

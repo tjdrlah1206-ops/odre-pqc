@@ -33,7 +33,7 @@ function environment(options = {}) {
   const context = {
     document, location: { origin: options.origin || 'https://pqc.odreai.com', pathname: options.path || '/', search: options.query || '', hash: options.hash || '' },
     navigator: { language: options.language || 'en-US', userAgent: options.ua || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36', maxTouchPoints: options.maxTouchPoints || 0,
-      sendBeacon: (url, blob) => { beacons.push({ url, blob }); return true; } },
+      sendBeacon: (url, blob) => { beacons.push({ url, blob }); return options.beaconResult !== false; } },
     localStorage: local, sessionStorage: session, screen: { width: 1920, height: 1080 },
     crypto, Uint8Array, URL, URLSearchParams, Blob, Promise, Number, console,
     CustomEvent: class { constructor(type, values) { this.type = type; this.detail = values.detail; } },
@@ -59,6 +59,12 @@ function environment(options = {}) {
     heartbeat: () => intervals.forEach(callback => callback()),
     visibility: value => { document.visibilityState = value; emit(docEvents, 'visibilitychange'); },
     emitWindow: type => emit(windowEvents, type),
+    pdfClick: (href, values = {}) => {
+      const event = { type: 'click', isTrusted: true, button: 0, defaultPrevented: false, ...values,
+        target: { closest: selector => selector === 'a[href]' ? { getAttribute: () => href } : null },
+        preventDefault() { this.defaultPrevented = true; } };
+      emit(docEvents, event.type, event); return event;
+    },
     select: code => emit(docEvents, 'click', { target: { closest: selector => selector === '[data-language-choice]' ? { getAttribute: () => code } : null } })
   };
 }
@@ -133,6 +139,18 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     env.advance(600000); env.heartbeat(); env.visibility('visible'); env.advance(20000); env.heartbeat(); await flush();
     assert.equal(env.requests.at(-1).json.active_ms, 85000);
     assert.equal(new Set(env.requests.map(item => item.json.pageview_id)).size, 1);
+  });
+  await test('document locale remains consistent on PDF navigation teardown', async () => {
+    const env = environment({ language: 'ko-KR', path: '/docs/' }); env.start(); await flush();
+    env.context.navigator.language = 'en-US';
+    env.advance(3000); env.visibility('hidden');
+    const exit = JSON.parse(await env.beacons.at(-1).blob.text());
+    assert.equal(exit.browser_language, 'ko-KR'); assert.equal(exit.browser_primary_language, 'ko');
+    assert.equal(exit.rendered_language, 'ko'); assert.equal(exit.language_source, 'browser');
+    env.visibility('visible'); env.select('de'); await flush();
+    assert.equal(env.requests.at(-1).json.browser_language, 'ko-KR');
+    assert.equal(env.requests.at(-1).json.rendered_language, 'de');
+    assert.equal(env.requests.at(-1).json.language_source, 'manual');
   });
   await test('pending initial request gets idempotent pagehide visit with cumulative time', async () => {
     const env = environment({ network: 'pending' }); env.start(); env.advance(2500); env.visibility('hidden');
@@ -248,6 +266,45 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     const legal = fs.readFileSync(path.join(root, 'legal.js'), 'utf8');
     assert.ok(privacy.includes('id="analytics-privacy"')); assert.ok(privacy.includes('sessionStorage'));
     for (const title of ['First-party website statistics', '자체 홈페이지 방문 통계', '自社サイトのアクセス統計', 'Eigene Website-Statistik', 'Estadísticas propias del sitio']) assert.ok(legal.includes(title));
+  });
+  await test('all 14 public PDF anchors resolve to 10 versioned IDs without delaying navigation', async () => {
+    const env = environment({ path: '/docs/', language: 'ko-KR' }); env.start(); await flush();
+    const links = [];
+    for (const route of routes) {
+      const html = fs.readFileSync(path.join(root, route.slice(1), 'index.html'), 'utf8');
+      links.push(...Array.from(html.matchAll(/href="([^"]+\.pdf)"/g), match => match[1]));
+    }
+    assert.equal(links.length, 14);
+    for (const href of links) assert.equal(env.pdfClick(href).defaultPrevented, false);
+    const sent = await Promise.all(env.beacons.map(async item => ({ url: item.url, payload: JSON.parse(await item.blob.text()) })));
+    assert.equal(sent.length, 14); assert.ok(sent.every(item => item.url.endsWith('/download-click')));
+    assert.equal(new Set(sent.map(item => item.payload.pdf_id)).size, 10);
+    assert.equal(new Set(sent.map(item => item.payload.event_id)).size, 14);
+    assert.ok(sent.every(item => item.payload.rendered_language === 'ko' && item.payload.path === '/docs/'));
+    assert.ok(sent.some(item => item.payload.pdf_id === 'v029_whitepaper_en'));
+    assert.ok(sent.every(item => !('url' in item.payload) && !('document_language' in item.payload)));
+  });
+  await test('PDF allowlist discards URLs, secrets, untrusted events and menu-only navigation', async () => {
+    const env = environment(); env.start(); await flush();
+    const pdf = '/ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf';
+    for (const href of ['/docs/#downloads', '/private.pdf', 'https://untrusted.example' + pdf, 'https://synthetic:synthetic@pqc.odreai.com' + pdf, '/bad%ZZ.pdf']) env.pdfClick(href);
+    env.pdfClick(pdf, { isTrusted: false }); env.pdfClick(pdf, { button: 2 });
+    assert.equal(env.beacons.length, 0);
+    env.pdfClick(pdf + '?token=PRIVATE_PDF_SENTINEL#PRIVATE_PDF_SENTINEL');
+    env.pdfClick(pdf, { type: 'auxclick', button: 1 });
+    assert.equal(env.beacons.length, 2);
+    for (const item of env.beacons) assert.ok(!(await item.blob.text()).includes('PRIVATE_PDF_SENTINEL'));
+  });
+  await test('PDF click survives pending visit but never bypasses known administrator exclusion', async () => {
+    const pdf='/ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf';
+    const pending=environment({network:'pending'}); pending.start(); pending.pdfClick(pdf);
+    assert.equal(pending.beacons.filter(item=>item.url.endsWith('/download-click')).length,1);
+    const excluded=environment({reply:()=>({status:202,body:{accepted:false}})}); excluded.start(); await flush(); excluded.pdfClick(pdf);
+    assert.equal(excluded.beacons.length,0);
+    const fallback=environment({beaconResult:false}); fallback.start(); await flush(); fallback.pdfClick(pdf); await flush();
+    const sent=fallback.requests.find(item=>item.url.endsWith('/download-click'));
+    assert.ok(sent); assert.equal(sent.keepalive,true); assert.equal(sent.credentials,'include');
+    assert.equal(sent.json.event_id,JSON.parse(await fallback.beacons[0].blob.text()).event_id);
   });
   process.stdout.write(`ANALYTICS_QA: ${assertions}/${assertions} PASS; NETWORK_CONTACT: 0\n`);
 })().catch(error => { process.stderr.write(error.stack + '\n'); process.exitCode = 1; });
