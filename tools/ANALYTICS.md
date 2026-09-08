@@ -60,9 +60,12 @@ links are not counted until matching document IDs are approved in the server
 registry; do not map them to old whitepaper IDs or assume new IDs are accepted.
 No server or analytics runtime configuration is changed by this PDF update.
 
-Four links on the security, trust and releases pages still reference the existing
-English v0.2.9 overview/security architecture and technical whitepaper. The ten
-original versioned documents and their existing analytics allowlist are retained.
+Four links on the security, trust and releases pages reference the existing
+v0.2.9 overview/security architecture and technical whitepaper. The two security
+page buttons follow the selected page language (EN/KO/JA/DE/ES); trust and release
+references remain English. All ten documents already have registered IDs, so the
+current href resolves to the correct language-specific ID without a server change.
+The original documents and their existing analytics allowlist are retained.
 A trusted click or middle-button activation of an exact allowlisted pathname
 emits one `download-click` event. Keyboard Enter and touch use the normal click
 event. Right-click/context-menu actions, scripted clicks, external links and the

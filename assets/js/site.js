@@ -195,6 +195,27 @@
     if (!open) languageMenu.querySelector('button').focus();
   });
 
+  // Only explicitly marked document links follow the selected page language.
+  // Keep the original English href usable when JavaScript is unavailable.
+  var publicDocuments = {
+    en: { whitepaper: 'ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf', overview: 'ODRE_PQC_v0.2.9_Product_Overview_Security_Architecture_EN.pdf' },
+    ko: { whitepaper: 'ODRE_PQC_v0.2.9_공개_기술_백서_KO.pdf', overview: 'ODRE_PQC_v0.2.9_제품_개요_및_보안_아키텍처_KO.pdf' },
+    ja: { whitepaper: 'ODRE_PQC_v0.2.9_公開技術白書_JA.pdf', overview: 'ODRE_PQC_v0.2.9_製品概要_セキュリティアーキテクチャ_JA.pdf' },
+    de: { whitepaper: 'ODRE_PQC_v0.2.9_Oeffentliches_Technisches_Whitepaper_DE.pdf', overview: 'ODRE_PQC_v0.2.9_Produktuebersicht_Sicherheitsarchitektur_DE.pdf' },
+    es: { whitepaper: 'ODRE_PQC_v0.2.9_Libro_Blanco_Tecnico_Publico_ES.pdf', overview: 'ODRE_PQC_v0.2.9_Descripcion_del_Producto_Arquitectura_de_Seguridad_ES.pdf' }
+  };
+
+  function applyDocumentLanguage(code) {
+    var documents = publicDocuments[code] || publicDocuments.en;
+    document.querySelectorAll('a[data-pqc-document]').forEach(function (link) {
+      var filename = documents[link.getAttribute('data-pqc-document')];
+      if (typeof filename !== 'string') return;
+      link.setAttribute('href', '/' + filename);
+      link.setAttribute('hreflang', code);
+      link.setAttribute('type', 'application/pdf');
+    });
+  }
+
   function applyLanguage(code, source) {
     if (supported.indexOf(code) < 0) code = 'en';
     if (source === 'manual') languageState = { source: 'manual', selected: code };
@@ -211,6 +232,7 @@
       document.querySelectorAll('[data-i18n-html]').forEach(function (node) { var key = node.getAttribute('data-i18n-html'); if (page[key] !== undefined) node.innerHTML = page[key]; });
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function (node) { var key = node.getAttribute('data-i18n-placeholder'); if (page[key] !== undefined) node.setAttribute('placeholder', page[key]); });
     }
+    applyDocumentLanguage(code);
     document.querySelectorAll('[data-language-choice]').forEach(function (button) { button.setAttribute('aria-checked', String(button.getAttribute('data-language-choice') === code)); });
     if (languageButton) languageButton.textContent = code;
     document.querySelectorAll('[data-brand-home]').forEach(function (node) { node.setAttribute('aria-label', t('homeLabel')); });

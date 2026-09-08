@@ -129,7 +129,8 @@ fs.mkdirSync(out, { recursive: true });
         assert.equal(downloads.at(-1).path,route); assert.equal(downloads.at(-1).rendered_language,'ko');
       }
     }
-    assert.equal(downloads.length,4); assert.equal(new Set(downloads.map(item=>item.pdf_id)).size,2);
+    assert.equal(downloads.length,4);
+    assert.deepEqual([...new Set(downloads.map(item=>item.pdf_id))].sort(), ['v029_overview_ko','v029_whitepaper_en','v029_whitepaper_ko']);
     assert.equal(new Set(downloads.map(item=>item.event_id)).size,4);
     await pdfContext.close();
     await new Promise(resolve => setTimeout(resolve, 200));
