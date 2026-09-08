@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ODRE PQC · $1 Live 결제 검증</title>
-  <meta name="description" content="운영자용 ODRE PQC Live 결제 검증 페이지. 실제 USD 1 월 정기구독이며 일반 판매 페이지가 아닙니다.">
+  <title>ODRE PQC · 결제 일시 중단</title>
+  <meta name="description" content="ODRE PQC 배포패키지 준비 완료 전까지 $1 Live 테스트 결제를 일시 중단합니다. 기존 구독·라이선스 활성화는 유지됩니다.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="referrer" content="no-referrer">
   <link rel="canonical" href="https://pqc.odreai.com/payment/live-check-4a753f1fe8c8431f/">
@@ -41,7 +41,8 @@
   <header data-site-header><div class="frame"><a class="brand" href="/">ODRE PQC</a></div></header>
   <main id="main" class="frame">
     <p class="eyebrow">LIVE PAYMENT VERIFICATION · 운영자 검증용</p>
-    <h1>$1 Live 결제 검증</h1>
+    <h1>결제를 일시 중단했습니다.</h1>
+    <p class="warning">배포패키지 준비가 완료될 때까지 일반 결제와 $1 테스트 결제를 열지 않습니다. 기존 구독을 취소하거나 이미 발급된 라이선스의 활성화를 중단하는 조치는 아닙니다.</p>
     <p class="muted">일반 고객 판매용이 아닙니다. 메뉴·사이트맵에서 제외된 페이지이며, 로그인 보호는 없습니다. URL을 아는 사람은 접근할 수 있습니다.</p>
     <section class="card" aria-labelledby="testPriceHeading">
       <h2 id="testPriceHeading">Live Test Monthly · 수량 1 고정</h2>
@@ -55,9 +56,9 @@
           <li>무료 Trial·할인 상품이 아니며, 정식 판매 가격은 1 Unit 월 $250 / 연 $2,700입니다.</li>
         </ul>
       </div>
-      <label for="realChargeAcknowledged"><input id="realChargeAcknowledged" type="checkbox"><span>실제 월 정기결제라는 점과 시험 후 구독 정리가 필요함을 확인했습니다.</span></label>
-      <button id="liveTestCheckout" type="button" disabled aria-disabled="true">$1 월 정기결제 창 열기</button>
-      <p id="testStatus" class="muted" role="status" aria-live="polite">위 내용을 확인한 뒤 결제창을 열 수 있습니다. 페이지를 여는 것만으로 결제가 시작되지는 않습니다.</p>
+      <label for="realChargeAcknowledged"><input id="realChargeAcknowledged" type="checkbox" disabled><span>실제 월 정기결제라는 점과 시험 후 구독 정리가 필요함을 확인했습니다.</span></label>
+      <button id="liveTestCheckout" type="button" disabled aria-disabled="true">결제 일시 중단</button>
+      <p id="testStatus" class="muted" role="status" aria-live="polite">배포패키지 준비가 완료될 때까지 $1 테스트 결제를 중단합니다. 이 페이지에서는 새 결제창을 열지 않습니다.</p>
       <noscript><p>JavaScript가 비활성화되어 결제창을 열 수 없습니다.</p></noscript>
     </section>
     <section class="card" aria-labelledby="verificationHeading">
@@ -67,6 +68,6 @@
     </section>
   </main>
   <footer data-site-footer><div class="frame"><a href="/">홈페이지</a> · <a href="/terms/" target="_blank" rel="noopener noreferrer">이용조건</a> · <a href="/privacy/" target="_blank" rel="noopener noreferrer">개인정보처리방침</a></div></footer>
-  <script src="./checkout.js?v=live-test-20260908"></script>
+  <script src="./checkout.js?v=checkout-paused-20260909"></script>
 </body>
 </html>

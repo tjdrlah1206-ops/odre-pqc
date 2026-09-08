@@ -1,5 +1,7 @@
 (function () {
   'use strict';
+  // Operator pause: reopening requires a reviewed source change, never a URL flag.
+  var TEST_CHECKOUT_ENABLED = false;
   // Deliberately unlisted, NOT access-controlled. Only this page references the test price.
   var CLIENT_TOKEN = 'live_92a112a9e75e51a31ebe4862254';
   var TEST_PRICE_ID = 'pri_01m20nj5f1mfq56dmp1mgt08k8';
@@ -7,6 +9,16 @@
   var button = document.getElementById('liveTestCheckout');
   var status = document.getElementById('testStatus');
   if (!acknowledgement || !button || !status) return;
+  if (!TEST_CHECKOUT_ENABLED) {
+    acknowledgement.checked = false;
+    acknowledgement.disabled = true;
+    button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+    button.textContent = '결제 일시 중단';
+    status.textContent = '배포패키지 준비가 완료될 때까지 $1 테스트 결제를 중단합니다. 이 페이지에서는 새 결제창을 열지 않습니다. 기존 구독·라이선스 활성화에는 영향이 없습니다.';
+    return;
+  }
+  acknowledgement.disabled = false;
   var loading = false, ready = false, opened = false, completed = false, failed = false;
   var validLocation = location.protocol === 'https:' && location.hostname === 'pqc.odreai.com' && !location.search && !location.hash;
 

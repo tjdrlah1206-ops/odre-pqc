@@ -30,12 +30,15 @@ function fixture(options = {}) {
   const context = {
     document: { getElementById: id => nodes[id], createElement: () => ({}), head: { appendChild: script => scripts.push(script) } },
     location: { protocol: 'https:', hostname: 'pqc.odreai.com', search: '', hash: '', ...options.location },
-    window: {}, console: { log: (...args) => logs.push(args), error: (...args) => logs.push(args) }
+    window: options.sdkAlreadyLoaded ? { Paddle: paddle } : {}, console: { log: (...args) => logs.push(args), error: (...args) => logs.push(args) }
   };
-  vm.runInNewContext(testSource, context, { timeout: 1000 });
+  // Preserve the previous checkout regression suite using ONLY an in-memory
+  // enabled copy and mock Paddle. currentDeployment exercises the shipped pause.
+  const source = options.currentDeployment ? testSource : testSource.replace('var TEST_CHECKOUT_ENABLED = false;', 'var TEST_CHECKOUT_ENABLED = true;');
+  vm.runInNewContext(source, context, { timeout: 1000 });
   return { nodes, scripts, opens, initializations, logs,
-    acknowledge(value = true) { nodes.realChargeAcknowledged.checked = value; nodes.realChargeAcknowledged.listeners.change(); },
-    click() { nodes.liveTestCheckout.listeners.click(); },
+    acknowledge(value = true) { nodes.realChargeAcknowledged.checked = value; nodes.realChargeAcknowledged.listeners.change?.(); },
+    click() { nodes.liveTestCheckout.listeners.click?.(); },
     load() { context.window.Paddle = paddle; scripts[0].onload(); },
     event(name) { initializations[0].eventCallback({ name, data: { transaction_id: 'SENSITIVE_TEST_SENTINEL' } }); }
   };
@@ -47,8 +50,33 @@ check('normal Live identities and closed public gate', () => {
   assert(normal.includes('publicCheckoutEnabled: false'));
   assert(!normal.includes(testPrice));
   assert(!/test_[a-z0-9]{20,}|Environment\.set\(/.test(normal));
-  assert(read('license/index.html').includes('checkout.js?v=paddle-live-units-20260909'));
+  assert(read('license/index.html').includes('checkout.js?v=checkout-paused-20260909'));
 });
+check('shipped test checkout has a fixed pause and disabled no-script controls', () => {
+  assert(testSource.includes('var TEST_CHECKOUT_ENABLED = false;'));
+  assert(testHtml.includes('type="checkbox" disabled'));
+  assert(testHtml.includes('결제를 일시 중단했습니다.'));
+  assert(testHtml.includes('checkout.js?v=checkout-paused-20260909'));
+  assert(!/setTimeout|setInterval|new Date|Date\.now|localStorage|sessionStorage/.test(testSource));
+});
+for (const sdkAlreadyLoaded of [false, true]) {
+  for (const search of ['', '?enabled=true&checkout=true', '?_ptxn=txn_untrusted']) {
+    check(`shipped pause prevents SDK load/init/open: preloaded=${sdkAlreadyLoaded}, query=${search}`, () => {
+      const f = fixture({ currentDeployment: true, sdkAlreadyLoaded, location: { search } });
+      assert(f.nodes.liveTestCheckout.disabled && f.nodes.realChargeAcknowledged.disabled);
+      assert(f.nodes.testStatus.textContent.includes('배포패키지'));
+      f.acknowledge(); f.click(); f.click();
+      // Even changing the HTML control state does not install a payment handler.
+      f.nodes.liveTestCheckout.disabled = false;
+      f.nodes.realChargeAcknowledged.disabled = false;
+      f.click();
+      assert.equal(f.scripts.length, 0);
+      assert.equal(f.initializations.length, 0);
+      assert.equal(f.opens.length, 0);
+      assert.equal(f.logs.length, 0);
+    });
+  }
+}
 check('normal purchase gate stays closed in all five languages', () => {
   for (const language of ['en','ko','ja','de','es']) {
     const nodes = Object.fromEntries(['monthlyUnits','monthlyTotal','annualUnits','annualTotal','monthlyCheckout','annualCheckout'].map(id => [id,node(id)]));
@@ -149,4 +177,4 @@ check('no server secrets, automatic financial writes or direct backend calls',()
   assert(!/pdl_live_apikey_[a-z0-9]+|pdl_ntfset_[a-z0-9]+|-----BEGIN .*PRIVATE KEY-----/i.test(normal+testSource+testHtml));
   assert(!/fetch\(|XMLHttpRequest|sendBeacon|console\./.test(testSource));
 });
-console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'UNLISTED_NOT_AUTHENTICATED',publicCheckout:'CLOSED_PENDING_RELEASE',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));
+console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'PAUSED_UNLISTED_NOT_AUTHENTICATED',publicCheckout:'PAUSED_PENDING_PACKAGE_AND_EXPLICIT_REOPEN_APPROVAL',futureCheckoutRegression:'IN_MEMORY_MOCK_ONLY',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));

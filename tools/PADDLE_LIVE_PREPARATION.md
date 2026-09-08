@@ -1,5 +1,30 @@
 # Paddle Live preparation — 2026-09-08
 
+## Operator checkout pause — 2026-09-09 (current state)
+
+The owner requested that checkout remain closed until the distribution package
+is complete. This section supersedes earlier statements that the unlisted USD 1
+page is open; historical verification below is retained.
+
+- Monthly and annual website checkout remain disabled. Pricing and the 1–1,000
+  Unit policy are unchanged.
+- The unlisted USD 1 page is also disabled in HTML and JavaScript. With the
+  shipped fixed pause, it does not load Paddle.js, initialize Paddle, register
+  payment click handlers or call Checkout.open. There is no query, storage,
+  clock-based or automatic reopening switch.
+- Five-language notices explain that distribution-package readiness and explicit
+  reopening approval are required. An ordinary source/deployment review is
+  required to reopen checkout; this is not an automatic scheduled task.
+- License activation, payment confirmation/recovery, existing subscriptions,
+  Paddle price/product status, webhooks and backend services are unchanged.
+- This is a WEBSITE checkout pause, not a Paddle-account-wide restriction. It
+  cannot revoke an already open checkout, cached older page or other external
+  Paddle checkout link. No subscription cancellation or refund was requested or
+  performed. Account-side price restriction, if required, needs separate action.
+- Offline pause tests use the shipped source, including preloaded mock SDK and
+  URL variations. Prior checkout-behavior tests use an explicitly enabled
+  **in-memory-only** source copy and mock Paddle; they never place real orders.
+
 ## Subsequent Live dashboard verification and Unit policy — 2026-09-09
 
 The earlier connection audit above records the initial frontend-only step; it is not the current dashboard verification result.
