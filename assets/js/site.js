@@ -248,9 +248,11 @@
     if (languageButton) languageButton.setAttribute('aria-label', t('language'));
     var titleNode = document.querySelector('main h1');
     var leadNode = document.querySelector('main .page-lead, main .hero-copy');
-    if (code !== 'en' && titleNode) document.title = titleNode.textContent.trim() + ' | ODRE PQC';
+    var pageCopy = window.ODRE_PAGE_I18N && window.ODRE_PAGE_I18N[code];
+    if (pageCopy && pageCopy.seoTitle) document.title = pageCopy.seoTitle;
+    else if (code !== 'en' && titleNode) document.title = titleNode.textContent.trim() + ' | ODRE PQC';
     else if (code === 'en') document.title = englishTitle;
-    var description = code !== 'en' && leadNode ? leadNode.textContent.trim() : null;
+    var description = pageCopy && pageCopy.seoDescription ? pageCopy.seoDescription : (code !== 'en' && leadNode ? leadNode.textContent.trim() : null);
     if (description) {
       var metaDescription = document.querySelector('meta[name="description"]'); if (metaDescription) metaDescription.setAttribute('content', description);
       var ogDescription = document.querySelector('meta[property="og:description"]'); if (ogDescription) ogDescription.setAttribute('content', description);
@@ -259,6 +261,8 @@
       var englishOgDescription = document.querySelector('meta[property="og:description"]'); if (englishOgDescription) englishOgDescription.setAttribute('content', englishDescription);
     }
     var ogTitle = document.querySelector('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', document.title);
+    var twitterTitle = document.querySelector('meta[name="twitter:title"]'); if (twitterTitle) twitterTitle.setAttribute('content', document.title);
+    var twitterDescription = document.querySelector('meta[name="twitter:description"]'); if (twitterDescription) twitterDescription.setAttribute('content', description || englishDescription);
     document.dispatchEvent(new CustomEvent('odre:language', { detail: Object.assign({ language: code }, analyticsLanguage()) }));
   }
   document.addEventListener('click', function (event) {

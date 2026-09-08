@@ -21,8 +21,8 @@ for (const [lang, hash] of Object.entries(hashes)) {
   assert.equal(createHash('sha256').update(bytes).digest('hex'), hash);
 }
 const html = read('contact/index.html');
-assert(html.includes('/assets/js/site.js?v=trial-pdf-5lang-20260909'));
-assert(html.includes('/assets/js/page-i18n.js?v=trial-pdf-5lang-20260909'));
+assert(html.includes('/assets/js/site.js?v=launch-contract-20260909'));
+assert(html.includes('/assets/js/page-i18n.js?v=launch-contract-20260909'));
 const markup = html.match(/<a\b([^>]*id="trial-guide-pdf"[^>]*)>([^<]+)<\/a>/);
 assert(markup);
 function node(attrs, textContent = '') {

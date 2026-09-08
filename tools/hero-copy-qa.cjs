@@ -61,7 +61,7 @@ assert(mobile.includes('.hero-release { grid-template-columns: repeat(2, minmax(
 assert(mobile.includes('.hero-actions .button { width: 100%; }'));
 assert(!css.match(/\.home-hero[^}]*height:\s*\d+px/));
 assert(html.includes('/assets/css/site.css?v=home-hero-20260908'));
-assert(html.includes('/assets/js/page-i18n.js?v=home-hero-install-20260908'));
+assert(html.includes('/assets/js/page-i18n.js?v=launch-contract-20260909'));
 assert.equal((html.match(/name="naver-site-verification"/g) || []).length, 1);
 assert(html.includes('href="https://pqc.odreai.com/"'));
 console.log(JSON.stringify({ result: 'PASS', languages: 5, features_per_language: 3, korean_headline: 'EXACT_MATCH', protected_request_scope: 'PRESERVED', client_tls_scope: 'PRESERVED', call_to_action_links: 3, release_links: 5, responsive_css_rules: 'PASS', browser_visual_test: 'NOT_RUN', network_requests: 0 }, null, 2));

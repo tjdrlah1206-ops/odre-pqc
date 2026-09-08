@@ -11,7 +11,7 @@ const html = read('security/index.html');
 const section = html.match(/<section class="section light" id="release-verification">([\s\S]*?)<\/section>/)[1];
 const marked = [...section.matchAll(/<a\b([^>]*data-pqc-document="[^"]+"[^>]*)>([^<]+)<\/a>/g)];
 assert.equal(marked.length, 2);
-assert(html.includes('/assets/js/site.js?v=pdf-language-20260908'));
+assert(html.includes('/assets/js/site.js?v=launch-contract-20260909'));
 const filenames = {
   en: ['Public_Technical_Whitepaper_EN', 'Product_Overview_Security_Architecture_EN'],
   ko: ['공개_기술_백서_KO', '제품_개요_및_보안_아키텍처_KO'],
