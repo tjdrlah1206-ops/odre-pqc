@@ -150,6 +150,60 @@
   window.ODRE_PAGE_I18N = { en: english };
   ['ko','ja','de','es'].forEach(function (language) { window.ODRE_PAGE_I18N[language] = Object.assign({}, english, overrides[language] || {}, (completeExtra[language] && completeExtra[language][page]) || {}, (journeyExtra[language] && journeyExtra[language][page]) || {}); });
 
+  // Trial delivery is a direct server download, not an email request.
+  // The actual download control remains disabled in HTML until an approved URL is supplied.
+  var trialDelivery = {
+    en: {
+      nav: '14-day free trial', title: '14-day free trial download.', button: 'Download 14-day free trial',
+      copy: 'Download directly from the ODRE server; no email request is required. This trial is separate from Paddle checkout and does not create recurring payments.',
+      pending: 'The download link is being prepared.', delivery: 'Direct server download (link pending)',
+      docs: 'Explore the 14-day free trial before purchase, or review current pricing, Unit rules, and purchase options.',
+      security: 'Read the operating documentation, explore the 14-day free trial, or review commercial licensing.',
+      faq: 'It is a separate product trial before paid purchase, not a Paddle payment Trial. Download directly from the ODRE server without an email request. The download link is being prepared.'
+    },
+    ko: {
+      nav: '14일 무료체험', title: '14일 무료체험 다운로드.', button: '14일 무료체험 다운로드',
+      copy: '이메일로 요청할 필요 없이 ODRE 서버에서 직접 다운로드합니다. 무료체험은 Paddle 결제와 별개이며 정기 결제가 발생하지 않습니다.',
+      pending: '다운로드 링크를 준비 중입니다.', delivery: '서버에서 직접 다운로드 (링크 준비 중)',
+      docs: '구매 전 14일 무료체험을 살펴보거나 현재 가격, Unit 기준과 구매 옵션을 확인하세요.',
+      security: '운영 문서를 읽거나, 14일 무료체험 또는 상용 라이선스를 확인하세요.',
+      faq: '유료 구매 전 별도로 제공하는 제품 무료체험이며 Paddle 결제 Trial이 아닙니다. 이메일 요청 없이 ODRE 서버에서 직접 다운로드합니다. 다운로드 링크는 준비 중입니다.'
+    },
+    ja: {
+      nav: '14日間無料トライアル', title: '14日間無料トライアルのダウンロード。', button: '14日間無料トライアルをダウンロード',
+      copy: 'メールでの申請は不要です。ODREサーバーから直接ダウンロードします。無料トライアルはPaddleの決済とは別で、継続課金は発生しません。',
+      pending: 'ダウンロードリンクを準備中です。', delivery: 'サーバーから直接ダウンロード（リンク準備中）',
+      docs: '購入前に14日間無料トライアルを確認するか、価格、Unitの基準、購入方法をご覧ください。',
+      security: '運用ドキュメント、14日間無料トライアル、商用ライセンスをご確認ください。',
+      faq: '購入前に利用する製品の無料トライアルであり、Paddleの決済Trialではありません。メールで申請せず、ODREサーバーから直接ダウンロードします。リンクは準備中です。'
+    },
+    de: {
+      nav: '14 Tage kostenlos testen', title: 'Download für die kostenlose 14-Tage-Testversion.', button: 'Kostenlose 14-Tage-Testversion herunterladen',
+      copy: 'Direkter Download vom ODRE-Server, ohne Anfrage per E-Mail. Die Testversion ist vom Paddle-Checkout getrennt und löst keine wiederkehrenden Zahlungen aus.',
+      pending: 'Der Download-Link wird vorbereitet.', delivery: 'Direkter Server-Download (Link in Vorbereitung)',
+      docs: 'Informieren Sie sich vor dem Kauf über die kostenlose 14-Tage-Testversion oder über Preise, Unit-Regeln und Kaufoptionen.',
+      security: 'Lesen Sie die Betriebsdokumentation oder informieren Sie sich über die kostenlose 14-Tage-Testversion und kommerzielle Lizenzen.',
+      faq: 'Dies ist eine separate kostenlose Produkttestversion vor dem Kauf, kein Paddle-Zahlungs-Trial. Der Download erfolgt direkt vom ODRE-Server, ohne E-Mail-Anfrage. Der Download-Link wird vorbereitet.'
+    },
+    es: {
+      nav: 'Prueba gratuita de 14 días', title: 'Descarga de la prueba gratuita de 14 días.', button: 'Descargar prueba gratuita de 14 días',
+      copy: 'Descarga directamente desde el servidor de ODRE, sin solicitarla por correo. La prueba es independiente del pago con Paddle y no genera cobros recurrentes.',
+      pending: 'Estamos preparando el enlace de descarga.', delivery: 'Descarga directa del servidor (enlace en preparación)',
+      docs: 'Consulta la prueba gratuita de 14 días antes de comprar, o revisa los precios, las reglas de Unit y las opciones de compra.',
+      security: 'Lee la documentación operativa o consulta la prueba gratuita de 14 días y las licencias comerciales.',
+      faq: 'Es una prueba gratuita del producto antes de la compra, no un Trial de pago de Paddle. Se descarga directamente desde el servidor de ODRE, sin solicitarla por correo. El enlace de descarga está en preparación.'
+    }
+  };
+  Object.keys(trialDelivery).forEach(function (language) {
+    var text = trialDelivery[language];
+    var target = window.ODRE_PAGE_I18N[language];
+    if (page === 'home') Object.assign(target, { trialCta: text.nav, requestTrial: text.nav });
+    if (page === 'pricing') Object.assign(target, { requestTrial: text.nav, trial2: text.delivery });
+    if (page === 'contact') Object.assign(target, { trialTitle: text.title, trialCopy: text.copy, trialCta: text.button, trialDownloadPending: text.pending });
+    if (page === 'docs') Object.assign(target, { nextCopy: text.docs, nextTrial: text.nav, faq3a: text.faq });
+    if (page === 'security') Object.assign(target, { nextCopy: text.security, nextTrial: text.nav });
+  });
+
   // User-approved billing policy, shared by monthly and annual purchase pages.
   if (page === 'pricing' || page === 'license') {
     var unitPolicyCopy = {
