@@ -36,7 +36,11 @@ for (const language of ['en', 'ko', 'ja', 'de', 'es']) {
   }
   for (const platform of ['Android', 'iOS', 'Web']) assert(copy.heroFeatureClientCopy.includes(platform));
   assert(copy.heroFeatureClientCopy.includes('SDK'));
-  for (const component of ['FastAPI', 'Gateway/Core', 'Windows Server 2022', 'Ubuntu 24.04 LTS']) assert(copy.heroFeatureServerCopy.includes(component));
+  for (const component of ['FastAPI', 'ODRE PQC', 'install(app)', 'Core', 'Gateway', 'Windows Server 2022', 'Ubuntu 24.04 LTS']) assert(copy.heroFeatureServerCopy.includes(component));
+  const setup = copy.heroFeatureServerCopy.toLowerCase();
+  assert(setup.indexOf('import') >= 0);
+  assert(setup.indexOf('import') < setup.indexOf('install(app)'));
+  assert(setup.indexOf('install(app)') < setup.indexOf('gateway'));
   assert(copy.heroFeatureSecurityTitle.includes('Fail-Closed'));
   assert(copy.heroFeatureSecurityCopy.includes('Protected Handler'));
   assert(copy.heroCopy.includes('HTTPS/TLS') && copy.heroCopy.includes('Gateway → Core'));
@@ -45,7 +49,8 @@ const ko = window.ODRE_PAGE_I18N.ko;
 assert.deepEqual([ko.heroClientLine, ko.heroServerLine, ko.heroSecurityLine], ['클라이언트는 그대로.', '서버 설치는 간편하게.', '보호를 검증할 수 없으면, 요청을 차단합니다.']);
 assert(ko.heroFeatureSecurityCopy.includes('실행 전에 해당 요청을 차단합니다.'));
 assert(ko.heroFeatureSecurityCopy.includes('서버 전체를 끄는 것이 아닙니다.'));
-assert(!hero.includes('install(app)'));
+assert(ko.heroFeatureServerCopy.includes('install(app)으로 Core 경계를 등록한 뒤 Gateway를 연결합니다.'));
+assert(hero.includes('install(app)'));
 
 const css = read('assets/css/site.css');
 const tablet = css.split('@media (max-width: 1023px) {')[1].split('@media (max-width: 767px) {')[0];
@@ -56,7 +61,7 @@ assert(mobile.includes('.hero-release { grid-template-columns: repeat(2, minmax(
 assert(mobile.includes('.hero-actions .button { width: 100%; }'));
 assert(!css.match(/\.home-hero[^}]*height:\s*\d+px/));
 assert(html.includes('/assets/css/site.css?v=home-hero-20260908'));
-assert(html.includes('/assets/js/page-i18n.js?v=home-hero-20260908'));
+assert(html.includes('/assets/js/page-i18n.js?v=home-hero-install-20260908'));
 assert.equal((html.match(/name="naver-site-verification"/g) || []).length, 1);
 assert(html.includes('href="https://pqc.odreai.com/"'));
 console.log(JSON.stringify({ result: 'PASS', languages: 5, features_per_language: 3, korean_headline: 'EXACT_MATCH', protected_request_scope: 'PRESERVED', client_tls_scope: 'PRESERVED', call_to_action_links: 3, release_links: 5, responsive_css_rules: 'PASS', browser_visual_test: 'NOT_RUN', network_requests: 0 }, null, 2));
