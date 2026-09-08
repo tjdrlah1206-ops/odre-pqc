@@ -12,7 +12,7 @@
     return;
   }
   try { if (sessionStorage.getItem('odre-pqc-analytics-optout') === 'true') return; } catch (error) {}
-  var paths = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/enterprise/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
+  var paths = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
   function safePath(value) { return typeof value === 'string' && paths.indexOf(value) >= 0 ? value : null; }
   var path = safePath(location.pathname);
   if (!path || !window.crypto || !window.crypto.getRandomValues) return;

@@ -20,12 +20,12 @@
   var annualCheckout = document.getElementById('annualCheckout');
   var quantityButtons = Array.prototype.slice.call(document.querySelectorAll('[data-quantity-target][data-quantity-delta]'));
   if (!units || !annualUnits) return;
-  function boundedQuantity(input) { var n = Math.max(1, Math.min(20, Number.parseInt(input.value, 10) || 1)); input.value = n; return n; }
+  function boundedQuantity(input) { var n = Math.max(1, Math.min(1000, Number.parseInt(input.value, 10) || 1)); input.value = n; return n; }
   function updateStepButtons(input) {
     var quantity = Number.parseInt(input.value, 10) || 1;
     quantityButtons.filter(function (button) { return button.dataset.quantityTarget === input.id; }).forEach(function (button) {
       var delta = Number.parseInt(button.dataset.quantityDelta, 10);
-      button.disabled = (delta < 0 && quantity <= 1) || (delta > 0 && quantity >= 20);
+      button.disabled = (delta < 0 && quantity <= 1) || (delta > 0 && quantity >= 1000);
     });
   }
   function updateTotals() {
@@ -37,7 +37,7 @@
     button.addEventListener('click', function () {
       var input = document.getElementById(button.dataset.quantityTarget);
       if (!input) return;
-      input.value = Math.max(1, Math.min(20, boundedQuantity(input) + Number.parseInt(button.dataset.quantityDelta, 10)));
+      input.value = Math.max(1, Math.min(1000, boundedQuantity(input) + Number.parseInt(button.dataset.quantityDelta, 10)));
       updateTotals();
     });
   });

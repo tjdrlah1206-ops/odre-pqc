@@ -9,7 +9,7 @@ const crypto = require('node:crypto').webcrypto;
 const root = path.resolve(__dirname, '..');
 const siteSource = fs.readFileSync(path.join(root, 'assets/js/site.js'), 'utf8');
 const trackerSource = fs.readFileSync(path.join(root, 'assets/js/analytics.js'), 'utf8');
-const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/enterprise/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
+const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
 function storage(seed = {}) {
   const map = new Map(Object.entries(seed));
   return { getItem: key => map.has(key) ? map.get(key) : null, setItem: (key, value) => map.set(key, String(value)), values: map };

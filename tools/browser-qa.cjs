@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const root = 'http://127.0.0.1:4173';
-const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/enterprise/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/privacy/', '/refund/', '/terms/'];
+const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/privacy/', '/refund/', '/terms/'];
 const viewports = [
   { name: '360', width: 360, height: 800 }, { name: '375', width: 375, height: 812 },
   { name: '390', width: 390, height: 844 }, { name: '430', width: 430, height: 900 },

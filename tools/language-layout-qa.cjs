@@ -1,7 +1,7 @@
 const { chromium } = require('playwright');
 
 const base = process.env.ODRE_QA_BASE || 'http://127.0.0.1:4173';
-const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/enterprise/', '/releases/', '/license/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
+const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/releases/', '/license/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
 const languages = ['en', 'ko', 'ja', 'de', 'es'];
 const viewports = [{ name: '1440', width: 1440, height: 1000 }, { name: '390', width: 390, height: 844 }, { name: '360', width: 360, height: 800 }];
 

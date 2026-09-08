@@ -6,8 +6,8 @@ const requirements = {
   '/product/': ['/docs/#quick-start', '/pricing/'],
   '/security/': ['/docs/', '/contact/#trial', '/pricing/'],
   '/docs/': ['/contact/#trial', '/pricing/', '/payment/register/'],
-  '/pricing/': ['/contact/#trial', '/license/?plan=monthly', '/license/?plan=annual', '/enterprise/'],
-  '/license/': ['/enterprise/', '/payment/register/', '/docs/#installation'],
+  '/pricing/': ['/contact/#trial', '/license/?plan=monthly', '/license/?plan=annual'],
+  '/license/': ['/payment/register/', '/docs/#installation'],
   '/payment/success/': ['/payment/register/', '/docs/#installation']
 };
 

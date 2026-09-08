@@ -1,5 +1,31 @@
 # Paddle Live preparation — 2026-09-08
 
+## Subsequent Live dashboard verification and Unit policy — 2026-09-09
+
+The earlier connection audit above records the initial frontend-only step; it is not the current dashboard verification result.
+
+The operator subsequently authorized direct use of the logged-in Live dashboard. Read-only dashboard inspection confirmed ODRE AI, the supplied product and three price IDs, the approved pqc.odreai.com domain, and the existing Active Platform webhook with 10 subscribed events. Live/Sandbox MCP account calls remain NOT_RUN in this session; no callable Paddle MCP tools are registered here.
+
+- Normal monthly: USD 250 per Unit, monthly recurrence, quantity 1–1,000.
+- Normal annual: USD 2,700 per Unit, annual recurrence, quantity 1–1,000.
+- Both normal prices were already correct and were not modified.
+- All three prices have no Paddle trial, automatic-location tax, and no country-specific prices.
+- The dedicated USD 1/month TEST price maximum was changed from 999,999 to **1**, saved, reopened, and confirmed. Its minimum remains 1.
+- Existing checkout discount field is disabled. No other checkout or webhook setting was changed.
+- All public quantity controls and five-language copy now use the approved 1–1,000 range for both normal plans. Unit prices do not decrease with quantity.
+- At the user's explicit request, the Enterprise page, sections/cards, menu/footer links, localized inquiry copy and sitemap entry are removed. Ordinary customer, license and technical support remain.
+- Normal public checkout remains CLOSED pending Live end-to-end verification and release approval. The USD 1 test page remains unlisted (not access-controlled), quantity one, with no actual checkout or payment performed by this agent.
+
+Existing webhook subscriptions were inspected without changing them: transaction.completed, transaction.past_due, transaction.payment_failed, subscription.activated, subscription.canceled, subscription.created, subscription.past_due, subscription.paused, subscription.resumed, subscription.updated. No secret value was logged, copied, saved or included here.
+
+### Unresolved default-payment-link gate
+
+The dashboard default payment link is currently https://pqc.odreai.com. The homepage does not initialize Paddle.js and is not an implemented transaction-payment receiver. The unlisted test page intentionally rejects query parameters and must not be substituted as a default transaction-payment link. A verified receiver and the corresponding account setting remain a release integration gate; the dashboard value was not changed to a known-incompatible route.
+
+No payment, cancellation, refund, backend secret rotation, server API, DB, Nginx, Core, business identity or bank-account change was performed. No LIVE_PRODUCTION_PASS is claimed.
+
+Verification for this subsequent website change: price regression 9 quantity cases plus both stepper boundaries PASS; Unit policy 5 languages and 12 mocked future checkout boundary cases PASS; Live checkout 23/23 PASS; analytics 26/26 PASS; homepage copy five languages PASS; PDF-language 18 initial/7 switch cases PASS; five installation PDFs retain their original hashes. Static audit: 17 HTML pages, zero broken links/metadata/shared-layout/secret findings. JavaScript syntax and diff whitespace checks PASS. These are offline tests, not a Live payment or browser visual test. Only the retired Enterprise entry was removed from sitemap.xml; robots.txt and backend files were not changed. The deleted page remains recoverable from Git history.
+
 This is a frontend configuration and offline regression change, not a completed payment or product release.
 
 - The normal purchase page now holds the user-supplied Live product, monthly/yearly price IDs and public client-side token.

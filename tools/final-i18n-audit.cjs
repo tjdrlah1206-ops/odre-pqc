@@ -3,12 +3,12 @@ const { chromium } = require('playwright');
 const base = process.env.ODRE_QA_BASE || 'http://127.0.0.1:4173';
 const routes = [
   '/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/',
-  '/company/', '/contact/', '/enterprise/', '/releases/', '/license/',
+  '/company/', '/contact/', '/releases/', '/license/',
   '/payment/', '/payment/register/', '/payment/success/', '/terms/',
   '/privacy/', '/refund/'
 ];
 const languages = ['ko', 'ja', 'de', 'es'];
-const allowed = /^(ODRE PQC|ODRE AI|FastAPI|Python|OpenSSL|ML-KEM-768|ML-DSA-65|SHA-256|Wheel|Wheel SHA-256|Official wheel|Windows|Windows Server 2022|Ubuntu 24\.04 LTS|AMD64|API|CLI|Paddle|PayPal|doctor|verify|status|install\(app\)|v0\.2\.9|Unit|Units|License ID|License Key|Offline Lease|Product|Security|Documentation|Pricing|Trust Center|Company|Download|Downloads|Installation|Enterprise|Release|Runtime|Version|Plan|1–20 Units online)$/i;
+const allowed = /^(ODRE PQC|ODRE AI|FastAPI|Python|OpenSSL|ML-KEM-768|ML-DSA-65|SHA-256|Wheel|Wheel SHA-256|Official wheel|Windows|Windows Server 2022|Ubuntu 24\.04 LTS|AMD64|API|CLI|Paddle|PayPal|doctor|verify|status|install\(app\)|v0\.2\.9|Unit|Units|License ID|License Key|Offline Lease|Product|Security|Documentation|Pricing|Trust Center|Company|Download|Downloads|Installation|Release|Runtime|Version|Plan|1–1,000 Units online)$/i;
 
 async function visibleI18n(page) {
   return page.locator('[data-i18n], [data-t], [data-x]').evaluateAll(nodes => nodes

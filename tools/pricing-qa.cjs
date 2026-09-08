@@ -50,7 +50,7 @@ vm.runInNewContext(read('assets/js/checkout.js'), {
 }, { timeout: 1000 });
 assert.equal(requestedScripts, 0); // Public purchase UI remains closed during Live verification.
 let quantityCases = 0;
-for (const [quantity, monthly, annual] of [['1', '$250', '$2,700'], ['2', '$500', '$5,400'], ['20', '$5,000', '$54,000'], ['0', '$250', '$2,700'], ['21', '$5,000', '$54,000'], ['invalid', '$250', '$2,700']]) {
+for (const [quantity, monthly, annual] of [['1', '$250', '$2,700'], ['2', '$500', '$5,400'], ['20', '$5,000', '$54,000'], ['0', '$250', '$2,700'], ['21', '$5,250', '$56,700'], ['999', '$249,750', '$2,697,300'], ['1000', '$250,000', '$2,700,000'], ['1001', '$250,000', '$2,700,000'], ['invalid', '$250', '$2,700']]) {
   nodes.monthlyUnits.value = quantity;
   nodes.annualUnits.value = quantity;
   nodes.monthlyUnits.listeners.input();
@@ -62,5 +62,15 @@ buttons.find(button => button.dataset.quantityTarget === 'monthlyUnits' && butto
 assert.equal(nodes.monthlyTotal.textContent, '$500');
 buttons.find(button => button.dataset.quantityTarget === 'annualUnits' && button.dataset.quantityDelta === '1').listeners.click();
 assert.equal(nodes.annualTotal.textContent, '$5,400');
+for (const target of ['monthlyUnits', 'annualUnits']) {
+  const minus = buttons.find(button => button.dataset.quantityTarget === target && button.dataset.quantityDelta === '-1');
+  const plus = buttons.find(button => button.dataset.quantityTarget === target && button.dataset.quantityDelta === '1');
+  nodes[target].value = '999'; nodes[target].listeners.input(); plus.listeners.click();
+  assert.equal(Number(nodes[target].value), 1000); assert.equal(plus.disabled, true);
+  plus.listeners.click(); assert.equal(Number(nodes[target].value), 1000);
+  minus.listeners.click(); assert.equal(Number(nodes[target].value), 999); assert.equal(plus.disabled, false);
+  nodes[target].value = '1'; nodes[target].listeners.input(); assert.equal(minus.disabled, true);
+  minus.listeners.click(); assert.equal(Number(nodes[target].value), 1);
+}
 assert(nodes.monthlyCheckout.disabled && nodes.annualCheckout.disabled);
 console.log(JSON.stringify({ staticPriceFiles: priceFiles.length, languagePriceCoverage: ['en', 'ko', 'ja', 'de', 'es'], quantityCases, stepButtons: 'PASS', structuredData: 'PASS', networkRequests: 0, checkoutOpened: 0, pass: true }, null, 2));

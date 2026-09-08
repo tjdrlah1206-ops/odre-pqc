@@ -47,7 +47,7 @@ check('normal Live identities and closed public gate', () => {
   assert(normal.includes('publicCheckoutEnabled: false'));
   assert(!normal.includes(testPrice));
   assert(!/test_[a-z0-9]{20,}|Environment\.set\(/.test(normal));
-  assert(read('license/index.html').includes('checkout.js?v=paddle-live-20260908'));
+  assert(read('license/index.html').includes('checkout.js?v=paddle-live-units-20260909'));
 });
 check('normal purchase gate stays closed in all five languages', () => {
   for (const language of ['en','ko','ja','de','es']) {
