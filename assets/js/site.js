@@ -205,6 +205,11 @@
     es: { whitepaper: 'ODRE_PQC_v0.2.9_Libro_Blanco_Tecnico_Publico_ES.pdf', overview: 'ODRE_PQC_v0.2.9_Descripcion_del_Producto_Arquitectura_de_Seguridad_ES.pdf' }
   };
 
+  // Trial guides are reviewed, separate PDFs in all five site languages.
+  Object.keys(publicDocuments).forEach(function (code) {
+    publicDocuments[code].trial = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_' + code.toUpperCase() + '.pdf';
+  });
+
   function applyDocumentLanguage(code) {
     var documents = publicDocuments[code] || publicDocuments.en;
     document.querySelectorAll('a[data-pqc-document]').forEach(function (link) {
@@ -213,6 +218,7 @@
       link.setAttribute('href', '/' + filename);
       link.setAttribute('hreflang', code);
       link.setAttribute('type', 'application/pdf');
+      if (link.getAttribute('data-pqc-document') === 'trial') link.setAttribute('download', filename);
     });
   }
 

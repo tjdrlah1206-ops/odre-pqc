@@ -267,7 +267,7 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     assert.ok(privacy.includes('id="analytics-privacy"')); assert.ok(privacy.includes('sessionStorage'));
     for (const title of ['First-party website statistics', '자체 홈페이지 방문 통계', '自社サイトのアクセス統計', 'Eigene Website-Statistik', 'Estadísticas propias del sitio']) assert.ok(legal.includes(title));
   });
-  await test('five installation guides and one trial guide remain untracked; four legacy references keep their registered IDs without delaying navigation', async () => {
+  await test('five installation guides and all five trial translations remain untracked; four legacy references retain their IDs', async () => {
     const env = environment({ path: '/docs/', language: 'ko-KR' }); env.start(); await flush();
     const links = [];
     for (const route of routes) {
@@ -278,8 +278,9 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     const guides = links.filter(href => /^\/ODRE_PQC_Installation_License_Activation_Guide_v1\.2\.1_(EN|KO|JA|DE|ES)\.pdf$/.test(href));
     assert.equal(guides.length, 5);
     assert.equal(new Set(guides).size, 5);
-    const trialGuides = links.filter(href => href === '/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_KO.pdf');
-    assert.equal(trialGuides.length, 1);
+    const trialFallbacks = links.filter(href => href === '/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_EN.pdf');
+    assert.equal(trialFallbacks.length, 1);
+    const trialGuides = ['KO','EN','JA','ES','DE'].map(language => `/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_${language}.pdf`);
     for (const href of guides) assert.equal(env.pdfClick(href).defaultPrevented, false);
     for (const href of trialGuides) assert.equal(env.pdfClick(href).defaultPrevented, false);
     assert.equal(env.beacons.length, 0, 'new guides must not masquerade as registered v0.2.9 whitepapers');

@@ -155,7 +155,7 @@
   var trialDelivery = {
     en: {
       nav: '14-day free trial', title: '14-day free trial download.', button: 'Download 14-day free trial',
-      pdf: 'Download trial guide (Korean PDF)',
+      pdf: 'Download trial guide PDF',
       pending: 'The download link is being prepared.', delivery: 'Direct server download (link pending)',
       docs: 'Explore the 14-day free trial before purchase, or review current pricing, Unit rules, and purchase options.',
       security: 'Read the operating documentation, explore the 14-day free trial, or review commercial licensing.',
@@ -171,7 +171,7 @@
     },
     ja: {
       nav: '14日間無料トライアル', title: '14日間無料トライアルのダウンロード。', button: '14日間無料トライアルをダウンロード',
-      pdf: 'トライアルガイドをダウンロード（韓国語PDF）',
+      pdf: 'トライアルガイドPDFをダウンロード',
       pending: 'ダウンロードリンクを準備中です。', delivery: 'サーバーから直接ダウンロード（リンク準備中）',
       docs: '購入前に14日間無料トライアルを確認するか、価格、Unitの基準、購入方法をご覧ください。',
       security: '運用ドキュメント、14日間無料トライアル、商用ライセンスをご確認ください。',
@@ -179,7 +179,7 @@
     },
     de: {
       nav: '14 Tage kostenlos testen', title: 'Download für die kostenlose 14-Tage-Testversion.', button: 'Kostenlose 14-Tage-Testversion herunterladen',
-      pdf: 'Testleitfaden herunterladen (koreanisches PDF)',
+      pdf: 'Testleitfaden als PDF herunterladen',
       pending: 'Der Download-Link wird vorbereitet.', delivery: 'Direkter Server-Download (Link in Vorbereitung)',
       docs: 'Informieren Sie sich vor dem Kauf über die kostenlose 14-Tage-Testversion oder über Preise, Unit-Regeln und Kaufoptionen.',
       security: 'Lesen Sie die Betriebsdokumentation oder informieren Sie sich über die kostenlose 14-Tage-Testversion und kommerzielle Lizenzen.',
@@ -187,7 +187,7 @@
     },
     es: {
       nav: 'Prueba gratuita de 14 días', title: 'Descarga de la prueba gratuita de 14 días.', button: 'Descargar prueba gratuita de 14 días',
-      pdf: 'Descargar guía de prueba (PDF en coreano)',
+      pdf: 'Descargar guía de prueba en PDF',
       pending: 'Estamos preparando el enlace de descarga.', delivery: 'Descarga directa del servidor (enlace en preparación)',
       docs: 'Consulta la prueba gratuita de 14 días antes de comprar, o revisa los precios, las reglas de Unit y las opciones de compra.',
       security: 'Lee la documentación operativa o consulta la prueba gratuita de 14 días y las licencias comerciales.',
