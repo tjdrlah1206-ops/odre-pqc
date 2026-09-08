@@ -34,14 +34,14 @@ const { chromium } = require('playwright');
     const monthlyPlus = page.locator('[data-quantity-target="monthlyUnits"][data-quantity-delta="1"]');
     if (!await monthlyMinus.isDisabled()) failures.push(item.name + ' monthly minus enabled below minimum');
     await monthlyPlus.click();
-    if (await page.locator('#monthlyUnits').inputValue() !== '2' || await page.locator('#monthlyTotal').textContent() !== '$240') failures.push(item.name + ' monthly plus or total failed');
+    if (await page.locator('#monthlyUnits').inputValue() !== '2' || await page.locator('#monthlyTotal').textContent() !== '$500') failures.push(item.name + ' monthly plus or total failed');
     await monthlyMinus.click();
-    if (await page.locator('#monthlyUnits').inputValue() !== '1' || await page.locator('#monthlyTotal').textContent() !== '$120') failures.push(item.name + ' monthly minus or total failed');
+    if (await page.locator('#monthlyUnits').inputValue() !== '1' || await page.locator('#monthlyTotal').textContent() !== '$250') failures.push(item.name + ' monthly minus or total failed');
     await page.locator('#monthlyUnits').fill('20');
     if (!await monthlyPlus.isDisabled()) failures.push(item.name + ' monthly plus enabled above maximum');
     const annualPlus = page.locator('[data-quantity-target="annualUnits"][data-quantity-delta="1"]');
     await annualPlus.click();
-    if (await page.locator('#annualUnits').inputValue() !== '2' || await page.locator('#annualTotal').textContent() !== '$2,600') failures.push(item.name + ' annual plus or total failed');
+    if (await page.locator('#annualUnits').inputValue() !== '2' || await page.locator('#annualTotal').textContent() !== '$5,400') failures.push(item.name + ' annual plus or total failed');
     await context.close();
 
     context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US' });

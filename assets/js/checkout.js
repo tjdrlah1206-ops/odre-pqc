@@ -26,8 +26,8 @@
     });
   }
   function updateTotals() {
-    total.textContent = '$' + (boundedQuantity(units) * 120).toLocaleString('en-US');
-    annualTotal.textContent = '$' + (boundedQuantity(annualUnits) * 1300).toLocaleString('en-US');
+    total.textContent = '$' + (boundedQuantity(units) * 250).toLocaleString('en-US');
+    annualTotal.textContent = '$' + (boundedQuantity(annualUnits) * 2700).toLocaleString('en-US');
     updateStepButtons(units); updateStepButtons(annualUnits);
   }
   quantityButtons.forEach(function (button) {
