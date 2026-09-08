@@ -4,11 +4,26 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const contact = read('contact/index.html');
 const section = contact.match(/<section\b[^>]*id="trial"[^>]*>([\s\S]*?)<\/section>/)[1];
-assert(!/mailto:|href=|onclick=|formaction=|<form\b/.test(section));
+assert(!section.includes('data-i18n="trialCopy"'));
+assert(!read('assets/js/page-i18n.js').includes('이메일로 요청할 필요 없이 ODRE 서버에서 직접 다운로드합니다.'));
+assert(!/mailto:|onclick=|formaction=|<form\b/.test(section));
+assert(!contact.includes('data-i18n="sales"'));
+assert(!contact.includes('ODRE%20PQC%20Sales'));
+assert.equal((contact.match(/<article class="card">/g) || []).length, 4);
+const pdfName = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_KO.pdf';
+const links = [...section.matchAll(/<a\b([^>]*)>([^<]*)<\/a>/g)];
+assert.equal(links.length, 1);
+for (const value of ['id="trial-guide-pdf"', 'href="/' + pdfName + '"', 'download="' + pdfName + '"', 'hreflang="ko"', 'type="application/pdf"']) assert(links[0][1].includes(value));
+assert(section.includes('<div class="page-actions"><button'));
+assert(section.indexOf('id="trial-guide-pdf"') > section.indexOf('id="trial-download"'));
+const pdf = fs.readFileSync(path.join(root, pdfName));
+assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
+assert.equal(createHash('sha256').update(pdf).digest('hex'), 'f2732a68e84260c7bd35f2c292cc2cbb4b83bb8220acc00bda2ca9b7af9e4217');
 const buttons = [...section.matchAll(/<button\b([^>]*)>([^<]*)<\/button>/g)];
 assert.equal(buttons.length, 1);
 for (const value of ['id="trial-download"', 'type="button"', ' disabled ', 'aria-disabled="true"', 'aria-describedby="trial-download-status"']) assert(buttons[0][1].includes(value));
@@ -18,7 +33,7 @@ const css = read('assets/css/site.css');
 assert(css.includes('.button:disabled'));
 const keys = {
   home: ['trialCta', 'requestTrial'], pricing: ['requestTrial', 'trial2'],
-  contact: ['trialTitle', 'trialCopy', 'trialCta', 'trialDownloadPending'],
+  contact: ['trialTitle', 'trialCta', 'trialPdf', 'trialDownloadPending'],
   docs: ['nextCopy', 'nextTrial', 'faq3a'], security: ['nextCopy', 'nextTrial']
 };
 for (const [page, file] of [['home', 'index.html'], ['pricing', 'pricing/index.html'], ['contact', 'contact/index.html'], ['docs', 'docs/index.html'], ['security', 'security/index.html']]) {
@@ -34,6 +49,8 @@ for (const [page, file] of [['home', 'index.html'], ['pricing', 'pricing/index.h
       if (language !== 'en') assert.notEqual(copy[key], window.ODRE_PAGE_I18N.en[key]);
     }
     if (page === 'contact') {
+      assert(!Object.hasOwn(copy, 'trialCopy'), `Removed trial description returned in ${language}`);
+      assert(/PDF/.test(copy.trialPdf));
       assert(!/Request|요청|依頼|anfragen|Solicitar/i.test(copy.trialCta));
       assert(/download|다운로드|ダウンロード|herunterladen|descargar/i.test(copy.trialCta));
     }

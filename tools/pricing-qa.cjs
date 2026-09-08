@@ -18,6 +18,20 @@ const home = read('index.html');
 const schema = JSON.parse(home.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 const product = Array.isArray(schema) ? schema.find(item => item.offers) : schema;
 assert.deepEqual(product.offers.map(offer => [offer.price, offer.priceCurrency]), [['250', 'USD'], ['2700', 'USD']]);
+const monthlyPrice = Number(product.offers[0].price), annualPrice = Number(product.offers[1].price);
+assert.equal(monthlyPrice * 12 - annualPrice, 300);
+assert.equal((monthlyPrice * 12 - annualPrice) * 100, monthlyPrice * 12 * 10);
+const licenseHtml = read('license/index.html');
+assert.equal((licenseHtml.match(/data-i18n="annualSavings"/g) || []).length, 1);
+assert(licenseHtml.indexOf('data-i18n="annualSavings"') > licenseHtml.indexOf('data-i18n="annualCopy"'));
+const translatedNodes = [...licenseHtml.matchAll(/data-i18n="([^"]+)"[^>]*>([^<]*)/g)].map(m => ({ getAttribute: () => m[1], textContent: m[2] }));
+const translatedWindow = {};
+vm.runInNewContext(read('assets/js/page-i18n.js'), { window: translatedWindow, document: { body: { dataset: { page: 'license' } }, querySelectorAll: () => translatedNodes } }, { timeout: 1000 });
+for (const language of ['en', 'ko', 'ja', 'de', 'es']) {
+  const savings = translatedWindow.ODRE_PAGE_I18N[language].annualSavings;
+  assert(/10\s*%/.test(savings) && /12/.test(savings) && /300/.test(savings), 'Annual savings copy: ' + language);
+  if (language !== 'en') assert.notEqual(savings, translatedWindow.ODRE_PAGE_I18N.en.annualSavings);
+}
 assert.equal((read('terms/index.html').match(/USD 250 per Unit per month/g) || []).length, 2);
 assert.equal((read('terms/index.html').match(/USD 2,700 per Unit per year/g) || []).length, 2);
 const translations = read('legal.js');
