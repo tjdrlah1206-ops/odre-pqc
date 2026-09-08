@@ -116,14 +116,21 @@ fs.mkdirSync(out, { recursive: true });
       await loaded(pdfPage, origin + route);
       const links = pdfPage.locator('a[href$=".pdf"]'); const count = await links.count();
       for (let index=0; index<count; index++) {
+        const href=await links.nth(index).getAttribute('href');
+        const isNewGuide=/^\/ODRE_PQC_Installation_License_Activation_Guide_v1\.2\.1_(EN|KO|JA|DE|ES)\.pdf$/.test(href);
         const before=downloads.length; await links.nth(index).click();
+        if (isNewGuide) {
+          await pdfPage.waitForTimeout(100);
+          assert.equal(downloads.length,before,'new guides have no approved server analytics ID');
+          continue;
+        }
         for (let wait=0; wait<40 && downloads.length===before; wait++) await pdfPage.waitForTimeout(50);
         assert.equal(downloads.length,before+1, 'one event for each real PDF activation');
         assert.equal(downloads.at(-1).path,route); assert.equal(downloads.at(-1).rendered_language,'ko');
       }
     }
-    assert.equal(downloads.length,14); assert.equal(new Set(downloads.map(item=>item.pdf_id)).size,10);
-    assert.equal(new Set(downloads.map(item=>item.event_id)).size,14);
+    assert.equal(downloads.length,4); assert.equal(new Set(downloads.map(item=>item.pdf_id)).size,2);
+    assert.equal(new Set(downloads.map(item=>item.event_id)).size,4);
     await pdfContext.close();
     await new Promise(resolve => setTimeout(resolve, 200));
     assert.deepEqual(errors, [], 'no browser page errors'); assert.deepEqual(findings, [], 'no layout findings');

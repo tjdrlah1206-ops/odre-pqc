@@ -54,13 +54,20 @@ analytics access/error logs.
 
 ## Public PDF clicks
 
-The 14 existing PDF anchors reference ten v0.2.9 public documents: overview/
-security architecture and technical whitepaper, each in EN/KO/JA/DE/ES. A trusted
-click or middle-button activation of an exact same-origin allowlisted pathname
+The download section now links five v1.2.1 installation/license activation guides
+in EN/KO/JA/DE/ES. Their original PDF bytes are published unchanged. These five
+links are not counted until matching document IDs are approved in the server
+registry; do not map them to old whitepaper IDs or assume new IDs are accepted.
+No server or analytics runtime configuration is changed by this PDF update.
+
+Four links on the security, trust and releases pages still reference the existing
+English v0.2.9 overview/security architecture and technical whitepaper. The ten
+original versioned documents and their existing analytics allowlist are retained.
+A trusted click or middle-button activation of an exact allowlisted pathname
 emits one `download-click` event. Keyboard Enter and touch use the normal click
 event. Right-click/context-menu actions, scripted clicks, external links and the
 `/docs/#downloads` menu shortcut are not counted. Navigation is never cancelled
-or delayed; PDFs and their links are unchanged.
+or delayed, including for the untracked installation guides.
 
 The payload contains random event/session/pageview/visitor IDs, source pathname,
 fixed versioned PDF ID, coarse device and current screen language. Never send
