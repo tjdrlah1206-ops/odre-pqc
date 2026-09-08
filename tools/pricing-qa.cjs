@@ -48,7 +48,7 @@ vm.runInNewContext(read('assets/js/checkout.js'), {
   document, URLSearchParams, location: { search: '', assign: unexpected },
   window: { alert: unexpected, setTimeout: unexpected }, console
 }, { timeout: 1000 });
-assert.equal(requestedScripts, 1); // Captured only; never loaded.
+assert.equal(requestedScripts, 0); // Public purchase UI remains closed during Live verification.
 let quantityCases = 0;
 for (const [quantity, monthly, annual] of [['1', '$250', '$2,700'], ['2', '$500', '$5,400'], ['20', '$5,000', '$54,000'], ['0', '$250', '$2,700'], ['21', '$5,000', '$54,000'], ['invalid', '$250', '$2,700']]) {
   nodes.monthlyUnits.value = quantity;

@@ -1,12 +1,15 @@
 (function () {
   'use strict';
   var PADDLE_CHECKOUT = Object.freeze({
-    environment: 'sandbox',
-    publicCheckoutEnabled: true,
-    clientToken: 'test_aea926287a8b0b55a8409ff49fb',
+    environment: 'production',
+    // Keep the public purchase UI closed until the separate Live E2E and release gates are approved.
+    // This client-side switch is not an authorization boundary for Paddle prices.
+    publicCheckoutEnabled: false,
+    productId: 'pro_01m1p28azxeewd9syewtj13f58',
+    clientToken: 'live_92a112a9e75e51a31ebe4862254',
     priceIds: Object.freeze({
-      monthly: 'pri_01m1p5ygmnxy4h6zb69c8jp5yh',
-      annual: 'pri_01m1p6051n2ja1bej5m4nc71yy'
+      monthly: 'pri_01m1p2dqq1xv8em7tgv81cwkms',
+      annual: 'pri_01m1p2gh8th4460tab4m0v2vyg'
     })
   });
   var units = document.getElementById('monthlyUnits');
@@ -41,12 +44,12 @@
   units.addEventListener('input', updateTotals); units.addEventListener('change', updateTotals); annualUnits.addEventListener('input', updateTotals); annualUnits.addEventListener('change', updateTotals); updateTotals();
   var activeCheckout = { plan: 'monthly', units: 1 };
   var paddleReady = false;
-  var sandboxLabels = {
-    en: { title: 'Sandbox checkout is enabled for testing.', copy: 'Test transactions only. No real charge will be made.', monthly: 'Monthly sandbox checkout', annual: 'Annual sandbox checkout' },
-    ko: { title: '테스트용 샌드박스 결제가 활성화되었습니다.', copy: '테스트 거래만 생성되며 실제 요금은 청구되지 않습니다.', monthly: '월간 샌드박스 결제', annual: '연간 샌드박스 결제' },
-    ja: { title: 'テスト用サンドボックス決済が有効です。', copy: 'テスト取引のみで、実際の請求は発生しません。', monthly: '月間サンドボックス決済', annual: '年間サンドボックス決済' },
-    de: { title: 'Der Sandbox-Checkout ist zum Testen aktiviert.', copy: 'Nur Testtransaktionen; es erfolgt keine echte Belastung.', monthly: 'Monatlicher Sandbox-Checkout', annual: 'Jährlicher Sandbox-Checkout' },
-    es: { title: 'El pago sandbox está habilitado para pruebas.', copy: 'Solo transacciones de prueba; no se realizará ningún cargo real.', monthly: 'Pago sandbox mensual', annual: 'Pago sandbox anual' }
+  var checkoutLabels = {
+    en: { pendingTitle: 'Live purchase preparation is in progress.', pendingCopy: 'Public checkout remains closed pending Live end-to-end verification and release approval. No order is created on this page.', readyTitle: 'Live checkout is available.', readyCopy: 'This is a real recurring subscription. Paddle calculates applicable taxes at checkout.', monthly: 'Monthly checkout', annual: 'Annual checkout' },
+    ko: { pendingTitle: 'Live 결제와 제품 출시를 준비하고 있습니다.', pendingCopy: 'Live 전체 흐름 검증과 출시 승인 전까지 일반 고객 결제는 열지 않습니다. 현재 이 페이지에서는 주문을 생성하지 않습니다.', readyTitle: 'Live 결제를 이용할 수 있습니다.', readyCopy: '실제 요금이 청구되는 정기구독입니다. 적용 세금은 Paddle 결제창에서 계산됩니다.', monthly: '월간 결제', annual: '연간 결제' },
+    ja: { pendingTitle: '本番決済と製品リリースを準備中です。', pendingCopy: '本番環境での一連の検証とリリース承認が完了するまで、一般向け決済は停止しています。このページでは現在、注文は作成されません。', readyTitle: '本番決済をご利用いただけます。', readyCopy: '実際に請求される継続課金です。適用される税額はPaddleの決済画面で計算されます。', monthly: '月間プランの決済', annual: '年間プランの決済' },
+    de: { pendingTitle: 'Live-Zahlungen und Produktfreigabe werden vorbereitet.', pendingCopy: 'Der öffentliche Checkout bleibt bis zur Live-End-to-End-Prüfung und Freigabe geschlossen. Auf dieser Seite wird derzeit keine Bestellung erstellt.', readyTitle: 'Live-Checkout ist verfügbar.', readyCopy: 'Dies ist ein echtes, wiederkehrendes Abonnement. Paddle berechnet anfallende Steuern im Checkout.', monthly: 'Monatliches Abonnement bezahlen', annual: 'Jährliches Abonnement bezahlen' },
+    es: { pendingTitle: 'Estamos preparando los pagos reales y el lanzamiento.', pendingCopy: 'El pago público permanece cerrado hasta completar la verificación integral en Live y aprobar el lanzamiento. Esta página no crea pedidos actualmente.', readyTitle: 'El pago real está disponible.', readyCopy: 'Es una suscripción recurrente con cargos reales. Paddle calcula los impuestos aplicables al pagar.', monthly: 'Pagar suscripción mensual', annual: 'Pagar suscripción anual' }
   };
   function setCheckoutEnabled(enabled) {
     [monthlyCheckout, annualCheckout].forEach(function (button) {
@@ -54,13 +57,12 @@
       button.setAttribute('aria-disabled', String(!enabled));
     });
   }
-  function applySandboxLabels() {
-    if (!paddleReady || PADDLE_CHECKOUT.environment !== 'sandbox') return;
-    var labels = sandboxLabels[document.documentElement.lang] || sandboxLabels.en;
+  function applyCheckoutLabels() {
+    var labels = checkoutLabels[document.documentElement.lang] || checkoutLabels.en;
     var title = document.querySelector('[data-i18n="availabilityTitle"]');
     var copy = document.querySelector('[data-i18n="availabilityCopy"]');
-    if (title) title.textContent = labels.title;
-    if (copy) copy.textContent = labels.copy;
+    if (title) title.textContent = paddleReady ? labels.readyTitle : labels.pendingTitle;
+    if (copy) copy.textContent = paddleReady ? labels.readyCopy : labels.pendingCopy;
     monthlyCheckout.textContent = labels.monthly;
     annualCheckout.textContent = labels.annual;
   }
@@ -73,16 +75,17 @@
   function initializePaddle() {
     try {
       if (!PADDLE_CHECKOUT.publicCheckoutEnabled || !window.Paddle) return;
-      if (['sandbox', 'live'].indexOf(PADDLE_CHECKOUT.environment) < 0) throw new Error('Unsupported Paddle environment');
-      window.Paddle.Environment.set(PADDLE_CHECKOUT.environment);
+      if (PADDLE_CHECKOUT.environment !== 'production' || !/^live_[a-z0-9]+$/.test(PADDLE_CHECKOUT.clientToken)) throw new Error('Invalid Live configuration');
+      // Paddle.js defaults to production. Do not pass the unsupported value "live".
       window.Paddle.Initialize({ token: PADDLE_CHECKOUT.clientToken, eventCallback: handlePaddleEvent });
       paddleReady = true;
       setCheckoutEnabled(true);
-      applySandboxLabels();
-    } catch (error) { console.error('Checkout initialization failed'); }
+      applyCheckoutLabels();
+    } catch (error) { paddleReady = false; setCheckoutEnabled(false); applyCheckoutLabels(); console.error('Checkout initialization failed'); }
   }
   function loadPaddle() {
     setCheckoutEnabled(false);
+    applyCheckoutLabels();
     if (!PADDLE_CHECKOUT.publicCheckoutEnabled) return;
     if (window.Paddle) { initializePaddle(); return; }
     var script = document.createElement('script');
@@ -105,7 +108,7 @@
   }
   monthlyCheckout.addEventListener('click', function () { openCheckout('monthly'); });
   annualCheckout.addEventListener('click', function () { openCheckout('annual'); });
-  document.addEventListener('odre:language', applySandboxLabels);
+  document.addEventListener('odre:language', applyCheckoutLabels);
   loadPaddle();
   var requested = new URLSearchParams(location.search).get('plan');
   if (requested === 'annual') annualUnits.focus(); else if (requested === 'monthly') units.focus();
