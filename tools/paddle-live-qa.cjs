@@ -32,9 +32,9 @@ function fixture(options = {}) {
     location: { protocol: 'https:', hostname: 'pqc.odreai.com', search: '', hash: '', ...options.location },
     window: options.sdkAlreadyLoaded ? { Paddle: paddle } : {}, console: { log: (...args) => logs.push(args), error: (...args) => logs.push(args) }
   };
-  // All active checkout tests exercise the exact shipped source with mock Paddle.
-  // Only the retained pause regression uses an explicitly disabled in-memory copy.
-  const source = options.pausedCopy ? testSource.replace('var TEST_CHECKOUT_ENABLED = true;', 'var TEST_CHECKOUT_ENABLED = false;') : testSource;
+  // The shipped source exercises the pause. Active checkout behavior is retained
+  // only as an explicitly enabled in-memory regression with mock Paddle.
+  const source = options.currentDeployment ? testSource : testSource.replace('var TEST_CHECKOUT_ENABLED = false;', 'var TEST_CHECKOUT_ENABLED = true;');
   vm.runInNewContext(source, context, { timeout: 1000 });
   return { nodes, scripts, opens, initializations, logs,
     acknowledge(value = true) { nodes.realChargeAcknowledged.checked = value; nodes.realChargeAcknowledged.listeners.change?.(); },
@@ -52,21 +52,22 @@ check('normal Live identities and closed public gate', () => {
   assert(!/test_[a-z0-9]{20,}|Environment\.set\(/.test(normal));
   assert(read('license/index.html').includes('checkout.js?v=checkout-paused-20260909'));
 });
-check('shipped test-only reopening retains disabled no-script controls', () => {
-  assert(testSource.includes('var TEST_CHECKOUT_ENABLED = true;'));
+check('shipped test checkout is paused with disabled no-script controls', () => {
+  assert(testSource.includes('var TEST_CHECKOUT_ENABLED = false;'));
   assert(testHtml.includes('type="checkbox" disabled'));
-  assert(testHtml.includes('운영자용 $1 시험 결제만 다시 열었습니다.'));
-  assert(testHtml.includes('정식 월간·연간 판매 결제는 계속 중단'));
-  assert(testHtml.includes('추가 결제가 필요한지 먼저 확인'));
-  assert(testHtml.includes('checkout.js?v=live-test-resumed-20260910'));
+  assert(testHtml.includes('$1 Live 시험 결제를 종료했습니다.'));
+  assert(testHtml.includes('승인된 Live E2E 검증을 완료'));
+  assert(testHtml.includes('정식 월간·연간 판매 결제도 계속 중단'));
+  assert(testHtml.includes('기존 시험 구독은 이 페이지에서 자동 취소되지 않습니다.'));
+  assert(testHtml.includes('checkout.js?v=live-test-closed-20260910'));
   assert(!/setTimeout|setInterval|new Date|Date\.now|localStorage|sessionStorage/.test(testSource));
 });
 for (const sdkAlreadyLoaded of [false, true]) {
   for (const search of ['', '?enabled=true&checkout=true', '?_ptxn=txn_untrusted']) {
-    check(`in-memory pause regression prevents SDK load/init/open: preloaded=${sdkAlreadyLoaded}, query=${search}`, () => {
-      const f = fixture({ pausedCopy: true, sdkAlreadyLoaded, location: { search } });
+    check(`shipped pause prevents SDK load/init/open: preloaded=${sdkAlreadyLoaded}, query=${search}`, () => {
+      const f = fixture({ currentDeployment: true, sdkAlreadyLoaded, location: { search } });
       assert(f.nodes.liveTestCheckout.disabled && f.nodes.realChargeAcknowledged.disabled);
-      assert(f.nodes.testStatus.textContent.includes('배포패키지'));
+      assert(f.nodes.testStatus.textContent.includes('Live E2E 검증을 완료'));
       f.acknowledge(); f.click(); f.click();
       // Even changing the HTML control state does not install a payment handler.
       f.nodes.liveTestCheckout.disabled = false;
@@ -187,4 +188,4 @@ check('no server secrets, automatic financial writes or direct backend calls',()
   assert(!/pdl_live_apikey_[a-z0-9]+|pdl_ntfset_[a-z0-9]+|-----BEGIN .*PRIVATE KEY-----/i.test(normal+testSource+testHtml));
   assert(!/fetch\(|XMLHttpRequest|sendBeacon|console\./.test(testSource));
 });
-console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'ENABLED_UNLISTED_NOT_AUTHENTICATED',publicCheckout:'PAUSED_PENDING_PACKAGE_AND_EXPLICIT_REOPEN_APPROVAL',activeCheckoutRegression:'EXACT_SHIPPED_SOURCE_MOCK_PADDLE',pauseRegression:'DISABLED_IN_MEMORY_COPY_MOCK_PADDLE',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));
+console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'PAUSED_AFTER_APPROVED_LIVE_E2E',publicCheckout:'PAUSED_PENDING_RELEASE_APPROVAL',activeCheckoutRegression:'ENABLED_IN_MEMORY_COPY_MOCK_PADDLE',pauseRegression:'EXACT_SHIPPED_SOURCE',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));
