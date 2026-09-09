@@ -40,7 +40,13 @@ button { cursor: pointer; }
 .skip-link:focus { transform: translateY(0); }
 .container { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; }
 .narrow { width: min(calc(100% - 48px), 860px); margin-inline: auto; }
-.site-header-placeholder { height: var(--header); }
+.site-header-placeholder { min-height: var(--header); }
+/* Static navigation works before enhancement and when JavaScript is unavailable.
+   site.js replaces its contents with the existing interactive navigation. */
+.static-site-header { border-bottom: 1px solid var(--line); background: var(--navy-950); }
+.static-primary-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; padding-block: 12px; font-size: .875rem; }
+.static-primary-nav a { display: inline-flex; align-items: center; min-height: 44px; }
+.static-primary-nav a:hover { color: var(--cyan-soft); }
 
 .site-header { position: fixed; inset: 0 0 auto; z-index: 100; height: var(--header); border-bottom: 1px solid var(--line); background: rgba(6, 16, 24, .92); backdrop-filter: blur(18px); transition: height .2s ease, background .2s ease; }
 .site-header.is-scrolled { background: rgba(6, 16, 24, .98); }
