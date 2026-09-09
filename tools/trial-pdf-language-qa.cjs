@@ -8,20 +8,20 @@ const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const hashes = {
-  ko: 'f2732a68e84260c7bd35f2c292cc2cbb4b83bb8220acc00bda2ca9b7af9e4217',
-  en: '9b291e5d6d0ec9340d74bac1b9f15f316ffc1c3aefbb36098aea13ad57a36448',
-  ja: 'd6e9c46bb696d7943f4f7bc67fb1ffb2d489db65a4feea090a5c838848462862',
-  es: 'd03a68b7f007460f3f5b7773c31e504885b5cc912d8d57515598cf277d69f2c1',
-  de: 'eb0a08f2af6fb36771c3404b7dfcdc9dec62e021762c03adf047f6939034303e'
+  ko: '0b06981b5c64ed836cf055d8fd6fd3f9f26c569bbbee484b278f0d21a7d3bbab',
+  en: 'bdfedd21e7b7207b25090647e1ea10aa49efcf32d7d4c2de6584401356dbd301',
+  ja: 'df85a2c8aef972fa22f291bc49dd11d6ca9137440c6e03dca2394b96427ae34d',
+  es: '599d1b86062cd89243ef791f22ca1e34f6854228a12a4fccf8f41e800cb59806',
+  de: 'cca8f4fcc3da32b6a66c28da80b2a7c6b8206a67c6d78a4b3ce682aa946534b6'
 };
-const filename = lang => `ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_${lang.toUpperCase()}.pdf`;
+const filename = lang => `ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_${lang.toUpperCase()}.pdf`;
 for (const [lang, hash] of Object.entries(hashes)) {
   const bytes = fs.readFileSync(path.join(root, filename(lang)));
   assert.equal(bytes.subarray(0, 5).toString('ascii'), '%PDF-');
   assert.equal(createHash('sha256').update(bytes).digest('hex'), hash);
 }
 const html = read('contact/index.html');
-assert(html.includes('/assets/js/site.js?v=launch-contract-20260909'));
+assert(html.includes('/assets/js/site.js?v=trial-rc2-20260909'));
 assert(html.includes('/assets/js/page-i18n.js?v=launch-contract-20260909'));
 const markup = html.match(/<a\b([^>]*id="trial-guide-pdf"[^>]*)>([^<]+)<\/a>/);
 assert(markup);

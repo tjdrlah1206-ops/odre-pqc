@@ -207,7 +207,7 @@
 
   // Trial guides are reviewed, separate PDFs in all five site languages.
   Object.keys(publicDocuments).forEach(function (code) {
-    publicDocuments[code].trial = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_' + code.toUpperCase() + '.pdf';
+    publicDocuments[code].trial = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_' + code.toUpperCase() + '.pdf';
   });
 
   function applyDocumentLanguage(code) {

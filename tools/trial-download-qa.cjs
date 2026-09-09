@@ -15,7 +15,7 @@ assert(!/mailto:|onclick=|formaction=|<form\b/.test(section));
 assert(!contact.includes('data-i18n="sales"'));
 assert(!contact.includes('ODRE%20PQC%20Sales'));
 assert.equal((contact.match(/<article class="card">/g) || []).length, 4);
-const pdfName = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_EN.pdf';
+const pdfName = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_EN.pdf';
 const links = [...section.matchAll(/<a\b([^>]*)>([^<]*)<\/a>/g)];
 assert.equal(links.length, 1);
 for (const value of ['id="trial-guide-pdf"', 'data-pqc-document="trial"', 'href="/' + pdfName + '"', 'download="' + pdfName + '"', 'hreflang="en"', 'type="application/pdf"']) assert(links[0][1].includes(value));
@@ -24,7 +24,7 @@ assert(section.indexOf('id="trial-guide-pdf"') > section.indexOf('id="trial-down
 const pdf = fs.readFileSync(path.join(root, pdfName));
 assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
 const koreanPdf = fs.readFileSync(path.join(root, pdfName.replace('_EN.pdf', '_KO.pdf')));
-assert.equal(createHash('sha256').update(koreanPdf).digest('hex'), 'f2732a68e84260c7bd35f2c292cc2cbb4b83bb8220acc00bda2ca9b7af9e4217');
+assert.equal(createHash('sha256').update(koreanPdf).digest('hex'), '0b06981b5c64ed836cf055d8fd6fd3f9f26c569bbbee484b278f0d21a7d3bbab');
 const buttons = [...section.matchAll(/<button\b([^>]*)>([^<]*)<\/button>/g)];
 assert.equal(buttons.length, 1);
 for (const value of ['id="trial-download"', 'type="button"', ' disabled ', 'aria-disabled="true"', 'aria-describedby="trial-download-status"']) assert(buttons[0][1].includes(value));

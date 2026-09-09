@@ -278,9 +278,9 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     const guides = links.filter(href => /^\/ODRE_PQC_Installation_License_Activation_Guide_v1\.2\.1_(EN|KO|JA|DE|ES)\.pdf$/.test(href));
     assert.equal(guides.length, 5);
     assert.equal(new Set(guides).size, 5);
-    const trialFallbacks = links.filter(href => href === '/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_EN.pdf');
+    const trialFallbacks = links.filter(href => href === '/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_EN.pdf');
     assert.equal(trialFallbacks.length, 1);
-    const trialGuides = ['KO','EN','JA','ES','DE'].map(language => `/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC1_${language}.pdf`);
+    const trialGuides = ['KO','EN','JA','ES','DE'].map(language => `/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_${language}.pdf`);
     for (const href of guides) assert.equal(env.pdfClick(href).defaultPrevented, false);
     for (const href of trialGuides) assert.equal(env.pdfClick(href).defaultPrevented, false);
     assert.equal(env.beacons.length, 0, 'new guides must not masquerade as registered v0.2.9 whitepapers');
