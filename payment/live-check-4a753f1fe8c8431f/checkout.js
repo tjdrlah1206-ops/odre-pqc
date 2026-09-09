@@ -1,7 +1,8 @@
 (function () {
   'use strict';
-  // Operator pause: reopening requires a reviewed source change, never a URL flag.
-  var TEST_CHECKOUT_ENABLED = false;
+  // Approved $1 test-only reopening; the regular purchase gate remains closed.
+  // This gate is controlled by reviewed source changes, never by URL flags.
+  var TEST_CHECKOUT_ENABLED = true;
   // Deliberately unlisted, NOT access-controlled. Only this page references the test price.
   var CLIENT_TOKEN = 'live_92a112a9e75e51a31ebe4862254';
   var TEST_PRICE_ID = 'pri_01m20nj5f1mfq56dmp1mgt08k8';

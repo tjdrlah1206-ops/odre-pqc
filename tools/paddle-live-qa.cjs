@@ -32,9 +32,9 @@ function fixture(options = {}) {
     location: { protocol: 'https:', hostname: 'pqc.odreai.com', search: '', hash: '', ...options.location },
     window: options.sdkAlreadyLoaded ? { Paddle: paddle } : {}, console: { log: (...args) => logs.push(args), error: (...args) => logs.push(args) }
   };
-  // Preserve the previous checkout regression suite using ONLY an in-memory
-  // enabled copy and mock Paddle. currentDeployment exercises the shipped pause.
-  const source = options.currentDeployment ? testSource : testSource.replace('var TEST_CHECKOUT_ENABLED = false;', 'var TEST_CHECKOUT_ENABLED = true;');
+  // All active checkout tests exercise the exact shipped source with mock Paddle.
+  // Only the retained pause regression uses an explicitly disabled in-memory copy.
+  const source = options.pausedCopy ? testSource.replace('var TEST_CHECKOUT_ENABLED = true;', 'var TEST_CHECKOUT_ENABLED = false;') : testSource;
   vm.runInNewContext(source, context, { timeout: 1000 });
   return { nodes, scripts, opens, initializations, logs,
     acknowledge(value = true) { nodes.realChargeAcknowledged.checked = value; nodes.realChargeAcknowledged.listeners.change?.(); },
@@ -52,17 +52,19 @@ check('normal Live identities and closed public gate', () => {
   assert(!/test_[a-z0-9]{20,}|Environment\.set\(/.test(normal));
   assert(read('license/index.html').includes('checkout.js?v=checkout-paused-20260909'));
 });
-check('shipped test checkout has a fixed pause and disabled no-script controls', () => {
-  assert(testSource.includes('var TEST_CHECKOUT_ENABLED = false;'));
+check('shipped test-only reopening retains disabled no-script controls', () => {
+  assert(testSource.includes('var TEST_CHECKOUT_ENABLED = true;'));
   assert(testHtml.includes('type="checkbox" disabled'));
-  assert(testHtml.includes('결제를 일시 중단했습니다.'));
-  assert(testHtml.includes('checkout.js?v=checkout-paused-20260909'));
+  assert(testHtml.includes('운영자용 $1 시험 결제만 다시 열었습니다.'));
+  assert(testHtml.includes('정식 월간·연간 판매 결제는 계속 중단'));
+  assert(testHtml.includes('추가 결제가 필요한지 먼저 확인'));
+  assert(testHtml.includes('checkout.js?v=live-test-resumed-20260910'));
   assert(!/setTimeout|setInterval|new Date|Date\.now|localStorage|sessionStorage/.test(testSource));
 });
 for (const sdkAlreadyLoaded of [false, true]) {
   for (const search of ['', '?enabled=true&checkout=true', '?_ptxn=txn_untrusted']) {
-    check(`shipped pause prevents SDK load/init/open: preloaded=${sdkAlreadyLoaded}, query=${search}`, () => {
-      const f = fixture({ currentDeployment: true, sdkAlreadyLoaded, location: { search } });
+    check(`in-memory pause regression prevents SDK load/init/open: preloaded=${sdkAlreadyLoaded}, query=${search}`, () => {
+      const f = fixture({ pausedCopy: true, sdkAlreadyLoaded, location: { search } });
       assert(f.nodes.liveTestCheckout.disabled && f.nodes.realChargeAcknowledged.disabled);
       assert(f.nodes.testStatus.textContent.includes('배포패키지'));
       f.acknowledge(); f.click(); f.click();
@@ -131,6 +133,14 @@ check('explicit click uses Live token, exact test price and quantity one', () =>
   assert.deepEqual(JSON.parse(JSON.stringify(f.opens[0])),{items:[{priceId:testPrice,quantity:1}],settings:{displayMode:'overlay',theme:'light',locale:'ko',showAddDiscounts:false}});
   assert(f.nodes.liveTestCheckout.disabled);
 });
+check('preloaded SDK still requires acknowledgement and a manual click', () => {
+  const f=fixture({sdkAlreadyLoaded:true}); f.click();
+  assert.equal(f.initializations.length,0); assert.equal(f.opens.length,0);
+  f.acknowledge(); assert.equal(f.opens.length,0);
+  f.click(); f.click();
+  assert.equal(f.scripts.length,0); assert.equal(f.initializations.length,1); assert.equal(f.opens.length,1);
+  assert.equal(f.opens[0].items[0].priceId,testPrice); assert.equal(f.opens[0].items[0].quantity,1);
+});
 check('rapid repeated clicks cannot duplicate initialization or open', () => {
   const f=fixture(); f.acknowledge(); f.click(); f.click(); f.click(); f.load(); f.click();
   assert.equal(f.scripts.length,1); assert.equal(f.initializations.length,1); assert.equal(f.opens.length,1);
@@ -177,4 +187,4 @@ check('no server secrets, automatic financial writes or direct backend calls',()
   assert(!/pdl_live_apikey_[a-z0-9]+|pdl_ntfset_[a-z0-9]+|-----BEGIN .*PRIVATE KEY-----/i.test(normal+testSource+testHtml));
   assert(!/fetch\(|XMLHttpRequest|sendBeacon|console\./.test(testSource));
 });
-console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'PAUSED_UNLISTED_NOT_AUTHENTICATED',publicCheckout:'PAUSED_PENDING_PACKAGE_AND_EXPLICIT_REOPEN_APPROVAL',futureCheckoutRegression:'IN_MEMORY_MOCK_ONLY',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));
+console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'ENABLED_UNLISTED_NOT_AUTHENTICATED',publicCheckout:'PAUSED_PENDING_PACKAGE_AND_EXPLICIT_REOPEN_APPROVAL',activeCheckoutRegression:'EXACT_SHIPPED_SOURCE_MOCK_PADDLE',pauseRegression:'DISABLED_IN_MEMORY_COPY_MOCK_PADDLE',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));

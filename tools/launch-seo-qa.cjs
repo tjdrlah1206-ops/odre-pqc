@@ -67,8 +67,9 @@ for(const page of ['home','product']) {
     assert.equal(meta['meta[property="og:title"]'].attrs.content,c.seoTitle);assert.equal(meta['meta[property="og:description"]'].attrs.content,c.seoDescription);metadataCases++;
   }
 }
+// Pin the regular checkout pause and the explicitly approved $1-only reopening.
 for(const [file,expected] of Object.entries({
   'assets/js/checkout.js':'b7cbe3d1ba32fe33b9996ff1e8a865b00e30c8019d972217f9b7fa33bd6d6927',
-  'payment/live-check-4a753f1fe8c8431f/checkout.js':'d1813b877c2bb7c8a055c89cf57c02e0c894433876c3053d94a978c0b03f5567'
+  'payment/live-check-4a753f1fe8c8431f/checkout.js':'7ab3803be62f643f91c76a2550962015ef5f2b5b4737f3db8dd3c2ec0f37eaf7'
 }))assert.equal(createHash('sha256').update(read(file).replace(/\r\n/g,'\n')).digest('hex'),expected,'Checkout modified (Git LF canonical bytes)');
-console.log(JSON.stringify({result:'PASS',html_pages:htmlFiles.length,source_files_scanned:sourceFiles.length,language_cases:languageCases,metadata_switch_cases:metadataCases,sitemap_urls:sitemap.length,obsolete_prices_paypal_unit_range:0,core_only_integration_copy:0,checkout_code:'UNCHANGED',network_requests:0},null,2));
+console.log(JSON.stringify({result:'PASS',html_pages:htmlFiles.length,source_files_scanned:sourceFiles.length,language_cases:languageCases,metadata_switch_cases:metadataCases,sitemap_urls:sitemap.length,obsolete_prices_paypal_unit_range:0,core_only_integration_copy:0,checkout_code:'REGULAR_PAUSED_TEST_ONLY_REOPENED_HASH_PINNED',network_requests:0},null,2));
