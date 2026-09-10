@@ -198,11 +198,11 @@
   // Only explicitly marked document links follow the selected page language.
   // Keep the original English href usable when JavaScript is unavailable.
   var publicDocuments = {
-    en: { whitepaper: 'ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf', overview: 'ODRE_PQC_v0.2.9_Product_Overview_Security_Architecture_EN.pdf' },
-    ko: { whitepaper: 'ODRE_PQC_v0.2.9_공개_기술_백서_KO.pdf', overview: 'ODRE_PQC_v0.2.9_제품_개요_및_보안_아키텍처_KO.pdf' },
-    ja: { whitepaper: 'ODRE_PQC_v0.2.9_公開技術白書_JA.pdf', overview: 'ODRE_PQC_v0.2.9_製品概要_セキュリティアーキテクチャ_JA.pdf' },
-    de: { whitepaper: 'ODRE_PQC_v0.2.9_Oeffentliches_Technisches_Whitepaper_DE.pdf', overview: 'ODRE_PQC_v0.2.9_Produktuebersicht_Sicherheitsarchitektur_DE.pdf' },
-    es: { whitepaper: 'ODRE_PQC_v0.2.9_Libro_Blanco_Tecnico_Publico_ES.pdf', overview: 'ODRE_PQC_v0.2.9_Descripcion_del_Producto_Arquitectura_de_Seguridad_ES.pdf' }
+    en: { whitepaper: 'ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf', overview: 'ODRE_PQC_v0.2.9_Product_Overview_Security_Architecture_EN.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_EN.pdf' },
+    ko: { whitepaper: 'ODRE_PQC_v0.2.9_공개_기술_백서_KO.pdf', overview: 'ODRE_PQC_v0.2.9_제품_개요_및_보안_아키텍처_KO.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_KO.pdf' },
+    ja: { whitepaper: 'ODRE_PQC_v0.2.9_公開技術白書_JA.pdf', overview: 'ODRE_PQC_v0.2.9_製品概要_セキュリティアーキテクチャ_JA.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_JA.pdf' },
+    de: { whitepaper: 'ODRE_PQC_v0.2.9_Oeffentliches_Technisches_Whitepaper_DE.pdf', overview: 'ODRE_PQC_v0.2.9_Produktuebersicht_Sicherheitsarchitektur_DE.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_DE.pdf' },
+    es: { whitepaper: 'ODRE_PQC_v0.2.9_Libro_Blanco_Tecnico_Publico_ES.pdf', overview: 'ODRE_PQC_v0.2.9_Descripcion_del_Producto_Arquitectura_de_Seguridad_ES.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_ES.pdf' }
   };
 
   // Trial guides are reviewed, separate PDFs in all five site languages.
@@ -218,7 +218,7 @@
       link.setAttribute('href', '/' + filename);
       link.setAttribute('hreflang', code);
       link.setAttribute('type', 'application/pdf');
-      if (link.getAttribute('data-pqc-document') === 'trial') link.setAttribute('download', filename);
+      if (link.getAttribute('data-pqc-document') === 'trial' || link.getAttribute('data-pqc-document') === 'evidence') link.setAttribute('download', filename);
     });
   }
 

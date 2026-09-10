@@ -228,6 +228,10 @@ td { color: #c6d3d8; }
 tr:last-child td { border-bottom: 0; }
 .light .table-wrap, .light th, .light td { border-color: #cbd6d9; }
 .light td { color: var(--paper-muted); }
+.release-evidence-metrics table { min-width: 0; table-layout: fixed; }
+.release-evidence-metrics th { width: 72%; }
+.release-evidence-metrics td { width: 28%; text-align: right; white-space: nowrap; }
+.release-evidence-metrics tr:last-child th { border-bottom: 0; }
 .status-dot { display: inline-flex; align-items: center; gap: 8px; }
 .status-dot::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
 .status-dot.not-verified::before { background: var(--muted-2); }
@@ -347,6 +351,7 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
   .section { padding: 68px 0; }
   .section-title { font-size: 36px; }
   .split, .cards-3, .document-list, .form-grid { grid-template-columns: 1fr; gap: 16px; }
+  .release-evidence-metrics th, .release-evidence-metrics td { padding: 14px 12px; }
   .architecture { padding: 20px; }
   .architecture-flow { grid-template-columns: 1fr; gap: 12px; }
   .architecture-arrow { transform: rotate(90deg); height: 24px; }
