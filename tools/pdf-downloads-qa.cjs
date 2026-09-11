@@ -56,5 +56,5 @@ for (const [language, title] of Object.entries(titles)) {
   assert.equal(window.ODRE_PAGE_I18N[language].downloadsTitle, title);
   assert(window.ODRE_PAGE_I18N[language].downloadsCopy.includes('v1.2.1'));
 }
-assert(html.includes('/assets/js/page-i18n.js?v=launch-030-20260912'));
+assert(html.includes('/assets/js/page-i18n.js?v=artifact-n1-20260912'));
 console.log(JSON.stringify({ product_download_links: 2, guides: 5, original_sha256_matches: 5, language_cases: 5, network_requests: 0, result: 'PASS' }, null, 2));

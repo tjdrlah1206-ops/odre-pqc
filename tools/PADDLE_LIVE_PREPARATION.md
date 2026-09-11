@@ -8,8 +8,12 @@ License-page checkout is open; Paddle.js initialization must succeed before a
 customer can press either checkout button.
 
 - Customer archive: `ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip`
-- Published SHA-256: `D955EB659D48BCD09BDE67A55021143FF5F8ABE6ED32E1879BA6697A5D2104F4`
-- Archive size: 56,731,226 bytes; no ZIP password is required.
+- Published SHA-256: `00DC788B5ECAAAC08C53ACBAD009DC296185149A9917124FF0F16C0EDAABC182`
+- Archive size: 56,730,320 bytes; no ZIP password is required.
+- The archive was refreshed on 2026-09-12 after targeted N-1/N-3 audit
+  remediation added native pre-execution integrity enforcement and a Python
+  3.12 runtime floor. The recorded Core and Native binary identities did not
+  change.
 - Monthly and annual prices remain USD 250 and USD 2,700 per Unit for 1–1,000
   Units. Opening the archive download does not start a Trial or subscription.
 - The separate unlisted USD 1 Live test page remains closed after its completed
