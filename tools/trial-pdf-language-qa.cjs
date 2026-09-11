@@ -22,7 +22,8 @@ for (const [lang, hash] of Object.entries(hashes)) {
 }
 const html = read('contact/index.html');
 assert(html.includes('/assets/js/site.js?v=trial-rc2-20260909'));
-assert(html.includes('/assets/js/page-i18n.js?v=site-conversion-20260911'));
+assert(html.includes('/assets/js/page-i18n.js?v=launch-030-20260912'));
+assert(/id="trial-download"[^>]*href="https:\/\/odreai\.com\/odre-pqc\/downloads\/production\/0\.3\.0\/ODRE_PQC_PRODUCTION_0\.3\.0_CUSTOMER_DELIVERY\.zip"/.test(html));
 const markup = html.match(/<a\b([^>]*id="trial-guide-pdf"[^>]*)>([^<]+)<\/a>/);
 assert(markup);
 function node(attrs, textContent = '') {
@@ -35,7 +36,6 @@ function fixture(options = {}) {
   assert.equal(guide.attrs.download, filename('en'));
   assert.equal(guide.attrs.hreflang, 'en');
   const unknown = node({ 'data-pqc-document': '__proto__', href: '/unchanged' });
-  const installer = node({ id: 'trial-download', disabled: '', 'aria-disabled': 'true' });
   const events = [];
   const saved = new Map(options.saved ? [['odre-pqc-lang', options.saved]] : []);
   const document = {
@@ -61,8 +61,6 @@ function fixture(options = {}) {
     assert.equal(guide.textContent, context.ODRE_PAGE_I18N[lang].trialPdf);
     assert(!/Korean|韓国語|koreanisches|coreano/.test(guide.textContent));
     assert.equal(unknown.attrs.href, '/unchanged');
-    assert.equal(installer.attrs['aria-disabled'], 'true');
-    assert.equal(installer.attrs.href, undefined);
     assert.equal(events.at(-1).detail.language, lang);
   }
   return { check, setLanguage: context.ODRE_SITE.setLanguage };
@@ -79,4 +77,4 @@ fixture({ query: '?lang=ja', saved: 'ko', browser: 'de-DE' }).check('ja');
 fixture({ query: '?lang=unsupported', saved: 'ko' }).check('ko');
 fixture({ browser: 'fr-FR' }).check('en');
 console.log(JSON.stringify({ result: 'PASS', language_pdfs: 5, hashes: '5/5 PASS', initial_language_cases: 18,
-  manual_language_cases: 7, untranslated_korean_labels: 0, installer_download: 'DISABLED', network_requests: 0 }, null, 2));
+  manual_language_cases: 7, untranslated_korean_labels: 0, installer_download: 'OPEN_STATIC_LINK', network_requests: 0 }, null, 2));

@@ -62,7 +62,7 @@ vm.runInNewContext(read('assets/js/checkout.js'), {
   document, URLSearchParams, location: { search: '', assign: unexpected },
   window: { alert: unexpected, setTimeout: unexpected }, console
 }, { timeout: 1000 });
-assert.equal(requestedScripts, 0); // Public purchase UI remains closed during Live verification.
+assert.equal(requestedScripts, 1); // Approved public gate requests Paddle.js, but this test never loads it.
 let quantityCases = 0;
 for (const [quantity, monthly, annual] of [['1', '$250', '$2,700'], ['2', '$500', '$5,400'], ['20', '$5,000', '$54,000'], ['0', '$250', '$2,700'], ['21', '$5,250', '$56,700'], ['999', '$249,750', '$2,697,300'], ['1000', '$250,000', '$2,700,000'], ['1001', '$250,000', '$2,700,000'], ['invalid', '$250', '$2,700']]) {
   nodes.monthlyUnits.value = quantity;
@@ -87,4 +87,4 @@ for (const target of ['monthlyUnits', 'annualUnits']) {
   minus.listeners.click(); assert.equal(Number(nodes[target].value), 1);
 }
 assert(nodes.monthlyCheckout.disabled && nodes.annualCheckout.disabled);
-console.log(JSON.stringify({ staticPriceFiles: priceFiles.length, languagePriceCoverage: ['en', 'ko', 'ja', 'de', 'es'], quantityCases, stepButtons: 'PASS', structuredData: 'PASS', networkRequests: 0, checkoutOpened: 0, pass: true }, null, 2));
+console.log(JSON.stringify({ staticPriceFiles: priceFiles.length, languagePriceCoverage: ['en', 'ko', 'ja', 'de', 'es'], quantityCases, stepButtons: 'PASS', structuredData: 'PASS', paddleScriptRequests: 1, actualNetworkRequests: 0, checkoutOpened: 0, pass: true }, null, 2));

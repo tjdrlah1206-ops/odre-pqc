@@ -1,6 +1,6 @@
 # ODRE PQC SEO recrawl requests
 
-Prepared: 2026-09-11
+Prepared: 2026-09-12
 
 Search Console and NAVER Search Advisor submissions are manual. This list includes only pages with meaningful content or search-metadata changes in this release.
 

@@ -80,6 +80,6 @@ for (const page of pages) {
   const saved = contextFor(page, '?lang=unsupported', 'ja'); verify(page, 'ja', saved);
   const fallback = contextFor(page, '', 'unsupported'); verify(page, 'en', fallback);
 }
-assert(read('assets/js/checkout.js').includes('publicCheckoutEnabled: false'));
+assert(read('assets/js/checkout.js').includes('publicCheckoutEnabled: true'));
 assert(read('payment/live-check-4a753f1fe8c8431f/index.html').includes('noindex'));
 console.log(JSON.stringify({ result: 'PASS', pages: pages.length, languages: languages.length, renderedChecks: checks, staticEnglishMatchesTemplate: true, explicitLanguageWithBlockedStorage: 'PASS', paymentApiCalls: 0, networkCalls: 0 }, null, 2));

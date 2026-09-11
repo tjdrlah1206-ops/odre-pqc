@@ -8,7 +8,7 @@ const {execFileSync}=require('node:child_process');
 const {createHash}=require('node:crypto');
 const root=path.resolve(__dirname,'..');
 const read=f=>fs.readFileSync(path.join(root,f),'utf8');
-const tracked=execFileSync('git',['ls-files'],{cwd:root,encoding:'utf8'}).trim().split(/\r?\n/);
+const tracked=execFileSync('git',['-c','safe.directory=*','ls-files'],{cwd:root,encoding:'utf8'}).trim().split(/\r?\n/);
 const htmlFiles=tracked.filter(f=>f.endsWith('.html'));
 const sourceFiles=tracked.filter(f=>/\.(html|js|xml|txt)$/.test(f)&&!f.startsWith('tools/'));
 const retired=/PayPal|\$120\b|\$1,300\b|USD\s+120\b|USD\s+1[,.]300\b|"price":"(?:120|1300)"|1[–～〜~-]20\s*Units|21\+\s*Units|\/enterprise\//i;
@@ -72,9 +72,9 @@ for(const page of ['home','product']) {
     assert.equal(meta['meta[property="og:title"]'].attrs.content,c.seoTitle);assert.equal(meta['meta[property="og:description"]'].attrs.content,c.seoDescription);metadataCases++;
   }
 }
-// Pin the regular checkout pause and the post-E2E $1 test checkout closure.
+// Pin the approved regular checkout configuration and the post-E2E $1 test checkout closure.
 for(const [file,expected] of Object.entries({
-  'assets/js/checkout.js':'b7cbe3d1ba32fe33b9996ff1e8a865b00e30c8019d972217f9b7fa33bd6d6927',
+  'assets/js/checkout.js':'431684f7fb1d696cfd46b7d3b044cf312de6706875a39123a0282fceb443393f',
   'payment/live-check-4a753f1fe8c8431f/checkout.js':'30356993d4136371b3240bda257c0b1ac7cb434352ba1b5fb3452f4aee4f3670'
 }))assert.equal(createHash('sha256').update(read(file).replace(/\r\n/g,'\n')).digest('hex'),expected,'Checkout modified (Git LF canonical bytes)');
-console.log(JSON.stringify({result:'PASS',html_pages:htmlFiles.length,source_files_scanned:sourceFiles.length,language_cases:languageCases,metadata_switch_cases:metadataCases,sitemap_urls:sitemap.length,obsolete_prices_paypal_unit_range:0,core_only_integration_copy:0,checkout_code:'REGULAR_AND_TEST_CHECKOUTS_PAUSED_HASH_PINNED',network_requests:0},null,2));
+console.log(JSON.stringify({result:'PASS',html_pages:htmlFiles.length,source_files_scanned:sourceFiles.length,language_cases:languageCases,metadata_switch_cases:metadataCases,sitemap_urls:sitemap.length,obsolete_prices_paypal_unit_range:0,core_only_integration_copy:0,checkout_code:'REGULAR_OPEN_TEST_CHECKOUT_CLOSED_HASH_PINNED',network_requests:0},null,2));

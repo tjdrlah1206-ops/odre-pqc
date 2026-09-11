@@ -1,6 +1,26 @@
 # Paddle Live preparation — 2026-09-08
 
-## Operator checkout pause — 2026-09-09 (current state)
+## ODRE PQC v0.3.0 public opening — 2026-09-12 (current state)
+
+The owner approved the public opening on the morning of 2026-09-12 after the
+v0.3.0 customer distribution was published. The regular monthly and annual
+License-page checkout is open; Paddle.js initialization must succeed before a
+customer can press either checkout button.
+
+- Customer archive: `ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip`
+- Published SHA-256: `D955EB659D48BCD09BDE67A55021143FF5F8ABE6ED32E1879BA6697A5D2104F4`
+- Archive size: 56,731,226 bytes; no ZIP password is required.
+- Monthly and annual prices remain USD 250 and USD 2,700 per Unit for 1–1,000
+  Units. Opening the archive download does not start a Trial or subscription.
+- The separate unlisted USD 1 Live test page remains closed after its completed
+  verification. Reopening the regular checkout does not reopen that test page.
+- No Paddle account, backend, Production DB, Gateway, Core or server process was
+  changed by this website publication.
+
+The older pause records below are retained as historical operational evidence;
+they do not describe the current public checkout state.
+
+## Operator checkout pause — 2026-09-09 (historical state)
 
 The owner requested that checkout remain closed until the distribution package
 is complete. This section supersedes earlier statements that the unlisted USD 1

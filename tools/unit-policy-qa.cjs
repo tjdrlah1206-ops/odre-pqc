@@ -35,12 +35,12 @@ for (const [page, file] of [['home', 'index.html'], ['pricing', 'pricing/index.h
   }
 }
 const source = read('assets/js/checkout.js');
-assert(source.includes('publicCheckoutEnabled: false'));
-// Enable only the in-memory copy to inspect future checkout arguments via a mock.
+assert(source.includes('publicCheckoutEnabled: true'));
+// Inspect the shipped Live checkout arguments through a mock; no network or payment occurs.
 const nodes = Object.fromEntries(['monthlyUnits', 'annualUnits', 'monthlyTotal', 'annualTotal', 'monthlyCheckout', 'annualCheckout'].map(id => [id, { id, value: '1', listeners: {}, setAttribute() {}, focus() {}, addEventListener(k, fn) { this.listeners[k] = fn; } }]));
 const opens = [];
 let initialized = 0;
-vm.runInNewContext(source.replace('publicCheckoutEnabled: false', 'publicCheckoutEnabled: true'), {
+vm.runInNewContext(source, {
   document: { documentElement: { lang: 'en' }, getElementById: id => nodes[id], querySelectorAll: () => [], querySelector: () => null, addEventListener() {}, createElement() { throw new Error('No network'); }, head: { appendChild() { throw new Error('No network'); } } },
   window: { Paddle: { Initialize() { initialized++; }, Checkout: { open(value) { opens.push(value); } } }, alert() { throw new Error('Unexpected unavailable checkout'); } },
   location: { search: '' }, URLSearchParams, console

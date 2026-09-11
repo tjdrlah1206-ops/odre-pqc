@@ -17,12 +17,16 @@ const expected = {
 const html = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
 const section = html.match(/<section id="downloads">([\s\S]*?)<\/section>/)[1];
 const links = [...section.matchAll(/<a\b([^>]+)>([\s\S]*?)<\/a>/g)];
-assert.equal(links.length, 5);
-assert.equal(new Set(links.map(link => link[1].match(/href="([^"]+)"/)[1])).size, 5);
+const guideLinks = links.filter(link => /href="[^"]+\.pdf"/.test(link[1]));
+assert.equal(links.length, 7);
+assert.equal(guideLinks.length, 5);
+assert.equal(new Set(links.map(link => link[1].match(/href="([^"]+)"/)[1])).size, 7);
+assert(section.includes('ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip'));
+assert(section.includes('ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip.sha256'));
 assert(!section.includes('v0.2.9'), 'download listing must not mix old whitepapers with the new guides');
 for (const [language, sha256] of Object.entries(expected)) {
   const name = `ODRE_PQC_Installation_License_Activation_Guide_v1.2.1_${language}.pdf`;
-  const link = links.find(item => item[1].includes(`href="/${name}"`));
+  const link = guideLinks.find(item => item[1].includes(`href="/${name}"`));
   assert(link, `Missing ${language} guide`);
   assert(link[1].includes(' download '));
   assert(link[1].includes(`hreflang="${language.toLowerCase()}"`));
@@ -42,15 +46,15 @@ vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/js/page-i18n.js'), 'u
   window, document: { body: { dataset: { page: 'docs' } }, querySelectorAll: () => nodes }
 }, { timeout: 1000 });
 const titles = {
-  en: 'Installation & License Activation Guides',
-  ko: '설치 및 라이선스 활성화 가이드',
-  ja: 'インストール・ライセンス有効化ガイド',
-  de: 'Installations- und Lizenzaktivierungsleitfäden',
-  es: 'Guías de instalación y activación de licencias'
+  en: 'ODRE PQC v0.3.0 & installation guides',
+  ko: 'ODRE PQC v0.3.0 및 설치 가이드',
+  ja: 'ODRE PQC v0.3.0とインストールガイド',
+  de: 'ODRE PQC v0.3.0 und Installationsleitfäden',
+  es: 'ODRE PQC v0.3.0 y guías de instalación'
 };
 for (const [language, title] of Object.entries(titles)) {
   assert.equal(window.ODRE_PAGE_I18N[language].downloadsTitle, title);
   assert(window.ODRE_PAGE_I18N[language].downloadsCopy.includes('v1.2.1'));
 }
-assert(html.includes('/assets/js/page-i18n.js?v=site-conversion-20260911'));
-console.log(JSON.stringify({ guides: 5, original_sha256_matches: 5, language_cases: 5, network_requests: 0, result: 'PASS' }, null, 2));
+assert(html.includes('/assets/js/page-i18n.js?v=launch-030-20260912'));
+console.log(JSON.stringify({ product_download_links: 2, guides: 5, original_sha256_matches: 5, language_cases: 5, network_requests: 0, result: 'PASS' }, null, 2));

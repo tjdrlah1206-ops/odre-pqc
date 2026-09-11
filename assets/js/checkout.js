@@ -2,9 +2,9 @@
   'use strict';
   var PADDLE_CHECKOUT = Object.freeze({
     environment: 'production',
-    // Keep the public purchase UI closed until the distribution package is ready and the owner explicitly approves reopening.
+    // The v0.3.0 distribution package is published and the owner approved reopening on 2026-09-12.
     // This client-side switch is not an authorization boundary for Paddle prices.
-    publicCheckoutEnabled: false,
+    publicCheckoutEnabled: true,
     productId: 'pro_01m1p28azxeewd9syewtj13f58',
     clientToken: 'live_92a112a9e75e51a31ebe4862254',
     priceIds: Object.freeze({
@@ -45,11 +45,11 @@
   var activeCheckout = { plan: 'monthly', units: 1 };
   var paddleReady = false;
   var checkoutLabels = {
-    en: { pendingTitle: 'Checkout is temporarily paused.', pendingCopy: 'Checkout will remain closed until the distribution package is ready and reopening is approved. No new orders are created on this page. Existing subscriptions and license activation remain available.', readyTitle: 'Live checkout is available.', readyCopy: 'This is a real recurring subscription. Paddle calculates applicable taxes at checkout.', monthly: 'Monthly checkout', annual: 'Annual checkout' },
-    ko: { pendingTitle: '결제를 일시 중단했습니다.', pendingCopy: '배포패키지 준비 완료 및 재개 승인 전까지 결제를 중단합니다. 이 페이지에서는 새 주문을 생성하지 않습니다. 기존 구독과 라이선스 활성화는 유지됩니다.', readyTitle: 'Live 결제를 이용할 수 있습니다.', readyCopy: '실제 요금이 청구되는 정기구독입니다. 적용 세금은 Paddle 결제창에서 계산됩니다.', monthly: '월간 결제', annual: '연간 결제' },
-    ja: { pendingTitle: '決済を一時停止しています。', pendingCopy: '配布パッケージの準備が完了し、再開が承認されるまで決済を停止します。このページでは新規注文は作成されません。既存のサブスクリプションとライセンスの有効化は継続します。', readyTitle: '本番決済をご利用いただけます。', readyCopy: '実際に請求される継続課金です。適用される税額はPaddleの決済画面で計算されます。', monthly: '月間プランの決済', annual: '年間プランの決済' },
-    de: { pendingTitle: 'Der Checkout ist vorübergehend pausiert.', pendingCopy: 'Der Checkout bleibt geschlossen, bis das Auslieferungspaket fertiggestellt und die Wiederaufnahme freigegeben ist. Diese Seite erstellt keine neuen Bestellungen. Bestehende Abonnements und die Lizenzaktivierung bleiben verfügbar.', readyTitle: 'Live-Checkout ist verfügbar.', readyCopy: 'Dies ist ein echtes, wiederkehrendes Abonnement. Paddle berechnet anfallende Steuern im Checkout.', monthly: 'Monatliches Abonnement bezahlen', annual: 'Jährliches Abonnement bezahlen' },
-    es: { pendingTitle: 'Los pagos están temporalmente suspendidos.', pendingCopy: 'Los pagos permanecerán cerrados hasta que el paquete de distribución esté listo y se autorice la reapertura. Esta página no crea pedidos nuevos. Las suscripciones existentes y la activación de licencias siguen disponibles.', readyTitle: 'El pago real está disponible.', readyCopy: 'Es una suscripción recurrente con cargos reales. Paddle calcula los impuestos aplicables al pagar.', monthly: 'Pagar suscripción mensual', annual: 'Pagar suscripción anual' }
+    en: { pendingTitle: 'Checkout could not be initialized.', pendingCopy: 'No order was created. Reload the page or contact Commercial if checkout remains unavailable.', readyTitle: 'Live checkout is available.', readyCopy: 'This is a real recurring subscription. Paddle calculates applicable taxes at checkout.', monthly: 'Monthly checkout', annual: 'Annual checkout' },
+    ko: { pendingTitle: '결제를 초기화할 수 없습니다.', pendingCopy: '주문은 생성되지 않았습니다. 페이지를 새로고침하거나 문제가 계속되면 Commercial 문의를 이용하세요.', readyTitle: 'Live 결제를 이용할 수 있습니다.', readyCopy: '실제 요금이 청구되는 정기구독입니다. 적용 세금은 Paddle 결제창에서 계산됩니다.', monthly: '월간 결제', annual: '연간 결제' },
+    ja: { pendingTitle: '決済を初期化できませんでした。', pendingCopy: '注文は作成されていません。ページを再読み込みし、解決しない場合はCommercial窓口へお問い合わせください。', readyTitle: '本番決済をご利用いただけます。', readyCopy: '実際に請求される継続課金です。適用される税額はPaddleの決済画面で計算されます。', monthly: '月間プランの決済', annual: '年間プランの決済' },
+    de: { pendingTitle: 'Der Checkout konnte nicht initialisiert werden.', pendingCopy: 'Es wurde keine Bestellung erstellt. Laden Sie die Seite neu oder kontaktieren Sie Commercial, falls der Checkout nicht verfügbar bleibt.', readyTitle: 'Live-Checkout ist verfügbar.', readyCopy: 'Dies ist ein echtes, wiederkehrendes Abonnement. Paddle berechnet anfallende Steuern im Checkout.', monthly: 'Monatliches Abonnement bezahlen', annual: 'Jährliches Abonnement bezahlen' },
+    es: { pendingTitle: 'No se pudo iniciar el pago.', pendingCopy: 'No se creó ningún pedido. Recarga la página o contacta con Commercial si el pago sigue sin estar disponible.', readyTitle: 'El pago real está disponible.', readyCopy: 'Es una suscripción recurrente con cargos reales. Paddle calcula los impuestos aplicables al pagar.', monthly: 'Pagar suscripción mensual', annual: 'Pagar suscripción anual' }
   };
   function setCheckoutEnabled(enabled) {
     [monthlyCheckout, annualCheckout].forEach(function (button) {

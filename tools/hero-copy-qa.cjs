@@ -14,10 +14,10 @@ assert.equal((hero.match(/class="hero-title-line(?: [^"]*)?"/g) || []).length, 4
 assert.equal((hero.match(/<li>/g) || []).length, 3);
 assert(hero.includes('hero-title-brand">ODRE PQC.</span>'));
 const actions = hero.match(/<div class="hero-actions">([\s\S]*?)<\/div>/)[1];
-assert.deepEqual([...actions.matchAll(/href="([^"]+)"/g)].map(m => m[1]), ['/docs/#downloads', '/contact/#trial', '/docs/']);
+assert.deepEqual([...actions.matchAll(/href="([^"]+)"/g)].map(m => m[1]), ['https://odreai.com/odre-pqc/downloads/production/0.3.0/ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip', '/contact/#trial', '/docs/']);
 const release = hero.match(/<aside class="hero-release"[^>]*>([\s\S]*?)<\/aside>/)[1];
-assert.deepEqual([...release.matchAll(/href="([^"]+)"/g)].map(m => m[1]), ['/releases/', '/security/#release-verification', '/product/#system-requirements', '/security/#cryptography', '/trust/#release-integrity']);
-for (const text of ['v0.2.9', 'Windows Server 2022', 'Ubuntu 24.04 LTS', 'Python 3.12', 'ML-KEM-768', 'ML-DSA-65']) assert(release.includes(text));
+assert.deepEqual([...release.matchAll(/href="([^"]+)"/g)].map(m => m[1]), ['/contact/#trial', '/security/#release-verification', '/product/#system-requirements', '/security/#cryptography', '/trust/#product-download']);
+for (const text of ['v0.3.0', 'Windows Server 2022', 'Ubuntu 24.04 LTS', 'Python 3.12', 'ML-KEM-768', 'ML-DSA-65']) assert(release.includes(text));
 
 const nodes = [...hero.matchAll(/<([a-z0-9]+)\b[^>]*data-i18n="([^"]+)"[^>]*>([^<]*)<\/\1>/g)].map(m => ({
   getAttribute: () => m[2], textContent: m[3].replace(/&amp;/g, '&')
@@ -61,7 +61,7 @@ assert(mobile.includes('.hero-release { grid-template-columns: repeat(2, minmax(
 assert(mobile.includes('.hero-actions .button { width: 100%; }'));
 assert(!css.match(/\.home-hero[^}]*height:\s*\d+px/));
 assert(html.includes('/assets/css/site.css?v=site-conversion-20260911'));
-assert(html.includes('/assets/js/page-i18n.js?v=site-conversion-20260911'));
+assert(html.includes('/assets/js/page-i18n.js?v=launch-030-20260912'));
 assert.equal((html.match(/name="naver-site-verification"/g) || []).length, 1);
 assert(html.includes('href="https://pqc.odreai.com/"'));
 console.log(JSON.stringify({ result: 'PASS', languages: 5, features_per_language: 3, korean_headline: 'EXACT_MATCH', protected_request_scope: 'PRESERVED', client_tls_scope: 'PRESERVED', call_to_action_links: 3, release_links: 5, responsive_css_rules: 'PASS', browser_visual_test: 'NOT_RUN', network_requests: 0 }, null, 2));

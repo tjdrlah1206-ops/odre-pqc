@@ -90,7 +90,7 @@ async function endpoint() {
             text: (document.querySelector('main')?.innerText || '').trim().length,
             innerWidth: window.innerWidth,
             scrollWidth: document.documentElement.scrollWidth,
-            trialDisabled: document.querySelector('#trial-download')?.disabled ?? null,
+            trialHref: document.querySelector('#trial-download')?.href ?? null,
             contactMailRoutes: document.querySelectorAll('main a[href^="mailto:odreai2025@gmail.com?subject="]').length,
             docsIntegration: !!document.querySelector('#production-integration')
           }))()`,
@@ -107,7 +107,7 @@ async function endpoint() {
         if (value.h1 !== 1) findings.push(`${label}: H1 count ${value.h1}`);
         if (value.text < 100) findings.push(`${label}: insufficient visible content`);
         if (value.scrollWidth > value.innerWidth + 1) findings.push(`${label}: horizontal overflow ${value.scrollWidth}/${value.innerWidth}`);
-        if (route === '/contact/' && (value.trialDisabled !== true || value.contactMailRoutes !== 5)) findings.push(`${label}: contact/trial contract`);
+        if (route === '/contact/' && (value.trialHref !== 'https://odreai.com/odre-pqc/downloads/production/0.3.0/ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip' || value.contactMailRoutes !== 5)) findings.push(`${label}: contact/trial contract`);
         if (route === '/docs/' && value.docsIntegration !== true) findings.push(`${label}: production integration section`);
         cases++;
       }

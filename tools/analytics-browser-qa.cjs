@@ -118,14 +118,15 @@ fs.mkdirSync(out, { recursive: true });
       for (let index=0; index<count; index++) {
         const href=await links.nth(index).getAttribute('href');
         const isNewGuide=/^\/ODRE_PQC_Installation_License_Activation_Guide_v1\.2\.1_(EN|KO|JA|DE|ES)\.pdf$/.test(href);
+        const isReleaseEvidence=/^\/ODRE_PQC_Release_Evidence_20260910_(EN|KO|JA|DE|ES)\.pdf$/.test(href);
         const before=downloads.length; await links.nth(index).click();
-        if (isNewGuide) {
+        if (isNewGuide || isReleaseEvidence) {
           await pdfPage.waitForTimeout(100);
           assert.equal(downloads.length,before,'new guides have no approved server analytics ID');
           continue;
         }
         for (let wait=0; wait<40 && downloads.length===before; wait++) await pdfPage.waitForTimeout(50);
-        assert.equal(downloads.length,before+1, 'one event for each real PDF activation');
+        assert.equal(downloads.length,before+1, `one event for each real PDF activation: ${route} ${href}`);
         assert.equal(downloads.at(-1).path,route); assert.equal(downloads.at(-1).rendered_language,'ko');
       }
     }

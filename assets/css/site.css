@@ -180,6 +180,7 @@ h1 { max-width: 880px; margin: 0; font-size: clamp(48px, 6vw, 84px); line-height
 .light .rule-list li { border-color: #cad6d9; }
 .rule-list strong { font-size: 14px; font-weight: 650; }
 .rule-list span { color: var(--muted); font-size: 14px; }
+.rule-list code { overflow-wrap: anywhere; word-break: break-all; }
 .light .rule-list span { color: var(--paper-muted); }
 
 .architecture { position: relative; padding: 44px; border: 1px solid var(--line-strong); background: #08141c; }

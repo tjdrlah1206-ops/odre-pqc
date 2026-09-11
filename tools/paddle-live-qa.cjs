@@ -44,20 +44,20 @@ function fixture(options = {}) {
   };
 }
 
-check('normal Live identities and closed public gate', () => {
+check('normal Live identities and approved public gate', () => {
   for (const value of [token, 'pro_01m1p28azxeewd9syewtj13f58', 'pri_01m1p2dqq1xv8em7tgv81cwkms', 'pri_01m1p2gh8th4460tab4m0v2vyg']) assert(normal.includes(value));
   assert(normal.includes("environment: 'production'"));
-  assert(normal.includes('publicCheckoutEnabled: false'));
+  assert(normal.includes('publicCheckoutEnabled: true'));
   assert(!normal.includes(testPrice));
   assert(!/test_[a-z0-9]{20,}|Environment\.set\(/.test(normal));
-  assert(read('license/index.html').includes('checkout.js?v=checkout-paused-20260909'));
+  assert(read('license/index.html').includes('checkout.js?v=checkout-open-20260912'));
 });
 check('shipped test checkout is paused with disabled no-script controls', () => {
   assert(testSource.includes('var TEST_CHECKOUT_ENABLED = false;'));
   assert(testHtml.includes('type="checkbox" disabled'));
   assert(testHtml.includes('$1 Live 시험 결제를 종료했습니다.'));
   assert(testHtml.includes('승인된 Live E2E 검증을 완료'));
-  assert(testHtml.includes('정식 월간·연간 판매 결제도 계속 중단'));
+  assert(testHtml.includes('정식 월간·연간 판매 결제는 License 페이지에서 별도로 제공'));
   assert(testHtml.includes('기존 시험 구독은 이 페이지에서 자동 취소되지 않습니다.'));
   assert(testHtml.includes('checkout.js?v=live-test-closed-20260910'));
   assert(!/setTimeout|setInterval|new Date|Date\.now|localStorage|sessionStorage/.test(testSource));
@@ -80,7 +80,7 @@ for (const sdkAlreadyLoaded of [false, true]) {
     });
   }
 }
-check('normal purchase gate stays closed in all five languages', () => {
+check('normal purchase gate opens only after Paddle initialization in all five languages', () => {
   for (const language of ['en','ko','ja','de','es']) {
     const nodes = Object.fromEntries(['monthlyUnits','monthlyTotal','annualUnits','annualTotal','monthlyCheckout','annualCheckout'].map(id => [id,node(id)]));
     const title = node('title'), copy = node('copy');
@@ -90,15 +90,15 @@ check('normal purchase gate stays closed in all five languages', () => {
       querySelector:selector=>selector.includes('availabilityTitle')?title:copy, addEventListener:(name,fn)=>events[name]=fn,
       createElement:()=>({}), head:{appendChild(){ scripts++; }} };
     vm.runInNewContext(normal,{document,URLSearchParams,location:{search:'?plan=annual'},window:{Paddle:{Initialize(){initialized++;},Checkout:{open(){opened++;}}},alert(){},setTimeout(){throw new Error('No redirect');}},console},{timeout:1000});
-    assert.equal(initialized,0); assert.equal(opened,0); assert.equal(scripts,0);
-    assert(nodes.monthlyCheckout.disabled && nodes.annualCheckout.disabled);
+    assert.equal(initialized,1); assert.equal(opened,0); assert.equal(scripts,0);
+    assert(!nodes.monthlyCheckout.disabled && !nodes.annualCheckout.disabled);
     assert.equal(nodes.monthlyTotal.textContent,'$250'); assert.equal(nodes.annualTotal.textContent,'$2,700');
     assert(title.textContent && copy.textContent);
     const localized = title.textContent;
     title.textContent = 'translation reset'; events['odre:language']();
     assert.equal(title.textContent,localized);
     nodes.monthlyCheckout.listeners.click(); nodes.annualCheckout.listeners.click();
-    assert.equal(opened,0);
+    assert.equal(opened,2);
   }
 });
 check('test page has noindex and explicit recurring-charge / visibility warnings', () => {
@@ -188,4 +188,4 @@ check('no server secrets, automatic financial writes or direct backend calls',()
   assert(!/pdl_live_apikey_[a-z0-9]+|pdl_ntfset_[a-z0-9]+|-----BEGIN .*PRIVATE KEY-----/i.test(normal+testSource+testHtml));
   assert(!/fetch\(|XMLHttpRequest|sendBeacon|console\./.test(testSource));
 });
-console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'PAUSED_AFTER_APPROVED_LIVE_E2E',publicCheckout:'PAUSED_PENDING_RELEASE_APPROVAL',activeCheckoutRegression:'ENABLED_IN_MEMORY_COPY_MOCK_PADDLE',pauseRegression:'EXACT_SHIPPED_SOURCE',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));
+console.log(JSON.stringify({result:'PASS',checks,languages:5,testPage:'PAUSED_AFTER_APPROVED_LIVE_E2E',publicCheckout:'OPEN_AFTER_RELEASE_APPROVAL',activeCheckoutRegression:'EXACT_SHIPPED_SOURCE_WITH_MOCK_PADDLE',pauseRegression:'TEST_PAGE_EXACT_SHIPPED_SOURCE',realCheckoutsOpened:0,realTransactionsCreated:0,productionApiRequests:0,browserVisualTest:'NOT_RUN'}));

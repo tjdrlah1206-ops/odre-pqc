@@ -37,7 +37,7 @@ const { chromium } = require('playwright');
     if (await page.locator('#monthlyUnits').inputValue() !== '2' || await page.locator('#monthlyTotal').textContent() !== '$500') failures.push(item.name + ' monthly plus or total failed');
     await monthlyMinus.click();
     if (await page.locator('#monthlyUnits').inputValue() !== '1' || await page.locator('#monthlyTotal').textContent() !== '$250') failures.push(item.name + ' monthly minus or total failed');
-    await page.locator('#monthlyUnits').fill('20');
+    await page.locator('#monthlyUnits').fill('1000');
     if (!await monthlyPlus.isDisabled()) failures.push(item.name + ' monthly plus enabled above maximum');
     const annualPlus = page.locator('[data-quantity-target="annualUnits"][data-quantity-delta="1"]');
     await annualPlus.click();

@@ -78,8 +78,8 @@ for (const role of ['Sales', 'License', 'Technical', 'Security', 'General']) {
   assert(contact.includes(`[ODRE PQC ${role}]`), `contact prefix: ${role}`);
 }
 assert.equal((contact.match(/mailto:odreai2025@gmail\.com/g) || []).length, 5, 'single public mailbox link per role');
-assert(contact.includes('No email request is required.'));
-assert(/id="trial-download"[^>]*disabled/.test(contact));
+assert(contact.includes('No ZIP password is required'));
+assert(/id="trial-download"[^>]*href="https:\/\/odreai\.com\/odre-pqc\/downloads\/production\/0\.3\.0\/ODRE_PQC_PRODUCTION_0\.3\.0_CUSTOMER_DELIVERY\.zip"/.test(contact));
 
 const product = read('product/index.html');
 const docs = read('docs/index.html');
@@ -101,7 +101,7 @@ assert(read('company/index.html').includes('OpenSSL 3.5.8'));
 const home = read('index.html');
 for (const phrase of ['Existing FastAPI path', 'Path with ODRE PQC', 'No plaintext or classical fallback', 'not mobile-to-server end-to-end PQC']) assert(home.includes(phrase));
 const license = read('license/index.html');
-for (const phrase of ['Published security and runtime evidence', 'Commercial checkout', 'customer distribution bundle is finalized']) assert(license.includes(phrase));
+for (const phrase of ['Published security and runtime evidence', 'Commercial checkout', 'Live checkout is available', 'v0.3.0 customer distribution']) assert(license.includes(phrase));
 
 const robots = read('robots.txt');
 assert(/User-agent:\s*\*/.test(robots));
@@ -111,12 +111,15 @@ assert(robots.includes('Sitemap: https://pqc.odreai.com/sitemap.xml'));
 const sitemap = read('sitemap.xml');
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
 assert.deepEqual(sitemapUrls, indexable.map(([, url]) => url));
-for (const changed of indexable.map(([, url]) => new URL(url).pathname)) {
-  assert(sitemap.includes(`<loc>https://pqc.odreai.com${changed}</loc><lastmod>2026-09-11</lastmod>`), `lastmod ${changed}`);
+const changedOnLaunch = new Set(['/', '/docs/', '/pricing/', '/trust/', '/contact/', '/releases/', '/license/']);
+for (const [, url] of indexable) {
+  const pathname = new URL(url).pathname;
+  const expected = changedOnLaunch.has(pathname) ? '2026-09-12' : '2026-09-11';
+  assert(sitemap.includes(`<loc>https://pqc.odreai.com${pathname}</loc><lastmod>${expected}</lastmod>`), `lastmod ${pathname}`);
 }
 
 const pageI18n = read('assets/js/page-i18n.js');
-for (const page of ['home', 'product', 'docs', 'company', 'contact', 'license']) {
+for (const page of ['home', 'product', 'docs', 'pricing', 'trust', 'company', 'contact', 'releases', 'license']) {
   const html = read(page === 'home' ? 'index.html' : `${page}/index.html`);
   const nodes = [...html.matchAll(/data-i18n="([^"]+)"[^>]*>([^<]*)/g)].map(match => ({ getAttribute: () => match[1], textContent: match[2] }));
   const window = {};
