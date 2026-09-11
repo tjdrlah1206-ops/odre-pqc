@@ -40,9 +40,7 @@ for (const [route, canonical] of indexable) {
   assert(html.includes(`<link rel="canonical" href="${canonical}">`), `${route || '/'}: canonical`);
   assert(html.includes(`<meta property="og:url" content="${canonical}">`), `${route || '/'}: og:url`);
   assert(/<meta name="robots" content="index,follow/.test(html), `${route || '/'}: indexability`);
-  for (const lang of ['en', 'ko', 'ja', 'de', 'es', 'x-default']) {
-    assert(html.includes(`hreflang="${lang}"`), `${route || '/'}: hreflang ${lang}`);
-  }
+  assert(!html.includes('rel="alternate" hreflang='), `${route || '/'}: hreflang is not applicable to the client-side locale switcher`);
 }
 
 const seoIntent = {
@@ -113,7 +111,7 @@ assert(robots.includes('Sitemap: https://pqc.odreai.com/sitemap.xml'));
 const sitemap = read('sitemap.xml');
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
 assert.deepEqual(sitemapUrls, indexable.map(([, url]) => url));
-for (const changed of ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/license/']) {
+for (const changed of indexable.map(([, url]) => new URL(url).pathname)) {
   assert(sitemap.includes(`<loc>https://pqc.odreai.com${changed}</loc><lastmod>2026-09-11</lastmod>`), `lastmod ${changed}`);
 }
 

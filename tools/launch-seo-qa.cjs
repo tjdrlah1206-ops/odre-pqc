@@ -24,7 +24,7 @@ for(const url of sitemap){
   assert(h.includes('rel="canonical" href="'+url+'"'));
   assert(/name="robots" content="index,follow/.test(h));
   assert.equal((h.match(/<h1\b/g)||[]).length,1);
-  for(const lang of ['en','ko','ja','de','es'])assert(h.includes('hreflang="'+lang+'"'));
+  assert(!h.includes('rel="alternate" hreflang='),`${route}: hreflang is not applicable to the client-side locale switcher`);
 }
 let languageCases=0;
 function node(attrs,textContent=''){return {attrs,textContent,getAttribute:k=>attrs[k],setAttribute:(k,v)=>{attrs[k]=String(v);}};}

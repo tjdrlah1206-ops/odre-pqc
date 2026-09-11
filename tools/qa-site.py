@@ -62,7 +62,7 @@ for file,p in pages.items():
     if 'noindex' not in p.meta.get('robots',''):
         for key in ['og:title','og:description','og:url','twitter:card']:
             if not p.meta.get(key): metadata.append(f'{file.relative_to(ROOT)} missing {key}')
-        if p.hreflang != {'en','ko','ja','de','es','x-default'}: metadata.append(f'{file.relative_to(ROOT)} incomplete hreflang')
+        if p.hreflang: metadata.append(f'{file.relative_to(ROOT)} hreflang conflicts with client-side locale architecture')
     if not p.header or not p.footer: shared.append(str(file.relative_to(ROOT)))
 
 text='\n'.join(f.read_text(encoding='utf-8',errors='ignore') for f in ROOT.rglob('*') if f.is_file() and f.suffix.lower() not in {'.pdf','.zip','.png','.jpg','.jpeg','.webp'} and '.git' not in f.parts and 'tools' not in f.parts)
