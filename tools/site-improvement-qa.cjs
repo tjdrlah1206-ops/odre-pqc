@@ -128,7 +128,9 @@ for (const page of ['home', 'product', 'docs', 'company', 'contact', 'license'])
   }
 }
 
-assert(read('tools/SEO_RECRAWL_REQUESTS.md').includes('https://pqc.odreai.com/sitemap.xml'));
+const recrawl = read('tools/SEO_RECRAWL_REQUESTS.md');
+assert(recrawl.includes('https://pqc.odreai.com/sitemap.xml'));
+for (const [, url] of indexable) assert(recrawl.includes(url), `recrawl list: ${url}`);
 console.log(JSON.stringify({
   result: 'PASS',
   indexable_urls: indexable.length,

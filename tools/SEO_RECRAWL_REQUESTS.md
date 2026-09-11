@@ -15,6 +15,10 @@ Search Console and NAVER Search Advisor submissions are manual. This list includ
 7. https://pqc.odreai.com/license/
 8. https://pqc.odreai.com/company/
 9. https://pqc.odreai.com/contact/
+10. https://pqc.odreai.com/releases/
+11. https://pqc.odreai.com/terms/
+12. https://pqc.odreai.com/privacy/
+13. https://pqc.odreai.com/refund/
 
 ## NAVER priority
 
@@ -27,6 +31,10 @@ Search Console and NAVER Search Advisor submissions are manual. This list includ
 7. https://pqc.odreai.com/license/
 8. https://pqc.odreai.com/company/
 9. https://pqc.odreai.com/contact/
+10. https://pqc.odreai.com/releases/
+11. https://pqc.odreai.com/terms/
+12. https://pqc.odreai.com/privacy/
+13. https://pqc.odreai.com/refund/
 
 ## Discovery files
 
