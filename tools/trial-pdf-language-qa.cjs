@@ -22,7 +22,7 @@ for (const [lang, hash] of Object.entries(hashes)) {
 }
 const html = read('contact/index.html');
 assert(html.includes('/assets/js/site.js?v=trial-rc2-20260909'));
-assert(html.includes('/assets/js/page-i18n.js?v=launch-contract-20260909'));
+assert(html.includes('/assets/js/page-i18n.js?v=site-conversion-20260911'));
 const markup = html.match(/<a\b([^>]*id="trial-guide-pdf"[^>]*)>([^<]+)<\/a>/);
 assert(markup);
 function node(attrs, textContent = '') {

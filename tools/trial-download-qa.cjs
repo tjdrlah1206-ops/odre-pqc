@@ -12,9 +12,9 @@ const section = contact.match(/<section\b[^>]*id="trial"[^>]*>([\s\S]*?)<\/secti
 assert(!section.includes('data-i18n="trialCopy"'));
 assert(!read('assets/js/page-i18n.js').includes('이메일로 요청할 필요 없이 ODRE 서버에서 직접 다운로드합니다.'));
 assert(!/mailto:|onclick=|formaction=|<form\b/.test(section));
-assert(!contact.includes('data-i18n="sales"'));
-assert(!contact.includes('ODRE%20PQC%20Sales'));
-assert.equal((contact.match(/<article class="card">/g) || []).length, 4);
+assert(contact.includes('data-i18n="sales"'));
+assert(contact.includes('ODRE%20PQC%20Sales'));
+assert.equal((contact.match(/<article class="card">/g) || []).length, 5);
 const pdfName = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_EN.pdf';
 const links = [...section.matchAll(/<a\b([^>]*)>([^<]*)<\/a>/g)];
 assert.equal(links.length, 1);

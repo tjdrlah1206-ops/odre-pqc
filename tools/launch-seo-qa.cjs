@@ -37,7 +37,12 @@ for(const file of htmlFiles){
     for(const n of nodes){const value=c[n.attrs['data-i18n']];assert.equal(typeof value,'string');assert(!retired.test(value));if(value.includes('install(app)'))assert(value.includes('Gateway'),`${page}/${lang}: incomplete Core-only integration`);}
     const boundaryKey={home:'productCopy',product:'integrateCopy',security:'lead',docs:'lead'}[page];
     if(boundaryKey)assert(c[boundaryKey].includes('HTTPS/TLS → FastAPI → Gateway → ODRE v3 → Core → Protected Handler'));
-    if(page==='home'||page==='product')for(const keyword of ['Post-Quantum Application Security','FastAPI','ML-KEM-768','ML-DSA-65','Fail-Closed'])assert((c.seoTitle+' '+c.seoDescription).includes(keyword));
+    if(page==='home'||page==='product'){
+      const seo=c.seoTitle+' '+c.seoDescription;
+      for(const keyword of ['FastAPI','ML-KEM-768','ML-DSA-65','Fail-Closed'])assert(seo.includes(keyword));
+      const postQuantum={en:/Post-Quantum/,ko:/포스트양자/,ja:/ポスト量子/,de:/Post-Quantum/,es:/poscuántic/i}[lang];
+      assert(postQuantum.test(seo),`${page}/${lang}: localized post-quantum intent missing`);
+    }
     if(page==='home'||page==='pricing')assert(!/^(14-Day Trial|14日間評価版|14일 평가판)$/.test(c.trial));
     if(page==='docs'){
       for(let i=1;i<=11;i++){assert(c['quickStep'+i]);if(lang!=='en')assert.notEqual(c['quickStep'+i],window.ODRE_PAGE_I18N.en['quickStep'+i]);}
