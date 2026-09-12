@@ -23,7 +23,9 @@ assert.equal(guideLinks.length, 5);
 assert.equal(new Set(links.map(link => link[1].match(/href="([^"]+)"/)[1])).size, 7);
 assert(section.includes('ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip'));
 assert(section.includes('ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip.sha256'));
-assert(!section.includes('v0.2.9'), 'download listing must not mix old whitepapers with the new guides');
+assert(section.includes('Production Bundle 0.3.0'));
+assert(section.includes('sealed ODRE PQC Core v0.2.9'));
+assert(!section.includes('Public_Technical_Whitepaper'), 'download listing must not mix old whitepaper links with the customer guides');
 for (const [language, sha256] of Object.entries(expected)) {
   const name = `ODRE_PQC_Installation_License_Activation_Guide_v1.2.1_${language}.pdf`;
   const link = guideLinks.find(item => item[1].includes(`href="/${name}"`));
@@ -46,15 +48,15 @@ vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/js/page-i18n.js'), 'u
   window, document: { body: { dataset: { page: 'docs' } }, querySelectorAll: () => nodes }
 }, { timeout: 1000 });
 const titles = {
-  en: 'ODRE PQC v0.3.0 & installation guides',
-  ko: 'ODRE PQC v0.3.0 및 설치 가이드',
-  ja: 'ODRE PQC v0.3.0とインストールガイド',
-  de: 'ODRE PQC v0.3.0 und Installationsleitfäden',
-  es: 'ODRE PQC v0.3.0 y guías de instalación'
+  en: 'ODRE PQC Production 0.3.0 & installation guides',
+  ko: 'ODRE PQC Production 0.3.0 및 설치 가이드',
+  ja: 'ODRE PQC Production 0.3.0とインストールガイド',
+  de: 'ODRE PQC Production 0.3.0 und Installationsleitfäden',
+  es: 'ODRE PQC Production 0.3.0 y guías de instalación'
 };
 for (const [language, title] of Object.entries(titles)) {
   assert.equal(window.ODRE_PAGE_I18N[language].downloadsTitle, title);
   assert(window.ODRE_PAGE_I18N[language].downloadsCopy.includes('v1.2.1'));
 }
-assert(html.includes('/assets/js/page-i18n.js?v=artifact-n1-20260912'));
+assert(html.includes('/assets/js/page-i18n.js?v=version-boundary-20260912'));
 console.log(JSON.stringify({ product_download_links: 2, guides: 5, original_sha256_matches: 5, language_cases: 5, network_requests: 0, result: 'PASS' }, null, 2));

@@ -101,7 +101,7 @@ assert(read('company/index.html').includes('OpenSSL 3.5.8'));
 const home = read('index.html');
 for (const phrase of ['Existing FastAPI path', 'Path with ODRE PQC', 'No plaintext or classical fallback', 'not mobile-to-server end-to-end PQC']) assert(home.includes(phrase));
 const license = read('license/index.html');
-for (const phrase of ['Published security and runtime evidence', 'Commercial checkout', 'Live checkout is available', 'v0.3.0 customer distribution']) assert(license.includes(phrase));
+for (const phrase of ['Published security and runtime evidence', 'Commercial checkout', 'Live checkout is available', 'Production Bundle 0.3.0']) assert(license.includes(phrase));
 
 const robots = read('robots.txt');
 assert(/User-agent:\s*\*/.test(robots));
