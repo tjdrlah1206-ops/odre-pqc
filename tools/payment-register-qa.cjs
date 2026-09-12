@@ -32,7 +32,7 @@ const path = require('path');
     if (!await page.locator('#activationView').isVisible()) failures.push(`${language}/${viewport.width}: activation view not visible`);
     if (await page.locator('#activationTab').getAttribute('aria-selected') !== 'true') failures.push(`${language}/${viewport.width}: activation tab state`);
     const badges = await page.locator('.flow-tab .badge').allTextContents();
-    if (badges.map(value => value.trim()).join(',') !== '01,02') failures.push(`${language}/${viewport.width}: flow order ${badges}`);
+    if (badges.map(value => value.trim()).join(',') !== '01,02,03') failures.push(`${language}/${viewport.width}: flow order ${badges}`);
     if (await page.locator('#paymentView .summary').count()) failures.push(`${language}/${viewport.width}: inert plan/unit summary still present`);
     if (viewport.width >= 1024) {
       const licenseTrigger = page.locator('.desktop-nav .nav-trigger[data-common="license"]');

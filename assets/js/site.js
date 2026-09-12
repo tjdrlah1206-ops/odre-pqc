@@ -21,9 +21,14 @@
     }
   };
 
+  var deviceMenuCopy={"en": {"deviceTransfer": "Device transfer & replacement", "deviceTransferDesc": "Move an existing Unit or recover a failed device"}, "ko": {"deviceTransfer": "장치 이전 · 기기 변경", "deviceTransferDesc": "기존 Unit 이전과 고장 장치 복구"}, "ja": {"deviceTransfer": "デバイス移行・交換", "deviceTransferDesc": "既存Unitの移行と故障デバイスの復旧"}, "de": {"deviceTransfer": "Gerät übertragen oder ersetzen", "deviceTransferDesc": "Bestehende Unit übertragen oder defektes Gerät ersetzen"}, "es": {"deviceTransfer": "Traslado y cambio de dispositivo", "deviceTransferDesc": "Trasladar una Unit o recuperar un dispositivo averiado"}};
+  supported.forEach(function(code){Object.assign(common[code],deviceMenuCopy[code]);});
+
   function t(key) { return (common[current] && common[current][key]) || common.en[key] || key; }
   function storedLanguage() { try { return localStorage.getItem('odre-pqc-lang'); } catch (error) { return null; } }
   function initialLanguage() {
+    var fixed=document.body.getAttribute('data-document-language');
+    if(supported.indexOf(fixed)>=0)return fixed;
     var query = new URLSearchParams(location.search).get('lang');
     if (supported.indexOf(query) >= 0) return query;
     var stored = storedLanguage();
@@ -35,6 +40,8 @@
   // A legacy saved language may have been selected automatically. Never label it
   // as a manual choice without provenance from the actual language selector.
   function initialLanguageState() {
+    var fixed=document.body.getAttribute('data-document-language');
+    if(supported.indexOf(fixed)>=0&&fixed!==storedLanguage())return {source:'unknown',selected:null};
     var query = new URLSearchParams(location.search).get('lang');
     if (supported.indexOf(query) >= 0) return { source: 'unknown', selected: null };
     var browser = String(navigator.language || 'en').slice(0, 2).toLowerCase();
@@ -72,7 +79,7 @@
     { key: 'product', href: '/product/', items: [['overview','/product/','productDesc'],['how','/product/#how-it-works','how'],['deployment','/product/#deployment','deployment'],['requirements','/product/#system-requirements','requirements']] },
     { key: 'security', href: '/security/', items: [['architecture','/security/','securityDesc'],['cryptography','/security/#cryptography','cryptography'],['failclosed','/security/#fail-closed','failclosed'],['verification','/security/#release-verification','verification']] },
     { key: 'docs', href: '/docs/', items: [['quickstart','/docs/#quick-start','docsDesc'],['installation','/docs/#installation','installation'],['operations','/docs/#operations','operations'],['faq','/docs/#faq','faq'],['releases','/releases/','releases']] },
-    { key: 'license', href: '/license/', items: [['licenseOptions','/license/','licenseOptionsDesc'],['activateLicense','/payment/register/?flow=activate','activateLicenseDesc']] },
+    { key: 'license', href: '/license/', items: [['licenseOptions','/license/','licenseOptionsDesc'],['activateLicense','/payment/register/?flow=activate','activateLicenseDesc'],['deviceTransfer','/payment/register/?flow=native','deviceTransferDesc']] },
     { key: 'trust', href: '/trust/', items: [['integrity','/trust/#release-integrity','trustDesc'],['advisories','/trust/#security-advisories','advisories'],['disclosure','/trust/#vulnerability-reporting','disclosure'],['lifecycle','/trust/#support-lifecycle','lifecycle'],['data','/trust/#data-handling','data']] },
     { key: 'company', href: '/company/', items: [['about','/company/','companyDesc'],['contact','/contact/','contact']] }
   ];
@@ -119,7 +126,7 @@
       footerColumn('product', [['overview','/product/'],['deployment','/product/#deployment'],['requirements','/product/#system-requirements'],['pricing','/pricing/']]) +
       footerColumn('security', [['architecture','/security/'],['verification','/security/#release-verification'],['advisories','/trust/#security-advisories'],['integrity','/trust/#release-integrity']]) +
       footerColumn('resources', [['docs','/docs/'],['quickstart','/docs/#quick-start'],['releases','/releases/'],['faq','/docs/#faq']]) +
-      footerColumn('company', [['about','/company/'],['contact','/contact/'],['activateLicense','/payment/register/?flow=activate']]) +
+      footerColumn('company', [['about','/company/'],['contact','/contact/'],['activateLicense','/payment/register/?flow=activate'],['deviceTransfer','/payment/register/?flow=native']]) +
       footerColumn('legal', [['terms','/terms/'],['privacy','/privacy/'],['refund','/refund/'],['commercial','/terms/']]) +
       '</div><div class="container footer-bottom"><span>© 2026 ODRE AI. All rights reserved.</span><span data-common="korea">' + t('korea') + '</span></div></footer>';
   }
@@ -223,6 +230,8 @@
   }
 
   function applyLanguage(code, source) {
+    var localeBase=document.body.getAttribute('data-localized-base');
+    if(source==='manual'&&localeBase&&supported.indexOf(code)>=0&&code!==document.body.getAttribute('data-document-language')){try{localStorage.setItem('odre-pqc-lang',code);localStorage.setItem('odre-pqc-language-provenance',JSON.stringify({language:code,source:'manual'}));}catch(error){}var target=new URL(localeBase+(code==='en'?'':code+'.html'),location.href);target.hash=location.hash;location.assign(target.href);return;}
     if (supported.indexOf(code) < 0) code = 'en';
     if (source === 'manual') languageState = { source: 'manual', selected: code };
     current = code;

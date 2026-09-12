@@ -9,9 +9,11 @@ HTML = sorted(ROOT.rglob('*.html'))
 
 class Page(HTMLParser):
     def __init__(self):
-        super().__init__(); self.links=[]; self.ids=set(); self.title=''; self._title=False; self.meta={}; self.canonical=None; self.header=False; self.footer=False; self.hreflang=set()
+        super().__init__(); self.links=[]; self.ids=set(); self.title=''; self._title=False; self.meta={}; self.canonical=None; self.header=False; self.footer=False; self.hreflang={}; self.document_language=None; self.localized_base=None; self.html_language=None
     def handle_starttag(self, tag, attrs):
         a=dict(attrs)
+        if tag=='html': self.html_language=a.get('lang')
+        if tag=='body': self.document_language=a.get('data-document-language'); self.localized_base=a.get('data-localized-base')
         if 'id' in a: self.ids.add(a['id'])
         if tag in ('a','link') and a.get('href'): self.links.append(('href',a['href']))
         if tag in ('script','img') and a.get('src'): self.links.append(('src',a['src']))
@@ -20,7 +22,7 @@ class Page(HTMLParser):
             key=a.get('name') or a.get('property');
             if key: self.meta[key]=a.get('content','')
         if tag=='link' and a.get('rel')=='canonical': self.canonical=a.get('href')
-        if tag=='link' and a.get('rel')=='alternate' and a.get('hreflang'): self.hreflang.add(a.get('hreflang'))
+        if tag=='link' and a.get('rel')=='alternate' and a.get('hreflang'): self.hreflang[a['hreflang']]=a.get('href','')
         if 'data-site-header' in a: self.header=True
         if 'data-site-footer' in a: self.footer=True
     def handle_endtag(self, tag):
@@ -62,7 +64,21 @@ for file,p in pages.items():
     if 'noindex' not in p.meta.get('robots',''):
         for key in ['og:title','og:description','og:url','twitter:card']:
             if not p.meta.get(key): metadata.append(f'{file.relative_to(ROOT)} missing {key}')
-        if p.hreflang: metadata.append(f'{file.relative_to(ROOT)} hreflang conflicts with client-side locale architecture')
+        if p.localized_base:
+            required={'en','ko','ja','de','es','x-default'}
+            if set(p.hreflang)!=required or p.document_language!=p.html_language:
+                metadata.append(f'{file.relative_to(ROOT)} incomplete static locale metadata')
+            for code,url in p.hreflang.items():
+                expected='en' if code=='x-default' else code
+                target=ROOT/urlparse(url).path.lstrip('/')
+                if target.is_dir(): target=target/'index.html'
+                localized=pages.get(target)
+                if not localized or localized.html_language!=expected or localized.localized_base!=p.localized_base:
+                    metadata.append(f'{file.relative_to(ROOT)} invalid {code} alternate: {url}')
+            expected_path=p.localized_base+('' if p.document_language=='en' else p.document_language+'.html')
+            if urlparse(p.canonical or '').path!=expected_path:
+                metadata.append(f'{file.relative_to(ROOT)} incorrect localized canonical')
+        elif p.hreflang: metadata.append(f'{file.relative_to(ROOT)} hreflang conflicts with client-side locale architecture')
     if not p.header or not p.footer: shared.append(str(file.relative_to(ROOT)))
 
 text='\n'.join(f.read_text(encoding='utf-8',errors='ignore') for f in ROOT.rglob('*') if f.is_file() and f.suffix.lower() not in {'.pdf','.zip','.png','.jpg','.jpeg','.webp'} and '.git' not in f.parts and 'tools' not in f.parts)
