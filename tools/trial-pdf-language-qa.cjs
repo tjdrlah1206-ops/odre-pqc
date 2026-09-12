@@ -22,7 +22,7 @@ for (const [lang, hash] of Object.entries(hashes)) {
 }
 const html = read('contact/index.html');
 assert(html.includes('/assets/js/site.js?v=trial-rc2-20260909'));
-assert(html.includes('/assets/js/page-i18n.js?v=artifact-current-20260912'));
+assert(html.includes('/assets/js/page-i18n.js?v=contact-version-final-20260912'));
 assert(/id="trial-download"[^>]*href="https:\/\/odreai\.com\/odre-pqc\/downloads\/production\/0\.3\.0\/ODRE_PQC_PRODUCTION_0\.3\.0_CUSTOMER_DELIVERY\.zip"/.test(html));
 const markup = html.match(/<a\b([^>]*id="trial-guide-pdf"[^>]*)>([^<]+)<\/a>/);
 assert(markup);

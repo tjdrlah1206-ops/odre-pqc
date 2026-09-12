@@ -52,7 +52,12 @@ for (const [page, key] of Object.entries({
     window,
     document: { body: { dataset: { page } }, querySelectorAll: () => nodes }
   }, { timeout: 1000 });
-  // English is asserted directly from static HTML above; the runtime dictionary supplies four alternates.
+  if (page === 'contact') {
+    const englishRuntimeCopy = window.ODRE_PAGE_I18N.en;
+    assert(englishRuntimeCopy.trialDeliveryCopy.includes('Production Bundle 0.3.0'), 'contact/en runtime: missing Production Bundle version');
+    assert(englishRuntimeCopy.trialDeliveryCopy.includes('Core Security Engine v0.2.9'), 'contact/en runtime: missing sealed Core version');
+  }
+  // Static English is asserted above; the four translated runtime dictionaries are checked here.
   for (const language of ['ko', 'ja', 'de', 'es']) {
     const copy = window.ODRE_PAGE_I18N[language][key];
     assert(copy.includes(productionVersion), `${page}/${language}: missing Production version`);
