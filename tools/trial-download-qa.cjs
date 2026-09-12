@@ -10,7 +10,7 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const mainUrl = 'https://odreai.com/odre-pqc/downloads/production/0.3.0/ODRE_PQC_PRODUCTION_0.3.0_CUSTOMER_DELIVERY.zip';
 const checksumUrl = mainUrl + '.sha256';
-const archiveSha256 = '00DC788B5ECAAAC08C53ACBAD009DC296185149A9917124FF0F16C0EDAABC182';
+const archiveSha256 = '30D969CA880CCC6D544D5532EBC19AD62F187902DEF4EF34AAFFB047B722BF1B';
 const contact = read('contact/index.html');
 const section = contact.match(/<section\b[^>]*id="trial"[^>]*>([\s\S]*?)<\/section>/)[1];
 
@@ -20,7 +20,7 @@ assert(!/disabled|aria-disabled/.test(section));
 assert(section.includes(`id="trial-download" href="${mainUrl}"`));
 assert(section.includes(`id="trial-checksum" href="${checksumUrl}"`));
 assert(section.includes(archiveSha256));
-assert(section.includes('56,730,320-byte'));
+assert(section.includes('56,727,194-byte'));
 assert(section.includes('No ZIP password is required'));
 assert.equal((section.match(/<a\b/g) || []).length, 3);
 
@@ -67,4 +67,4 @@ for (const file of ['index.html', 'contact/index.html', 'docs/index.html', 'trus
   assert(!source.includes('CUSTOMER_DELIVERY_AES256'));
   assert(!source.includes('14AAEF12C137DDD7126C0E2D2C6CC98DA2DA378F830A13CD9E666653D484C1CF'));
 }
-console.log(JSON.stringify({ result: 'PASS', languages: 5, release: '0.3.0', mainDownloadUrl: mainUrl, checksumUrl, archiveBytes: 56730320, archiveSha256, trialEmailLink: 'REMOVED', actualDownloadRequests: 0, productionApiCalls: 0 }, null, 2));
+console.log(JSON.stringify({ result: 'PASS', languages: 5, release: '0.3.0', mainDownloadUrl: mainUrl, checksumUrl, archiveBytes: 56727194, archiveSha256, trialEmailLink: 'REMOVED', actualDownloadRequests: 0, productionApiCalls: 0 }, null, 2));

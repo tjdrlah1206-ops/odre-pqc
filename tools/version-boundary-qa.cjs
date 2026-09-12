@@ -18,7 +18,7 @@ const pages = {
 const i18nSource = read('assets/js/page-i18n.js');
 const productionVersion = '0.3.0';
 const coreVersion = 'v0.2.9';
-const customerHash = '00DC788B5ECAAAC08C53ACBAD009DC296185149A9917124FF0F16C0EDAABC182';
+const customerHash = '30D969CA880CCC6D544D5532EBC19AD62F187902DEF4EF34AAFFB047B722BF1B';
 const coreHash = 'A8AFA10EE0AFACEF1C0FAF55FF07B96C722920E5AEE8692F6F026E804F028697';
 
 for (const [page, html] of Object.entries(pages)) {
@@ -62,8 +62,9 @@ for (const [page, key] of Object.entries({
 
 const customerSources = Object.values(pages).join('\n') + '\n' + i18nSource;
 assert(!/Core(?: Security Engine)?\s*(?:version|:)?\s*v?0\.3\.0/i.test(customerSources));
-assert(!/56[,.]731[,.]226|56,731,576/.test(customerSources));
-assert(!/page-i18n\.js\?v=artifact-n1-20260912/.test(customerSources));
+assert(!/56[,.]730[,.]320|56[,.]731[,.]226|56,731,576/.test(customerSources));
+assert(!/00DC788B5ECAAAC08C53ACBAD009DC296185149A9917124FF0F16C0EDAABC182/.test(customerSources));
+assert(!/page-i18n\.js\?v=(?:artifact-n1|version-boundary)-20260912/.test(customerSources));
 
 console.log(JSON.stringify({
   result: 'PASS',
