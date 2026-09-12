@@ -47,6 +47,80 @@
   oldRelease.append(recoveryLabel,recoveryButton);
   let language = 'en', capability = null, fixedSelection = null, timer = null, checks = 0, activeMessage = null, busy = false, releaseRequest = null, pendingRecovery = null;
   const copy = key => rows[language][fields.indexOf(key)];
+  const customerHelperCopy={
+  "ko": {
+    "intro": "새 서버에서 생성한 Device Code와 라이선스 정보를 입력하세요.",
+    "licenseIdHint": "발급받은 라이선스 ID를 입력하세요.",
+    "licenseKeyHint": "해당 라이선스의 키를 입력하세요.",
+    "deviceCodeHint": "설치 가이드에 따라 새 서버에서 생성한 코드를 입력하세요.",
+    "verified": "라이선스를 확인했습니다. 새 Unit 사용 또는 기존 Unit 이전을 선택해 주세요.",
+    "selected": "선택을 저장했습니다. 새 서버의 프로그램에서 기존 요청을 이어서 진행해 주세요.",
+    "waiting": "기존 서버의 오프라인 사용권 만료를 기다리고 있습니다. 만료 후 새 서버에서 보호 기능을 사용할 수 있습니다.",
+    "committed": "서버 처리가 승인되었습니다. 새 서버 프로그램의 등록 완료 확인을 기다리고 있습니다.",
+    "applied": "새 서버의 등록 내용을 저장했습니다. 설치 가이드에 따라 활성 상태와 정상 동작을 확인하세요.",
+    "proof": "장치를 확인하지 못했습니다. 기존 설치 상태를 유지하고 설치 가이드 또는 지원 안내를 확인하세요.",
+    "releaseInstruction": "기존 서버로 들어오는 새 요청을 중지하고, 설치 가이드에 따라 이 요청 파일로 이전을 확인하세요. 이전 확인이 끝날 때까지 Native 프로그램을 실행 상태로 유지해 주세요.",
+    "recoveryConfirm": "기존 서버에 접근할 수 없습니다. 기존 이전 요청으로 지원 승인을 요청하고, 기존 오프라인 사용권이 남아 있다면 만료까지 기다립니다."
+  },
+  "en": {
+    "intro": "Enter the Device Code generated on the new server and your license details.",
+    "licenseIdHint": "Enter the License ID issued to you.",
+    "licenseKeyHint": "Enter the key for this license.",
+    "deviceCodeHint": "Enter the code generated on the new server using the installation guide.",
+    "verified": "License verified. Choose a new Unit or transfer an existing Unit.",
+    "selected": "Selection saved. Continue the existing request in the program on the new server.",
+    "waiting": "Waiting for the previous server’s offline entitlement to expire. Protection on the new server becomes available afterwards.",
+    "committed": "Server processing was approved. Waiting for the new server program to confirm registration is complete.",
+    "applied": "Registration was saved on the new server. Follow the installation guide to confirm active status and normal operation.",
+    "proof": "The device could not be verified. Preserve the existing installation and check the installation guide or support instructions.",
+    "releaseInstruction": "Stop new requests to the previous server and follow the installation guide to confirm the transfer using this request file. Keep Native running until confirmation is complete.",
+    "recoveryConfirm": "I cannot access the previous server. Request support approval for the existing transfer and wait for any remaining offline entitlement to expire."
+  },
+  "ja": {
+    "intro": "新しいサーバーで生成したDevice Codeとライセンス情報を入力してください。",
+    "licenseIdHint": "発行されたLicense IDを入力してください。",
+    "licenseKeyHint": "このライセンスのキーを入力してください。",
+    "deviceCodeHint": "インストールガイドに従い、新しいサーバーで生成したコードを入力してください。",
+    "verified": "ライセンスを確認しました。新しいUnitの使用か既存Unitの移行を選んでください。",
+    "selected": "選択を保存しました。新しいサーバーのプログラムで既存のリクエストを続けてください。",
+    "waiting": "以前のサーバーのオフライン利用権の期限切れを待っています。期限が切れた後に新しいサーバーで保護機能を使用できます。",
+    "committed": "サーバー側の処理が承認されました。新しいサーバーのプログラムによる登録完了の確認を待っています。",
+    "applied": "新しいサーバーに登録内容を保存しました。インストールガイドに従い、有効な状態と正常動作を確認してください。",
+    "proof": "デバイスを確認できませんでした。既存のインストールを保持し、インストールガイドまたはサポート案内を確認してください。",
+    "releaseInstruction": "以前のサーバーへの新しいリクエストを停止し、インストールガイドに従ってこの要求ファイルで移行を確認してください。確認が完了するまでNativeを実行したままにしてください。",
+    "recoveryConfirm": "以前のサーバーにアクセスできません。既存の移行のサポート承認を申請し、有効なオフライン利用権があれば期限切れまで待ちます。"
+  },
+  "de": {
+    "intro": "Geben Sie den Device Code des neuen Servers und Ihre Lizenzdaten ein.",
+    "licenseIdHint": "Geben Sie die ausgestellte License ID ein.",
+    "licenseKeyHint": "Geben Sie den Schlüssel dieser Lizenz ein.",
+    "deviceCodeHint": "Geben Sie den gemäß Installationsanleitung auf dem neuen Server erzeugten Code ein.",
+    "verified": "Lizenz bestätigt. Wählen Sie eine neue Unit oder übertragen Sie eine bestehende Unit.",
+    "selected": "Auswahl gespeichert. Setzen Sie die bestehende Anfrage im Programm auf dem neuen Server fort.",
+    "waiting": "Die Offline-Nutzungsberechtigung des bisherigen Servers muss ablaufen. Danach ist der Schutz auf dem neuen Server verfügbar.",
+    "committed": "Serverseitige Verarbeitung freigegeben. Das Programm auf dem neuen Server muss den Abschluss der Registrierung bestätigen.",
+    "applied": "Die Registrierung wurde auf dem neuen Server gespeichert. Prüfen Sie aktiven Status und normalen Betrieb gemäß Installationsanleitung.",
+    "proof": "Das Gerät konnte nicht bestätigt werden. Bewahren Sie die bestehende Installation und prüfen Sie die Installationsanleitung oder Supporthinweise.",
+    "releaseInstruction": "Stoppen Sie neue Anfragen an den bisherigen Server und bestätigen Sie die Übertragung mit dieser Anfragedatei gemäß Installationsanleitung. Lassen Sie Native bis zur Bestätigung weiterlaufen.",
+    "recoveryConfirm": "Ich kann den bisherigen Server nicht erreichen. Für die bestehende Übertragung Supportfreigabe anfordern und gegebenenfalls den Ablauf der Offline-Nutzungsberechtigung abwarten."
+  },
+  "es": {
+    "intro": "Introduzca el Device Code generado en el servidor nuevo y los datos de su licencia.",
+    "licenseIdHint": "Introduzca el License ID emitido.",
+    "licenseKeyHint": "Introduzca la clave de esta licencia.",
+    "deviceCodeHint": "Introduzca el código generado en el servidor nuevo siguiendo la guía de instalación.",
+    "verified": "Licencia verificada. Elija una Unit nueva o traslade una existente.",
+    "selected": "Selección guardada. Continúe la solicitud existente en el programa del servidor nuevo.",
+    "waiting": "Esperando a que venza el derecho de uso sin conexión del servidor anterior. Después estará disponible la protección en el servidor nuevo.",
+    "committed": "Procesamiento del servidor aprobado. Esperando que el programa del servidor nuevo confirme el registro completo.",
+    "applied": "El registro se guardó en el servidor nuevo. Confirme el estado activo y el funcionamiento normal siguiendo la guía de instalación.",
+    "proof": "No se pudo verificar el dispositivo. Conserve la instalación existente y consulte la guía de instalación o las instrucciones de soporte.",
+    "releaseInstruction": "Detenga las solicitudes nuevas al servidor anterior y confirme el traslado con este archivo según la guía de instalación. Mantenga Native en ejecución hasta completar la confirmación.",
+    "recoveryConfirm": "No puedo acceder al servidor anterior. Solicito aprobación de soporte para el traslado existente y esperaré a que venza cualquier derecho de uso sin conexión restante."
+  }
+};
+  for(const key of ['licenseIdHint','licenseKeyHint','deviceCodeHint']) fields.push(key);
+  for(const [lang,values] of Object.entries(customerHelperCopy)) for(const [key,value] of Object.entries(values)) rows[lang][fields.indexOf(key)]=value;
   function message(key, code = '') {
     activeMessage = [key, code];
     $('nativePortalMessage').textContent = copy(key) + (code ? ` (${code})` : '');
