@@ -1,1 +1,104 @@
-<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native 0.3.0: Installation und Gerätewechsel</title><style>body{max-width:850px;margin:40px auto;padding:0 22px;font:17px/1.65 system-ui;color:#162a32;background:#f7faf9}nav{overflow-wrap:anywhere}a{color:#006269}.notice{border-left:4px solid #087965;padding:12px 20px;background:#e7f1ed}h1{font-size:2rem}</style><nav><a href="index.html">EN</a> · <a href="ko.html">KO</a> · <a href="ja.html">JA</a> · <a href="de.html">DE</a> · <a href="es.html">ES</a></nav><main><h1>Native 0.3.0: Installation und Gerätewechsel</h1><p>Verwenden Sie den geprüften Native-Bundle-Launcher für Ihr Betriebssystem. Vorhandene Aktionen: identity, trial, status, run und paid. Dies sind keine eigenständigen Shell-Befehle. Genaue Befehle und Pins stehen in der Anleitung Ihres Bundles.</p><p>Die Wheel-Befehle odre-pqc-commercial activate/deactivate sind keine Native-Kundenbefehle. Übertragen Sie keinen Wheel-Zustand auf Native.</p><p>Gerätewechsel und Serverumzüge benötigen derzeit Prüfung und Freigabe durch den Support. Der veröffentlichte Launcher bietet keinen selbstständigen Transfer. Eine Neuregistrierung überträgt keine vorhandene Unit. Wählen Sie ausdrücklich Transfer oder zusätzliche freie Unit. Starten Sie keine neue Trial als Ersatz für einen Transfer.</p><p>Bewahren Sie den alten Gerätezustand auf. Kopieren Sie keine DPAPI-Dateien, privaten Schlüssel oder Gateway-Identitäten. Das neue Gerät benötigt eigene Schlüssel und Identität. Eine alte Offline-Lease kann bis zum Ablauf gültig bleiben; ein Datenbanktransfer beweist keine exklusive Ausführung.</p><p>Trial-Transfers werden derzeit nicht unterstützt. Ein bezahlter Transfer ist erst nach Prüfung, geschützter Speicherung, Neustart und Gateway → Core → Handler-Prüfung abgeschlossen. Bei Antwortverlust oder Speicherfehlern denselben Vorgang mit Support wiederherstellen, keine weitere Unit belegen.</p><h2>Kundenmeldungen</h2><p>Keine freie Unit: Transfer oder zusätzliche Kapazität. Abgelaufener Code: nach ausdrücklicher Ablehnung neu anfordern. Freigabe ausstehend: Support bearbeitet den Vorgang. Bereits freigegeben: vorhandenes Ergebnis wiederherstellen. Der vollständige Native-Transfer wird noch validiert.</p><p class="notice">Der RC24-Download wird bis zum Abschluss der Transferprüfung nicht ersetzt. Fehlendes öffentliches Windows-Authenticode-Vertrauen bleibt eine separate bekannte Einschränkung.</p><a href="/docs/">Docs</a> · <a href="/contact/">Support</a></main></html>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ODRE PQC Production 0.3.0 - Native Installations- und Integrationsanleitung</title><style>body{max-width:920px;margin:36px auto;padding:0 22px;font:17px/1.65 system-ui;color:#162a32;background:#f7faf9}a{color:#006269}pre{padding:18px;background:#e7efed;overflow:auto;font-size:13px;line-height:1.6}p,nav{overflow-wrap:anywhere}.item{margin:.3em 0}h1{font-size:2rem}</style></head><body><nav><a href="index.html">EN</a> · <a href="ko.html">KO</a> · <a href="ja.html">JA</a> · <a href="de.html">DE</a> · <a href="es.html">ES</a> · <a href="/payment/register/?flow=activate">Register / Activate</a></nav><main><h1>ODRE PQC Production 0.3.0 - Native Installations- und Integrationsanleitung</h1>
+<p>Die Produktversion ist 0.3.0, die Native-Komponente 0.3.0-rc.24. Vor dem Kundenbetrieb das Installationsarchiv mit dem endgültigen ZIP-SHA-256 im Freigabebericht abgleichen und das Bestehen aller Pflichtkriterien bestätigen.</p>
+<p>ODRE PQC registriert und aktiviert Geräte anhand der Installationsidentität und Geräteschlüssel, ohne Kundenregistrierung oder Kunden-Login. Das nachfolgend genannte Betriebssystem-Ausführungskonto dient Dateiberechtigungen und Prozessen; es ist kein ODRE-Kundenkonto.</p>
+<h2>Schutzgrenze</h2>
+<p>Externer Client → HTTPS/TLS → Kunden-Nginx → Native HTTPS Gateway → ODRE v3 / Native Lease gate → Private Core im Speicher → Kunden-Protected-Handler. Bei passendem unterstütztem API-Vertrag ist kein Client-PQC-SDK erforderlich. Dies ist kein E2E-PQC vom Endgerät. Authentifizierung, Berechtigungen und Eingabeprüfung bleiben in der Kundenanwendung. Geschützte Routen niemals direkt an das Backend weiterleiten. Das Produkt ersetzt weder WAF noch HSM oder Betriebssystemsicherheit.</p>
+<h2>Prüfung vor der Installation</h2>
+<p>Verifier, Trust-Pin und SHA-256 des endgültigen ZIP müssen über einen unabhängig vertrauenswürdigen Kanal vorliegen. Gebündeltes Python oder Native erst nach Prüfung von äußerem CMS, inneren Ed25519-Signaturen, Dateiinventar und Runtime ausführen. Fehler nicht durch manuelles Entpacken umgehen. --install-new des Verifiers nur für ein neues leeres Ziel verwenden. Bestehende Installationen folgen dem Upgrade-Vertrag.</p>
+<p>Öffentliches Windows-Authenticode-Vertrauen wird nicht bereitgestellt. Mit unabhängig bezogenem pin die Kette verifier → CMS → signed CRL → manifest/SHA prüfen. Private Root niemals automatisch in Windows Trusted Root aufnehmen oder Prüfungsfehler ignorieren.</p>
+<h2>Umgebungen und Erstinstallation</h2>
+<p>Unterstützt werden Windows Server 2022 AMD64 und Ubuntu 24.04 AMD64. Der Ubuntu-Launcher benötigt Python 3.12. Die Runtime bleibt im Eigentum von root; ausgeführt wird mit einem dedizierten Nicht-root-Betriebssystemkonto. Die Windows-Runtime unverändert lassen. Ablauf: prüfen/installieren → identity einmal → trial → status → Gateway/Backend konfigurieren → run → geschützte Anfragen und Neustart prüfen → Verkehr freigeben. Core-Initialisierung, doctor und verify laufen im authentifizierten Native-Speicherpfad. Keine nicht vorhandenen init/doctor/verify-Aktionen oder unverschlüsselten Core-Wheels verwenden.</p>
+<h2>14-Tage-Trial und Paid-Umstellung</h2>
+<p>Kostenloser Download; keine E-Mail erforderlich; Download startet den Trial nicht; 14 Tage ab erster erfolgreicher Aktivierung; ein Device, ein Trial; erneuter Download/Installation setzt ihn nicht zurück; geschützte Routen nach Ablauf fail-closed; Paid-Umstellung nach Kauf ohne Neuinstallation. Betriebssystem-Ausführungskonto, state-directory und identity beibehalten. paid fragt License ID sichtbar und License Key verdeckt ab und übergibt beide über stdin. Dies ist nicht die Web-Device-Code-Freigabe des Wheels. Nach Umstellung status und geschützte Anfragen prüfen; denselben run bei Bedarf neu starten.</p>
+<h2>Befehle verwenden</h2>
+<p>Im installierten Ordner des jeweiligen OS ausführen. &lt;...&gt; durch genehmigte absolute Pfade oder öffentliche SHA-256-Werte ersetzen. Für alle Aktionen dasselbe state-directory verwenden. Geheimnisse nicht in Befehlszeilen schreiben. Eine separate Geschäfts-venv enthält nur Abhängigkeiten der Kundenanwendung.</p>
+<h3>Windows Server 2022</h3>
+<pre><code>$state = &#x27;C:\ProgramData\ODRE\native-commercial&#x27;
+$trust = &#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
+$trustPin = &#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
+&amp; .\runtime\python.exe .\odre-native.py identity `
+  --state-directory $state
+&amp; .\runtime\python.exe .\odre-native.py trial `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin
+&amp; .\runtime\python.exe .\odre-native.py status `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin
+&amp; .\runtime\python.exe .\odre-native.py run `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin `
+  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; `
+  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; `
+  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; `
+  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27;</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>state=&quot;$HOME/.local/state/odre-pqc/native-commercial&quot;
+trust=&#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
+trust_pin=&#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
+python3.12 ./odre-native-ubuntu.py identity \
+  --state-directory &quot;$state&quot;
+python3.12 ./odre-native-ubuntu.py trial \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
+python3.12 ./odre-native-ubuntu.py status \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
+python3.12 ./odre-native-ubuntu.py run \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
+  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; \
+  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; \
+  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; \
+  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27; \
+  --core-startup-seconds 120</code></pre>
+<h2>Gateway und Geschäftsprozesse</h2>
+<p>Die Konfiguration akzeptiert nur die exakten Schlüssel des folgenden Schemas. 127.0.0.1 und Port 1024–65535 verwenden, getrennt vom Native-Port und zehn aufeinanderfolgenden Backend-Ports. 1–128 explizite method/path-Paare angeben. Hinter /secure/ sind nur Buchstaben, Ziffern, Unterstrich, Bindestrich und Schrägstrich erlaubt; kein doppelter/abschließender Slash, Wildcard oder Pfadparameter. GET/POST/PUT/PATCH/DELETE/OPTIONS/HEAD sind möglich. POST verlangt ein application/json-Objekt und lehnt doppelte JSON-Schlüssel ab. Array-, Multipart-, Raw-Upload- oder große Payload-Unterstützung nicht voraussetzen. max_pending ist 1–16, keine Durchsatzgarantie. CORS und bestehende Authentifizierung separat erhalten.</p>
+<p>Das Backend bindet 127.0.0.1 am Port aus ODRE_R1_BACKEND_PORT. Native verwaltet Worker auf zehn aufeinanderfolgenden Ports. Gemeinsame DB-Migrationen oder einen Singleton-Scheduler nicht pro Worker starten. TLS-Zertifikate und verschlüsselte PEM-Schlüssel über genehmigte absolute Pfade mit beschränkten Rechten bereitstellen. Das Passwort wird über die geheime Umgebungsvariable ODRE_GATEWAY_TLS_KEY_PASSWORD injiziert und aus der Backend-Umgebung entfernt. Den SHA-256 der exakten geprüften Gateway-JSON-Bytes mit --gateway-pin festlegen.</p>
+<pre><code>{
+  &quot;schema&quot;: &quot;odre-native-gateway-host/v1&quot;,
+  &quot;listen_host&quot;: &quot;127.0.0.1&quot;,
+  &quot;listen_port&quot;: 29443,
+  &quot;routes&quot;: [
+    {
+      &quot;method&quot;: &quot;POST&quot;,
+      &quot;path&quot;: &quot;/secure/echo&quot;
+    }
+  ],
+  &quot;tls_certificate&quot;: &quot;&lt;ABSOLUTE_CERTIFICATE_PATH&gt;&quot;,
+  &quot;tls_private_key&quot;: &quot;&lt;ABSOLUTE_ENCRYPTED_PEM_PATH&gt;&quot;,
+  &quot;max_pending&quot;: 16
+}</code></pre>
+<h2>Zustand, Upgrade und Wiederherstellung</h2>
+<p>Gateway identity unter state-directory/r1-broker-home/gateway-identity erhalten. Windows-DPAPI/beschränkte ACL sowie Ubuntu-Zustand verschlüsselt mit Modus 0600 im Eigentum des Betriebssystem-Dienstkontos beibehalten. Lokale Linux-Verschlüsselung ist kein HSM gegen kompromittierte Administratoren. identity, device.json, ursprüngliche Trial-Zeiten, Paid-Entitlement, Unit-Eigentum und Lease-Generation bewahren. Beim Upgrade weder init/identity zurücksetzen noch Zustand auf andere Geräte kopieren. Neues Bundle separat prüfen und nur von der Authority genehmigte source/target-Upgrades verwenden. Keine beliebigen Allowlist-Einträge oder Downgrades.</p>
+<p>Nach prepare und vor Authority-commit stellt abort den letzten gültigen Zustand wieder her. Geht nach commit die Antwort verloren, denselben authentifizierten commit per Roll-forward wiederherstellen. Nach commit keine alten Dateien zurückkopieren. Beschädigten Zustand nicht zum Neuregistrieren löschen, sondern authentifizierte Wiederherstellung nutzen. Alte Artifacts und manipulierte Migrationsmetadaten müssen abgewiesen werden.</p>
+<h2>Ablauf, Betrieb und Prüfumfang</h2>
+<p>Gültiger Lease/status allein beweist keine Geschäftsintegration. Jede erfolgreiche geschützte Antwort anhand eindeutiger Request-IDs genau einer Handler-Ausführung zuordnen. Nach Lease-Ablauf verweigert Core mit 403; stoppt Native den Broker, kann Nginx 502 liefern. Fehler weder in 200 umwandeln noch Geschäftsanfragen automatisch wiederholen. Öffentliche Routen behalten ihre Richtlinie. Auf beiden OS wurden isoliertes Nginx HTTPS → Gateway → Core → Handler, Trial/Paid, Neustart, natürlicher Lease-Ablauf und RC2.5-Upgrades geprüft. Endgültige ZIP-Clean-room- und vollständige Lastprüfungen stehen im Abschlussbericht.</p>
+<p>Die Passwortübergabe über Windows-Nginx-Named-Pipe wurde nicht bestätigt. Der isolierte Test verwendete eine ACL-beschränkte temporäre Testpasswortdatei, unmittelbar nach Nginx-Start gelöscht, ohne Produktionsschlüssel. Produktionsgeheimnisse in der Kundenumgebung schützen. Funktions- oder Fuzz-Zahlen belegen weder maximale RPS, unbegrenzte Parallelität, SLA, langfristige Leak-Freiheit noch 128KiB/1MiB-Payload-Unterstützung.</p>
+<h2>Neue Paid-Registrierung und Übertragung einer bestehenden Unit</h2>
+<p>Auf einem neuen Paid-Gerät ohne Trial einmal identity erzeugen und register ausführen. paid dient nur der Umstellung eines bestehenden Trials auf demselben Gerät; identity und Trial-Verlauf bleiben erhalten. Trial-Geräte können nicht übertragen werden.</p>
+<p>Auf dem neuen Server register ausführen und den Device Code unter https://pqc.odreai.com/payment/register/?flow=activate eingeben. License ID und License Key prüfen, dann ausdrücklich neue Unit oder bestehende Unit übertragen wählen. Kein Kundenkonto und kein Login. License Key nicht in Befehlsargumenten, Supportnachrichten oder der Quelldatei hinterlegen.</p>
+<p>Bestehende installation und normalen Austausch oder nicht erreichbare Quelle auswählen. Eine Registrierung überträgt keine Unit automatisch. Normaler Austausch erfordert eine freigegebene Quellversion mit transfer-release. Ältere Installationen zuerst mit dem autorisierten, identity-erhaltenden Upgrade aktualisieren.</p>
+<p>Normaler Austausch: neue Geschäftsanfragen stoppen, den Quell-Native jedoch weiterlaufen lassen. Übertragungs-JSON von der Seite laden und transfer-release unten auf der Quelle ausführen. Native schließt die Annahme, lässt laufende Anfragen abschließen, speichert den geschützten Zustand und sendet signierten Gerätenachweis. Die stillgelegte Quelle danach nicht neu starten.</p>
+<p>Ein defektes Gerät benötigt Supportfreigabe. Stoppt Native während eines normalen Drains, in derselben Weboperation die unerreichbare Quelle bestätigen und Wiederherstellung anfordern. Der neue Native signiert eine gesonderte Zustimmung; Support genehmigt diese. Unit-Auswahl nicht ändern und keinen erfolgreichen Drain unterstellen. Beide Wege warten auf den Ablauf sämtlicher alter Offline Leases, bevor neue geschützte Ausführung autorisiert wird.</p>
+<p>register mit demselben state-directory fortsetzen. Nach Server-Commit bei Antwortverlust oder Speicherfehler das Ergebnis derselben Operation abrufen, Signatur und neue Gerätebindung prüfen und atomar speichern. Keine weitere Unit oder neuen Trial registrieren, keinen alten Zustand zurückspielen und keine privaten Schlüssel, DPAPI oder Gateway identity kopieren. Das Ziel verwendet eigene Schlüssel und Gateway identity.</p>
+<p>LICENSE_UNIT_LIMIT erfordert Übertragung oder zusätzliche Kapazität. SUPPORT_PENDING wartet auf Freigabe, WAITING_OLD_LEASE auf Ablauf. COMMITTED bedeutet Server-Commit, APPLIED bestätigt lokale Native-Speicherung; keines beweist Geschäftsintegration. status, Gateway→Core→Handler und Neustart vor Verkehrsfreigabe prüfen.</p>
+<h3>Auf dem neuen Gerät ausführen</h3>
+<h3>Windows Server 2022</h3>
+<pre><code>&amp; .\runtime\python.exe .\odre-native.py register `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>python3.12 ./odre-native-ubuntu.py register \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;</code></pre>
+<h3>Quelle beim normalen Austausch freigeben</h3>
+<h3>Windows Server 2022</h3>
+<pre><code>&amp; .\runtime\python.exe .\odre-native.py transfer-release `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin `
+  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>python3.12 ./odre-native-ubuntu.py transfer-release \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
+  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre></main></body></html>

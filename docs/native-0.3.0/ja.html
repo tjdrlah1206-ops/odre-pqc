@@ -1,1 +1,104 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native 0.3.0：インストールと端末交換</title><style>body{max-width:850px;margin:40px auto;padding:0 22px;font:17px/1.65 system-ui;color:#162a32;background:#f7faf9}nav{overflow-wrap:anywhere}a{color:#006269}.notice{border-left:4px solid #087965;padding:12px 20px;background:#e7f1ed}h1{font-size:2rem}</style><nav><a href="index.html">EN</a> · <a href="ko.html">KO</a> · <a href="ja.html">JA</a> · <a href="de.html">DE</a> · <a href="es.html">ES</a></nav><main><h1>Native 0.3.0：インストールと端末交換</h1><p>検証済みNative BundleのOS別launcherを使ってください。現在のactionはidentity、trial、status、run、paidです。単独のシェルコマンドではありません。実際のコマンドとpin設定は同梱ガイドに従ってください。</p><p>Wheelのodre-pqc-commercial activate/deactivateはNative向けコマンドではありません。Wheelの状態をNativeへ移さないでください。</p><p>端末交換・サーバー移行には現在サポートの審査と承認が必要です。公開launcherにセルフサービス移行機能はありません。新規登録だけでは既存Unitは移転しません。既存Unit移転と空きUnit追加割当を明示的に選択し、Trial再登録で代用しないでください。</p><p>元の端末状態を保持してください。DPAPI、秘密鍵、Gateway identityを複製しないでください。新端末には固有の鍵とidentityが必要です。旧Offline Leaseは期限まで有効な場合があり、DB上の移転だけで排他的実行は保証されません。</p><p>Trial移転は未対応です。有料移転の完了には新端末での検証、保護保存、再起動、Gateway → Core → Handlerの確認が必要です。応答消失や保存失敗は同じ処理をサポート経由で復旧し、追加Unitを割り当てないでください。</p><h2>エラーの案内</h2><p>Unit不足：既存端末の移転または追加購入。コード期限切れ：明示的な拒否を確認して再発行。承認待ち：サポート対応中。承認済み：既存結果を復旧し二重移転しない。これらは区別すべき状態であり、Native移転全体は検証中です。</p><p class="notice">端末移転の検証完了までRC24ダウンロードの置換を保留します。Windows Public Authenticode未提供は別の既知の制限です。</p><a href="/docs/">Docs</a> · <a href="/contact/">Support</a></main></html>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ODRE PQC Production 0.3.0 - Native インストール・統合ガイド</title><style>body{max-width:920px;margin:36px auto;padding:0 22px;font:17px/1.65 system-ui;color:#162a32;background:#f7faf9}a{color:#006269}pre{padding:18px;background:#e7efed;overflow:auto;font-size:13px;line-height:1.6}p,nav{overflow-wrap:anywhere}.item{margin:.3em 0}h1{font-size:2rem}</style></head><body><nav><a href="index.html">EN</a> · <a href="ko.html">KO</a> · <a href="ja.html">JA</a> · <a href="de.html">DE</a> · <a href="es.html">ES</a> · <a href="/payment/register/?flow=activate">Register / Activate</a></nav><main><h1>ODRE PQC Production 0.3.0 - Native インストール・統合ガイド</h1>
+<p>製品バージョンは 0.3.0、Native コンポーネントは 0.3.0-rc.24 です。顧客の本番運用前にリリース承認報告の最終 ZIP SHA-256 とインストール対象を照合し、必須 Gate の合格を確認してください。</p>
+<p>ODRE PQC は顧客の会員登録・ログインを必要とせず、インストール identity と端末キーに基づいて端末を登録・有効化します。以下の OS 実行アカウントはファイル権限とプロセス実行のためのもので、ODRE の顧客アカウントではありません。</p>
+<h2>保護境界</h2>
+<p>外部 Client → HTTPS/TLS → 顧客 Nginx → Native HTTPS Gateway → ODRE v3 / Native Lease gate → メモリ内 Private Core → 顧客 Protected Handler。対応 API 契約に適合すれば Client の PQC SDK は不要です。端末から Handler までの E2E PQC ではありません。ユーザー認証・権限・入力検証は顧客アプリで維持します。保護経路を backend に直接転送してはいけません。WAF・HSM・OS セキュリティの代替ではありません。</p>
+<h2>インストール前の検証</h2>
+<p>独立した信頼経路で受領した verifier、trust pin、最終 ZIP SHA-256 を使用します。外部 CMS、内部 Ed25519 署名、ファイル inventory、runtime の検証前に同梱 Python や Native を実行しません。失敗を手動展開で回避してはいけません。verifier の --install-new は新しい空の配置先にのみ使用します。既存環境は更新契約に従います。</p>
+<p>Windows の公開 Authenticode 信頼は提供されません。独立した経路で得た pin により verifier → CMS → signed CRL → manifest/SHA を検証します。Private Root を Windows Trusted Root に自動登録せず、検証失敗を無視しません。</p>
+<h2>対応環境と初回手順</h2>
+<p>Windows Server 2022 AMD64 と Ubuntu 24.04 AMD64 が対象です。Ubuntu launcher には Python 3.12 が必要です。runtime は root 所有を維持し、専用非 root OS 実行アカウントで実行します。Windows の同梱 runtime を維持します。初回: 検証・設置 → identity 1回 → trial → status → Gateway/backend 設定 → run → 保護要求と再起動検証 → トラフィック開放。Core の初期化・doctor・verify は認証された Native のメモリ内経路で実行されます。存在しない init/doctor/verify action や平文 Core Wheel のインストールは行いません。</p>
+<h2>14日間 Trial と Paid 移行</h2>
+<p>ダウンロード無料・メール不要・ダウンロードでは Trial 未開始・初回正常アクティベーションから14日・1 Device 1 Trial・再ダウンロード/再インストールでリセット不可・期限後の Protected Route は fail-closed・購入後は再インストールなしで Paid 移行。同じ OS 実行アカウント・state-directory・identity を維持します。paid は License ID を通常入力、License Key を非表示入力で受け取り stdin で渡します。Wheel の Web Device Code 承認とは異なります。移行後は status と保護要求を確認し、必要なら同じ run を再起動します。</p>
+<h2>コマンドの使用</h2>
+<p>対象 OS のインストール済みフォルダーで実行します。&lt;...&gt; は承認済み絶対パスまたは公開 SHA-256 に置き換えます。全 action で同じ state-directory を使い、秘密値をコマンド行に記載しません。別の業務 venv には顧客アプリの依存関係だけを入れます。</p>
+<h3>Windows Server 2022</h3>
+<pre><code>$state = &#x27;C:\ProgramData\ODRE\native-commercial&#x27;
+$trust = &#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
+$trustPin = &#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
+&amp; .\runtime\python.exe .\odre-native.py identity `
+  --state-directory $state
+&amp; .\runtime\python.exe .\odre-native.py trial `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin
+&amp; .\runtime\python.exe .\odre-native.py status `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin
+&amp; .\runtime\python.exe .\odre-native.py run `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin `
+  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; `
+  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; `
+  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; `
+  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27;</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>state=&quot;$HOME/.local/state/odre-pqc/native-commercial&quot;
+trust=&#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
+trust_pin=&#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
+python3.12 ./odre-native-ubuntu.py identity \
+  --state-directory &quot;$state&quot;
+python3.12 ./odre-native-ubuntu.py trial \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
+python3.12 ./odre-native-ubuntu.py status \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
+python3.12 ./odre-native-ubuntu.py run \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
+  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; \
+  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; \
+  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; \
+  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27; \
+  --core-startup-seconds 120</code></pre>
+<h2>Gateway と業務プロセス</h2>
+<p>設定は下記スキーマの正確なキーのみ許可します。127.0.0.1、port 1024–65535 を使い、Native port と backend の連続10ポートとの重複を避けます。routes は明示的な method/path 1–128件。/secure/ 以降は英数字・underscore・hyphen・slash のみで、重複/末尾 slash、wildcard、path parameter は不可です。GET/POST/PUT/PATCH/DELETE/OPTIONS/HEAD を指定できます。POST は application/json の object を要求し重複 JSON key を拒否します。array・multipart・raw upload・大容量対応を推測しません。max_pending は1–16で、性能保証ではありません。CORS と既存認証は別途維持します。</p>
+<p>backend は ODRE_R1_BACKEND_PORT のポートで127.0.0.1に bind します。Native は連続10ポートの worker を管理します。共有 DB migration や単一 scheduler を全 worker で重複実行しません。TLS 証明書と暗号化 PEM private key は承認済み絶対パスと制限権限で供給します。パスワードは ODRE_GATEWAY_TLS_KEY_PASSWORD の secret 環境変数で注入し、業務 backend には引き継がれません。確認した Gateway JSON の原本バイト SHA-256 を --gateway-pin に指定します。</p>
+<pre><code>{
+  &quot;schema&quot;: &quot;odre-native-gateway-host/v1&quot;,
+  &quot;listen_host&quot;: &quot;127.0.0.1&quot;,
+  &quot;listen_port&quot;: 29443,
+  &quot;routes&quot;: [
+    {
+      &quot;method&quot;: &quot;POST&quot;,
+      &quot;path&quot;: &quot;/secure/echo&quot;
+    }
+  ],
+  &quot;tls_certificate&quot;: &quot;&lt;ABSOLUTE_CERTIFICATE_PATH&gt;&quot;,
+  &quot;tls_private_key&quot;: &quot;&lt;ABSOLUTE_ENCRYPTED_PEM_PATH&gt;&quot;,
+  &quot;max_pending&quot;: 16
+}</code></pre>
+<h2>状態・更新・復旧</h2>
+<p>Gateway identity は state-directory/r1-broker-home/gateway-identity に保存します。Windows DPAPI/制限 ACL、Ubuntu OS サービスアカウント所有0600暗号化 state を維持します。Linux のローカル暗号化は管理者侵害を防ぐ HSM ではありません。identity・device.json・Trial 初回時刻・Paid entitlement・Unit 所有・Lease generation を維持し、更新時の init や identity 初期化、別端末への state コピーを禁止します。新 Bundle を別ディレクトリで検証し、authority が承認した source/target 更新契約のみ適用します。任意 allowlist 追加や downgrade は行いません。</p>
+<p>prepare 後 authority commit 前は abort で最後の正常状態に戻せます。commit 後に応答が失われた場合は認証された同一 commit を roll-forward で復旧します。commit 後に古いファイルへ戻しません。破損 state を削除して再登録せず、認証された復旧を使います。古い artifact と変造 migration metadata は拒否される必要があります。</p>
+<h2>期限・運用確認・検証範囲</h2>
+<p>有効 Lease/status だけで業務統合完了とは判定しません。固有 request ID で成功応答と Handler 1回実行を対応させます。Lease 期限後は Core が403で拒否し、Native が broker を停止すると Nginx が502等を返すことがあります。失敗を200に変換したり業務要求を自動再送したりしません。公開経路の方針は維持します。両 OS で隔離 Nginx HTTPS → Gateway → Core → Handler、Trial/Paid、再起動、自然 Lease 期限、RC2.5 更新を検証しました。最終 ZIP clean-room と全負荷 Gate は最終報告で確認します。</p>
+<p>Windows Nginx named pipe でのパスワード供給は未検証です。隔離試験では制限 ACL の一時試験パスワードファイルを起動直後に削除し、本番キーは使用していません。本番の秘密値供給は顧客環境で保護します。機能試験や fuzz 回数から最大 RPS、無制限同時接続、SLA、長期 leak 不在、128KiB/1MiB payload 対応を主張しません。</p>
+<h2>新規 Paid 登録と既存 Unit のデバイス移行</h2>
+<p>Trial を使わない新規 Paid デバイスでは identity を一度作成して register を実行します。paid は同じデバイスの既存 Trial を Paid に変換する場合だけ使用し、identity と Trial 履歴を維持します。Trial のデバイス移行は未対応です。</p>
+<p>新サーバーで register を実行し、Device Code を https://pqc.odreai.com/payment/register/?flow=activate に入力します。License ID と License Key を検証後、新規 Unit の使用または既存 Unit の移行を明示的に選びます。顧客登録やログインは不要です。License Key をコマンド引数、サポートメッセージ、移行要求ファイルに記載しません。</p>
+<p>移行元 installation と正常交換またはアクセス不能を選択します。登録だけで Unit は移動しません。正常交換には transfer-release 対応の承認済みバージョンが必要です。旧バージョンは identity を保持する正式なアップグレードを先に行います。</p>
+<p>正常交換では新規業務トラフィックを停止し、移行元 Native は起動したままにします。Web から移行要求 JSON を取得し、移行元で以下の transfer-release を実行します。Native は受付停止、処理中要求の drain、保護状態の保存を行い、デバイス署名 proof を送信します。完了後に移行元を再起動しません。</p>
+<p>故障交換にはサポート承認が必要です。正常 drain 中に Native が停止した場合は、同じ Web 操作でアクセス不能を確認し復旧を要求します。新 Native が別の復旧同意に署名し、サポートが承認します。元の Unit 選択を変更せず、drain 成功と推定しません。どちらも既存 Offline Lease がすべて失効するまで新しい保護実行権限を発行しません。</p>
+<p>同じ state-directory で register を再実行して続行します。サーバー commit 後の応答消失やディスク障害でも同じ操作結果を取得し、署名と新デバイス結合を検証して原子的に保存します。追加 Unit や Trial を再登録せず、古い状態の復元、private key・DPAPI・Gateway identity のコピーを行いません。新デバイスは自分のキーと Gateway identity を使用します。</p>
+<p>LICENSE_UNIT_LIMIT は移行または追加購入が必要です。SUPPORT_PENDING は承認待ち、WAITING_OLD_LEASE は失効待ちです。COMMITTED はサーバー確定、APPLIED は Native 保存確認であり、業務統合完了ではありません。status、Gateway→Core→Handler と再起動を確認後にトラフィックを開放します。</p>
+<h3>新デバイスで実行</h3>
+<h3>Windows Server 2022</h3>
+<pre><code>&amp; .\runtime\python.exe .\odre-native.py register `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>python3.12 ./odre-native-ubuntu.py register \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;</code></pre>
+<h3>正常交換時に移行元で解放</h3>
+<h3>Windows Server 2022</h3>
+<pre><code>&amp; .\runtime\python.exe .\odre-native.py transfer-release `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin `
+  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>python3.12 ./odre-native-ubuntu.py transfer-release \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
+  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre></main></body></html>

@@ -1,1 +1,104 @@
-<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native 0.3.0: instalación y cambio de dispositivo</title><style>body{max-width:850px;margin:40px auto;padding:0 22px;font:17px/1.65 system-ui;color:#162a32;background:#f7faf9}nav{overflow-wrap:anywhere}a{color:#006269}.notice{border-left:4px solid #087965;padding:12px 20px;background:#e7f1ed}h1{font-size:2rem}</style><nav><a href="index.html">EN</a> · <a href="ko.html">KO</a> · <a href="ja.html">JA</a> · <a href="de.html">DE</a> · <a href="es.html">ES</a></nav><main><h1>Native 0.3.0: instalación y cambio de dispositivo</h1><p>Utiliza el launcher del Bundle Native verificado para tu sistema. Las acciones existentes son identity, trial, status, run y paid; no son comandos independientes. Sigue los comandos y pins de la guía incluida en tu Bundle.</p><p>Los comandos Wheel odre-pqc-commercial activate/deactivate no son comandos Native. No utilices el estado Wheel para activar o trasladar Native.</p><p>El cambio de dispositivo o servidor requiere revisión y aprobación de soporte. El launcher publicado no permite el traslado autónomo. Un registro nuevo no transfiere una Unit. Elige expresamente transferir una Unit existente o asignar otra disponible. No repitas Trial como sustituto de un traslado.</p><p>Conserva el estado original. No copies DPAPI, claves privadas ni la identidad Gateway. El dispositivo nuevo necesita claves e identidad propias. La Lease offline anterior puede seguir vigente hasta su vencimiento; el traslado en la base de datos no demuestra exclusividad de ejecución.</p><p>El traslado Trial aún no está soportado. Un traslado de pago termina tras validar, guardar de forma protegida, reiniciar y comprobar Gateway → Core → Handler. Ante pérdida de respuesta o fallo al guardar, recupera la misma operación con soporte; no asignes otra Unit.</p><h2>Mensajes para clientes</h2><p>Sin Unit disponible: traslado o compra adicional. Código vencido: solicita otro tras un rechazo explícito. Aprobación pendiente: soporte la está procesando. Ya aprobado: recupera el resultado existente. El flujo completo de traslado Native sigue en validación.</p><p class="notice">La sustitución de la descarga RC24 queda pendiente de completar la validación del traslado. La falta de confianza pública Windows Authenticode es una limitación conocida independiente.</p><a href="/docs/">Docs</a> · <a href="/contact/">Support</a></main></html>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ODRE PQC Production 0.3.0 - Guía de instalación e integración Native</title><style>body{max-width:920px;margin:36px auto;padding:0 22px;font:17px/1.65 system-ui;color:#162a32;background:#f7faf9}a{color:#006269}pre{padding:18px;background:#e7efed;overflow:auto;font-size:13px;line-height:1.6}p,nav{overflow-wrap:anywhere}.item{margin:.3em 0}h1{font-size:2rem}</style></head><body><nav><a href="index.html">EN</a> · <a href="ko.html">KO</a> · <a href="ja.html">JA</a> · <a href="de.html">DE</a> · <a href="es.html">ES</a> · <a href="/payment/register/?flow=activate">Register / Activate</a></nav><main><h1>ODRE PQC Production 0.3.0 - Guía de instalación e integración Native</h1>
+<p>La versión del producto es 0.3.0 y la del componente Native es 0.3.0-rc.24. Antes del uso en producción, coteje el archivo con el SHA-256 final del ZIP en el informe de aprobación y confirme que todos los criterios obligatorios se han superado.</p>
+<p>ODRE PQC registra y activa dispositivos mediante la identidad de instalación y las claves del dispositivo, sin crear una cuenta de cliente ni iniciar sesión. La cuenta de ejecución del sistema operativo indicada a continuación controla permisos de archivos y procesos; no es una cuenta de cliente ODRE.</p>
+<h2>Límite de protección</h2>
+<p>Cliente externo → HTTPS/TLS → Nginx del cliente → Native HTTPS Gateway → ODRE v3 / Native Lease gate → Private Core en memoria → Protected Handler del cliente. No hace falta un SDK PQC en el cliente si el contrato API es compatible. No es PQC E2E desde el dispositivo. Mantenga autenticación, autorización y validación de entradas en la aplicación. Nunca dirija una ruta protegida directamente al backend. El producto no sustituye WAF, HSM ni seguridad del sistema operativo.</p>
+<h2>Verificación previa</h2>
+<p>Use el verifier, el trust pin y el SHA-256 del ZIP final recibidos por un canal de confianza independiente. No ejecute Python ni Native del Bundle antes de validar CMS externo, firmas Ed25519 internas, inventario y runtime. No eluda un fallo mediante extracción manual. Use --install-new del verifier solo con un destino nuevo y vacío. Para instalaciones existentes, siga el contrato de actualización.</p>
+<p>No se proporciona confianza Authenticode pública de Windows. Verifique con un pin obtenido de forma independiente la cadena verifier → CMS → signed CRL → manifest/SHA. No registre Private Root automáticamente en Windows Trusted Root ni ignore fallos de verificación.</p>
+<h2>Entornos y primera instalación</h2>
+<p>Se admiten Windows Server 2022 AMD64 y Ubuntu 24.04 AMD64. El launcher de Ubuntu requiere Python 3.12; conserve el runtime propiedad de root y ejecute con una cuenta de ejecución del sistema operativo dedicada y sin root. Mantenga el runtime incluido en Windows. Orden: verificar/instalar → identity una vez → trial → status → configurar Gateway/backend → run → verificar solicitudes y reinicio → abrir tráfico. La inicialización, doctor y verify de Core se ejecutan dentro de la ruta Native autenticada en memoria. No use acciones init/doctor/verify inexistentes ni instale un Wheel Core en texto claro.</p>
+<h2>Trial de 14 días y conversión Paid</h2>
+<p>Descarga gratuita; sin correo; descargar no inicia Trial; 14 días desde la primera activación correcta; un Device, un Trial; descargar o reinstalar no lo reinicia; rutas protegidas fail-closed al vencer; conversión Paid tras comprar sin reinstalar. Conserve la cuenta de ejecución del sistema operativo, state-directory e identity. paid solicita License ID normalmente y License Key mediante entrada oculta, y los transmite por stdin. No equivale a la aprobación Web Device Code del Wheel. Compruebe status y solicitudes protegidas tras convertir; reinicie el mismo run cuando corresponda.</p>
+<h2>Uso de comandos</h2>
+<p>Ejecute en la carpeta instalada del sistema elegido. Sustituya &lt;...&gt; por rutas absolutas aprobadas o SHA-256 públicos. Use el mismo state-directory para todas las acciones. No escriba secretos en la línea de comandos. El venv de negocio separado solo contiene dependencias de la aplicación del cliente.</p>
+<h3>Windows Server 2022</h3>
+<pre><code>$state = &#x27;C:\ProgramData\ODRE\native-commercial&#x27;
+$trust = &#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
+$trustPin = &#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
+&amp; .\runtime\python.exe .\odre-native.py identity `
+  --state-directory $state
+&amp; .\runtime\python.exe .\odre-native.py trial `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin
+&amp; .\runtime\python.exe .\odre-native.py status `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin
+&amp; .\runtime\python.exe .\odre-native.py run `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin `
+  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; `
+  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; `
+  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; `
+  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27;</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>state=&quot;$HOME/.local/state/odre-pqc/native-commercial&quot;
+trust=&#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
+trust_pin=&#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
+python3.12 ./odre-native-ubuntu.py identity \
+  --state-directory &quot;$state&quot;
+python3.12 ./odre-native-ubuntu.py trial \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
+python3.12 ./odre-native-ubuntu.py status \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
+python3.12 ./odre-native-ubuntu.py run \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
+  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; \
+  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; \
+  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; \
+  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27; \
+  --core-startup-seconds 120</code></pre>
+<h2>Gateway y procesos de negocio</h2>
+<p>La configuración acepta exclusivamente las claves del esquema siguiente. Use 127.0.0.1 y un puerto 1024–65535 distinto del Native y de los diez puertos consecutivos del backend. Defina 1–128 pares method/path. Después de /secure/ solo se permiten letras, dígitos, underscore, hyphen y slash; no slash duplicado/final, wildcard ni path parameter. Se pueden declarar GET/POST/PUT/PATCH/DELETE/OPTIONS/HEAD. POST exige un objeto application/json y rechaza claves JSON duplicadas. No presuponga soporte para arrays, multipart, carga raw o payloads grandes. max_pending es 1–16, no una garantía de rendimiento. Mantenga CORS y autenticación por separado.</p>
+<p>El backend escucha en 127.0.0.1 y el puerto ODRE_R1_BACKEND_PORT. Native gestiona workers en diez puertos consecutivos. No duplique migraciones compartidas de DB ni un scheduler único en cada worker. Proporcione certificados TLS y claves PEM cifradas mediante rutas absolutas aprobadas y permisos restringidos. Inyecte la contraseña en la variable secreta ODRE_GATEWAY_TLS_KEY_PASSWORD; Native la elimina del entorno del backend. Fije con --gateway-pin el SHA-256 de los bytes exactos del JSON revisado.</p>
+<pre><code>{
+  &quot;schema&quot;: &quot;odre-native-gateway-host/v1&quot;,
+  &quot;listen_host&quot;: &quot;127.0.0.1&quot;,
+  &quot;listen_port&quot;: 29443,
+  &quot;routes&quot;: [
+    {
+      &quot;method&quot;: &quot;POST&quot;,
+      &quot;path&quot;: &quot;/secure/echo&quot;
+    }
+  ],
+  &quot;tls_certificate&quot;: &quot;&lt;ABSOLUTE_CERTIFICATE_PATH&gt;&quot;,
+  &quot;tls_private_key&quot;: &quot;&lt;ABSOLUTE_ENCRYPTED_PEM_PATH&gt;&quot;,
+  &quot;max_pending&quot;: 16
+}</code></pre>
+<h2>Estado, actualización y recuperación</h2>
+<p>Conserve Gateway identity en state-directory/r1-broker-home/gateway-identity. Mantenga DPAPI/ACL restringida en Windows y estado cifrado 0600 propiedad de la cuenta de servicio del sistema operativo en Ubuntu. El cifrado local Linux no es un HSM contra un administrador comprometido. Preserve identity, device.json, tiempos iniciales Trial, entitlement Paid, propiedad Unit y generación Lease. No reinicialice identity/init ni copie estado a otro dispositivo. Verifique el Bundle nuevo en otra carpeta y use solo el contrato source/target aprobado por la autoridad. No añada hashes arbitrarios ni permita downgrade.</p>
+<p>Después de prepare y antes del commit de la autoridad, abort recupera el último estado válido. Si se pierde la respuesta después del commit, recupere el mismo commit autenticado mediante roll-forward. No restaure archivos antiguos tras commit. Use recuperación autenticada en vez de borrar estado corrupto y registrar otra vez. Deben rechazarse artifacts antiguos y metadata de migración manipulada.</p>
+<h2>Caducidad, operación y alcance</h2>
+<p>Lease/status válido no demuestra integración del negocio. Relacione cada respuesta protegida correcta con una ejecución Handler mediante IDs distintos. Al vencer Lease, Core rechaza con 403; si Native detiene el broker, Nginx puede devolver 502. No convierta fallos en 200 ni reenvíe automáticamente solicitudes de negocio. Mantenga la política de rutas públicas. Se verificaron en ambos sistemas Nginx HTTPS → Gateway → Core → Handler aislados, Trial/Paid, reinicio, vencimiento natural Lease y actualización RC2.5. Consulte el informe final para clean-room del ZIP final y pruebas completas de carga.</p>
+<p>No se verificó el suministro de contraseña por named pipe de Nginx Windows. El ensayo aislado usó un archivo temporal de contraseña de prueba con ACL restringida, borrado inmediatamente tras arrancar Nginx; no usó claves de producción. Proteja los secretos de producción en el entorno del cliente. Los ensayos funcionales o fuzz no acreditan RPS máximo, concurrencia ilimitada, SLA, ausencia de leaks a largo plazo ni payloads 128KiB/1MiB.</p>
+<h2>Registro Paid nuevo y traslado de una Unit existente</h2>
+<p>En un dispositivo Paid nuevo sin Trial, cree identity una vez y ejecute register. Use paid solo para convertir el Trial existente del mismo dispositivo, conservando identity e historial. No se admite trasladar dispositivos Trial.</p>
+<p>Ejecute register en el servidor nuevo e introduzca Device Code en https://pqc.odreai.com/payment/register/?flow=activate . Verifique License ID y License Key y elija explícitamente usar una Unit nueva o trasladar una existente. No hay cuenta de cliente ni inicio de sesión. No incluya License Key en argumentos, mensajes de soporte ni archivos de solicitud.</p>
+<p>Seleccione la installation anterior y reemplazo normal o dispositivo inaccesible. El registro no traslada una Unit automáticamente. El reemplazo normal requiere una versión aprobada con transfer-release en el origen. Actualice primero las versiones anteriores mediante el contrato autorizado que conserva identity.</p>
+<p>Reemplazo normal: detenga tráfico de negocio nuevo, pero mantenga Native activo en el origen. Descargue el JSON de solicitud desde la página y ejecute transfer-release abajo en el origen. Native cierra admisión, termina las solicitudes en curso, guarda el estado protegido y envía prueba firmada del dispositivo. No reinicie el origen retirado al finalizar.</p>
+<p>El reemplazo por avería requiere aprobación de soporte. Si Native se detiene durante drain normal, confirme origen inaccesible y solicite recuperación en la misma operación web. El Native nuevo firma un consentimiento separado y soporte lo aprueba. No cambie la Unit elegida ni suponga que drain finalizó. Ambas rutas esperan el vencimiento de todos los Offline Leases anteriores antes de autorizar ejecución protegida nueva.</p>
+<p>Reanude register con el mismo state-directory. Tras commit del servidor, una respuesta perdida o error de disco se recupera consultando la misma operación, verificando firma y vínculo del nuevo dispositivo y guardando atómicamente. No asigne otra Unit, registre otro Trial, restaure estados anteriores ni copie claves privadas, DPAPI o Gateway identity. El destino utiliza sus propias claves e identity.</p>
+<p>LICENSE_UNIT_LIMIT requiere traslado o más capacidad. SUPPORT_PENDING espera aprobación; WAITING_OLD_LEASE espera vencimiento. COMMITTED confirma el servidor y APPLIED el almacenamiento local Native; ninguno prueba integración de negocio. Compruebe status, Gateway→Core→Handler y reinicio antes de abrir tráfico.</p>
+<h3>Ejecutar en el dispositivo nuevo</h3>
+<h3>Windows Server 2022</h3>
+<pre><code>&amp; .\runtime\python.exe .\odre-native.py register `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>python3.12 ./odre-native-ubuntu.py register \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;</code></pre>
+<h3>Liberar origen para reemplazo normal</h3>
+<h3>Windows Server 2022</h3>
+<pre><code>&amp; .\runtime\python.exe .\odre-native.py transfer-release `
+  --state-directory $state `
+  --trust-config $trust --trust-pin $trustPin `
+  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre>
+<h3>Ubuntu 24.04</h3>
+<pre><code>python3.12 ./odre-native-ubuntu.py transfer-release \
+  --state-directory &quot;$state&quot; \
+  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
+  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre></main></body></html>
