@@ -4,8 +4,8 @@
   "native_version": "0.3.0-rc.24",
   "release_generation": 27,
   "packaging_revision": 6,
-  "release_classification": "RELEASE_WITH_KNOWN_LIMITATION",
-  "customer_download_replacement": "PENDING_FRESH_WINDOWS_REVALIDATION",
+  "release_classification": "PENDING_DEVICE_TRANSFER_REVALIDATION",
+  "customer_download_replacement": "ON_HOLD_DEVICE_TRANSFER_REVALIDATION",
   "fresh_windows_revalidation": "NOT_RUN",
   "windows_public_authenticode_trust": "NOT_PROVIDED",
   "customer_bundle_bytes": 56750131,
@@ -24,5 +24,6 @@
   "crl_sha256": "83F9C41EC6D2C2C3CB008A449475B1DE5D4E9C3557895131838FC9C00E5BA7C9",
   "crl_next_update_utc": "2026-09-29T11:08:49Z",
   "root_store_import_required": false,
-  "trust_note": "This record is not self-authenticating. Independently authenticate its publisher and pins before executing the verifier."
+  "trust_note": "This record is not self-authenticating. Independently authenticate its publisher and pins before executing the verifier.",
+  "windows_authenticode_classification": "RELEASE_WITH_KNOWN_LIMITATION"
 }
