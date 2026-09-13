@@ -631,3 +631,29 @@
 
 /* Native transfer release guidance. */
 (function(){if(!location.pathname.startsWith("/docs/"))return;const copy={"ko": {"quickCopy": "위에서 새 Unit 사용 또는 기존 Unit 이전을 직접 선택합니다. 정상 교체는 기존 Native의 drain·해제 확인이 필요하고, 접근불가·고장 교체는 지원 승인이 필요합니다. 복구는 같은 이전 요청으로 이어가며 기존 Offline Lease 만료까지 기다립니다. Trial 이전·개인키 복사·Trial 초기화는 지원하지 않습니다."}, "ja": {"quickCopy": "新しいUnitの使用か既存Unitの移転を明示的に選択します。通常の交換は旧Nativeのdrainと解放確認が必要です。アクセス不能・故障の場合はサポート承認が必要です。復旧は同じ処理を再開し、旧Offline Leaseの満了まで待機します。Trial移転、秘密鍵の複製、Trialの初期化は未対応です。"}, "de": {"quickCopy": "Wählen Sie ausdrücklich eine neue Unit oder die Übertragung einer vorhandenen Unit. Ein normaler Wechsel erfordert Drain und Freigabe der alten Native-Instanz; ein unzugängliches Gerät benötigt Supportfreigabe. Die Wiederherstellung setzt denselben Vorgang fort und wartet auf den Ablauf bestehender Offline Leases. Trial-Übertragung, Schlüsselkopien und Trial-Reset werden nicht unterstützt."}, "es": {"quickCopy": "Elija explícitamente una Unit nueva o trasladar una existente. El cambio normal requiere el drenaje y la liberación del Native anterior; un dispositivo inaccesible requiere aprobación de soporte. La recuperación continúa la misma operación y espera el vencimiento de las Offline Leases existentes. No se admite trasladar Trial, copiar claves privadas ni reiniciar Trial."}};for(const [lang,fields] of Object.entries(copy)){if(window.ODRE_PAGE_I18N?.[lang])Object.assign(window.ODRE_PAGE_I18N[lang],fields);}}());
+
+/* Approved platform table and pricing inclusion only. Other page contracts remain unchanged. */
+(function () {
+  'use strict';
+  var page = document.body.dataset.page;
+  if (!window.ODRE_PAGE_I18N || (page !== 'product' && page !== 'pricing')) return;
+  var copy = {
+    product: {
+      en: { requirementsTitle: 'Supported Platforms', combination: 'Supported platform', supportedPlatform: 'Supported', crossPlatformCopy: 'One Product / One Package · Automatic platform detection' },
+      ko: { requirementsTitle: '지원 플랫폼', combination: '지원 플랫폼', supportedPlatform: '지원', crossPlatformCopy: 'One Product / One Package · 운영체제 자동 감지' },
+      ja: { requirementsTitle: '対応プラットフォーム', combination: '対応プラットフォーム', supportedPlatform: '対応', crossPlatformCopy: 'One Product / One Package · プラットフォームを自動検出' },
+      de: { requirementsTitle: 'Unterstützte Plattformen', combination: 'Unterstützte Plattform', supportedPlatform: 'Unterstützt', crossPlatformCopy: 'One Product / One Package · Automatische Plattformerkennung' },
+      es: { requirementsTitle: 'Plataformas compatibles', combination: 'Plataforma compatible', supportedPlatform: 'Compatible', crossPlatformCopy: 'One Product / One Package · Detección automática de plataforma' }
+    },
+    pricing: {
+      en: { automaticUpdateIncluded: 'Automatic Update Module included' },
+      ko: { automaticUpdateIncluded: 'Automatic Update Module 기본 포함' },
+      ja: { automaticUpdateIncluded: 'Automatic Update Module を標準搭載' },
+      de: { automaticUpdateIncluded: 'Automatic Update Module enthalten' },
+      es: { automaticUpdateIncluded: 'Automatic Update Module incluido' }
+    }
+  };
+  Object.keys(copy[page]).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[page][language]);
+  });
+}());
