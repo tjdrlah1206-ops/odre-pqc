@@ -220,6 +220,7 @@
   function applyDocumentLanguage(code) {
     var documents = publicDocuments[code] || publicDocuments.en;
     document.querySelectorAll('a[data-pqc-document]').forEach(function (link) {
+      if (link.hasAttribute('data-site-paused')) return;
       var filename = documents[link.getAttribute('data-pqc-document')];
       if (typeof filename !== 'string') return;
       link.setAttribute('href', '/' + filename);

@@ -1,0 +1,2 @@
+[data-site-paused] { opacity: .5; cursor: not-allowed !important; text-decoration: none; }
+[data-site-paused]:hover { transform: none !important; box-shadow: none !important; }

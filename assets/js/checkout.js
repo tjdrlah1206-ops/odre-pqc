@@ -2,9 +2,9 @@
   'use strict';
   var PADDLE_CHECKOUT = Object.freeze({
     environment: 'production',
-    // The v0.3.0 distribution package is published and the owner approved reopening on 2026-09-12.
+    // Owner requested a temporary checkout pause on 2026-09-13.
     // This client-side switch is not an authorization boundary for Paddle prices.
-    publicCheckoutEnabled: true,
+    publicCheckoutEnabled: false,
     productId: 'pro_01m1p28azxeewd9syewtj13f58',
     clientToken: 'live_92a112a9e75e51a31ebe4862254',
     priceIds: Object.freeze({
@@ -52,6 +52,7 @@
     es: { pendingTitle: 'No se pudo iniciar el pago.', pendingCopy: 'No se creó ningún pedido. Recarga la página o contacta con Commercial si el pago sigue sin estar disponible.', readyTitle: 'El pago real está disponible.', readyCopy: 'Es una suscripción recurrente con cargos reales. Paddle calcula los impuestos aplicables al pagar.', monthly: 'Pagar suscripción mensual', annual: 'Pagar suscripción anual' }
   };
   function setCheckoutEnabled(enabled) {
+    enabled = enabled && PADDLE_CHECKOUT.publicCheckoutEnabled;
     [monthlyCheckout, annualCheckout].forEach(function (button) {
       button.disabled = !enabled;
       button.setAttribute('aria-disabled', String(!enabled));
@@ -59,8 +60,24 @@
   }
   function applyCheckoutLabels() {
     var labels = checkoutLabels[document.documentElement.lang] || checkoutLabels.en;
+    var paused = {
+      en: 'Downloads and checkout are temporarily unavailable.',
+      ko: '다운로드와 결제를 일시 중단했습니다.',
+      ja: 'ダウンロードと決済を一時停止しています。',
+      de: 'Downloads und Zahlungen sind vorübergehend deaktiviert.',
+      es: 'Las descargas y los pagos están temporalmente desactivados.'
+    };
     var title = document.querySelector('[data-i18n="availabilityTitle"]');
     var copy = document.querySelector('[data-i18n="availabilityCopy"]');
+    if (!PADDLE_CHECKOUT.publicCheckoutEnabled) {
+      var message = paused[document.documentElement.lang] || paused.en;
+      if (title) title.textContent = message;
+      if (copy) copy.textContent = message;
+      monthlyCheckout.textContent = labels.monthly;
+      annualCheckout.textContent = labels.annual;
+      setCheckoutEnabled(false);
+      return;
+    }
     if (title) title.textContent = paddleReady ? labels.readyTitle : labels.pendingTitle;
     if (copy) copy.textContent = paddleReady ? labels.readyCopy : labels.pendingCopy;
     monthlyCheckout.textContent = labels.monthly;
