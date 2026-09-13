@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>ODRE PQC Evidence — What Was Tested and What It Means</title><meta name="description" content="Verification results for ODRE PQC's fail-closed enforcement, replay and sequence defense, signed update integrity, automatic rollback, and platform support."><link rel="stylesheet" href="/assets/css/site.css"><link rel="icon" href="/assets/favicon.svg"><script src="/assets/js/site-pause.js?v=actions-paused-20260913"></script><link rel="stylesheet" href="/assets/css/site-pause.css"><link rel="stylesheet" href="/assets/css/claude-shared.css?v=local-prerefactor-20260913"><link rel="stylesheet" href="/assets/css/claude-pages/evidence.css"></head><body><a class="skip-link" href="#main" data-common="skip">Skip to content</a><header class="design-header" id="site-header"><div class="design-wrap design-nav"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>ODRE PQC</a><nav class="design-desktop" aria-label="Primary navigation"><ul class="design-links"><li><a href="/product/" data-common="product">Product</a></li><li><a href="/evidence/">Evidence</a></li><li><a href="/docs/" data-common="docs">Docs</a></li><li><a href="/pricing/" data-common="pricing">Pricing</a></li><li><a href="/trust/" data-common="trust">Trust</a></li><li><a href="/payment/register/?flow=activate" data-common="license">License</a></li></ul></nav><div class="design-actions"><a class="design-download" href="/download/" data-common="download">Download</a><div class="language-wrap"><button id="language-button" class="design-language" type="button" aria-expanded="false" aria-controls="language-menu" data-common="language">Language</button><div id="language-menu" class="language-menu" hidden><button type="button" data-language-choice="ko">한국어</button><button type="button" data-language-choice="en">English</button><button type="button" data-language-choice="ja">日本語</button><button type="button" data-language-choice="es">Español</button><button type="button" data-language-choice="de">Deutsch</button></div></div></div><details class="design-mobile"><summary>Menu</summary><nav aria-label="Mobile navigation"><ul class="design-links"><li><a href="/product/" data-common="product">Product</a></li><li><a href="/evidence/">Evidence</a></li><li><a href="/docs/" data-common="docs">Docs</a></li><li><a href="/pricing/" data-common="pricing">Pricing</a></li><li><a href="/trust/" data-common="trust">Trust</a></li><li><a href="/payment/register/?flow=activate" data-common="license">License</a></li></ul></nav></details></header><main id="main" class="claude-content">
+  <div class="page-head">
+    <div class="wrap">
+      <div class="kicker">Evidence</div>
+      <h1>What we tested, and what happened.</h1>
+      <p>Marketing claims are not evidence. Every result below states the condition it was tested under.</p>
+      <div class="qualifier-banner">All results below reflect the tested condition described, not a guarantee under every possible real-world attack or failure.</div>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="wrap">
+      <h2 class="cat-head">Security Enforcement</h2>
+
+      <div class="evidence-item">
+        <div class="ei-label">fail-closed</div>
+        <div class="ei-body">
+          <h3>Unverified request sent to a protected route</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, the protected handler did not execute.</p>
+          <p class="ei-why">An unverified request never reaches your application code — enforcement happens at the boundary, not inside your handler logic.</p>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="ei-label">replay</div>
+        <div class="ei-body">
+          <h3>Valid request resent to the same protected route</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, the resent request was rejected by the boundary.</p>
+          <p class="ei-why">Replay defense doesn't depend on your application implementing its own idempotency checks.</p>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="ei-label">sequence</div>
+        <div class="ei-body">
+          <h3>Requests sent out of expected sequence within a session</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, out-of-sequence requests were rejected.</p>
+          <p class="ei-why">Session integrity is enforced independently of request timing or network reordering.</p>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="ei-label">binding</div>
+        <div class="ei-body">
+          <h3>Request or response altered after being bound to its session</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, the binding check failed and the request/response was rejected.</p>
+          <p class="ei-why">Confirms a request and its response can't be substituted across sessions under the tested conditions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="wrap">
+      <h2 class="cat-head">Integrity</h2>
+
+      <div class="evidence-item">
+        <div class="ei-label">update signature</div>
+        <div class="ei-body">
+          <h3>Update package signature checked before staging</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, unsigned or invalid packages were rejected before reaching staging.</p>
+          <p class="ei-why">Every update that reaches your servers has been verified before it's ever activated.</p>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="ei-label">runtime</div>
+        <div class="ei-body">
+          <h3>Runtime artifact checked against signed manifest</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, a tampered artifact was detected before execution.</p>
+          <p class="ei-why">This covers the ODRE PQC runtime's own artifacts — not the integrity of the underlying OS, kernel, or hypervisor.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="wrap">
+      <h2 class="cat-head">Update Safety</h2>
+
+      <div class="evidence-item">
+        <div class="ei-label">atomic switch</div>
+        <div class="ei-body">
+          <h3>Staged update completes self-test and proceeds to activation</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, traffic was drained, the switch to the new version was atomic, and health was verified afterward.</p>
+          <p class="ei-why">There's no observed window where traffic is served by a half-updated, unverified state.</p>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="ei-label">rollback</div>
+        <div class="ei-body">
+          <h3>Health verification fails after an update is activated</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, the runtime rolled back automatically to its own last known-good version and configuration.</p>
+          <p class="ei-why">A bad update doesn't require a human to notice and intervene before the ODRE PQC runtime is restored. This does not extend to your application's data or state.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="wrap">
+      <h2 class="cat-head">Recovery</h2>
+
+      <div class="evidence-item">
+        <div class="ei-label">process kill</div>
+        <div class="ei-body">
+          <h3>ODRE PQC process terminated unexpectedly</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, the ODRE PQC process recovered automatically to its own last known-good state.</p>
+          <p class="ei-why">A crash of the ODRE PQC process doesn't require manual restart or manual verification before it's safe to serve traffic again.</p>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="ei-label">reboot</div>
+        <div class="ei-body">
+          <h3>Host rebooted</h3>
+          <p class="ei-row"><b>RESULT</b>In this test, the security boundary resumed enforcement after the reboot without manual reconfiguration of the product.</p>
+          <p class="ei-why">Recovery from a reboot is part of the product itself, not a runbook your team maintains separately.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat" style="border-bottom:none;">
+    <div class="wrap">
+      <h2 class="cat-head">Platform Verification</h2>
+      <p style="font-size:15.5px;color:var(--ink-soft);max-width:70ch;">Installation and operation were verified on: Windows Server 2022 AMD64; Ubuntu 22.04 AMD64; Ubuntu 24.04 AMD64; Debian 12 AMD64; Rocky Linux 9 AMD64; AlmaLinux 9 AMD64. Windows Server 2019, Windows Server 2025, RHEL 9, and ARM64 are not currently listed as officially supported.</p>
+    </div>
+  </div>
+</main><footer class="site-footer design-footer"><div class="design-wrap"><div class="design-footer-top"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>ODRE PQC</a><ul class="design-footlinks"><li><a href="/trust/" data-common="trust">Trust</a></li><li><a href="/docs/" data-common="docs">Docs</a></li><li><a href="/docs/#faq" data-common="faq">FAQ</a></li></ul></div><div class="design-footer-grid"><section><h2>ODRE PQC</h2><a href="/product/" data-common="product">Product</a><a href="/evidence/">Evidence</a><a href="/pricing/" data-common="pricing">Pricing</a><a href="/download/" data-common="download">Download</a></section><section><h2 data-common="resources">Resources</h2><a href="/docs/" data-common="docs">Docs</a><a href="/docs/#all-pdfs">PDF / Whitepaper</a><a href="/security/" data-common="security">Security</a><a href="/releases/" data-common="releases">Release notes</a><a href="/docs/#operations" data-common="operations">Operations</a><a href="/company/" data-common="about">ODRE AI</a><a href="/contact/" data-common="contact">Contact</a></section><section><h2 data-common="license">License</h2><a href="/payment/register/?flow=activate" data-common="activateLicense">Activate License</a><a href="/payment/register/?flow=native" data-common="deviceTransfer">Device Transfer</a><a href="/payment/register/?flow=payment">Email / License Delivery</a></section><section class="design-legal"><h2 data-common="legal">법적 고지</h2><a href="/terms/" data-common="terms">서비스 이용약관</a><a href="/privacy/" data-common="privacy">개인정보 처리방침</a><a href="/refund/" data-common="refund">환불 정책</a><a href="/terms/" data-common="commercial">상용 라이선스 약관</a></section></div><div class="design-footer-bottom"><span>© 2026 ODRE AI. All rights reserved.</span><span data-common="korea">Korea</span></div></div></footer><script src="/assets/js/site.js?v=actions-paused-20260913"></script><script src="/assets/js/claude-navigation.js"></script></body></html>
