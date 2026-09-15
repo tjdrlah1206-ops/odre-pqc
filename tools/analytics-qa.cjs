@@ -22,6 +22,7 @@ function environment(options = {}) {
   const add = (events, type, callback) => (events[type] ||= []).push(callback);
   const emit = (events, type, detail) => (events[type] || []).forEach(callback => callback(detail || { type }));
   const document = {
+    body: { getAttribute: () => null },
     title: 'ODRE PQC', documentElement: { lang: 'en' }, visibilityState: options.hidden ? 'hidden' : 'visible', referrer: options.referrer || '',
     querySelector: selector => selector === 'script[data-odre-analytics]' ? scripts.find(value => value.attrs['data-odre-analytics'] !== undefined) || null : null,
     querySelectorAll: () => [], getElementById: () => null,
@@ -73,7 +74,7 @@ let assertions = 0;
 async function test(name, body) { await body(); assertions += 1; process.stdout.write(`PASS ${name}\n`); }
 
 (async () => {
-  await test('17 pages use the common loader once, payment scripts unchanged by integration', () => {
+  await test(routes.length + ' allowlisted pages use the common loader once, payment scripts unchanged by integration', () => {
     routes.forEach(route => {
       const file = path.join(root, route.slice(1), 'index.html');
       const html = fs.readFileSync(file, 'utf8');
@@ -267,31 +268,40 @@ async function test(name, body) { await body(); assertions += 1; process.stdout.
     assert.ok(privacy.includes('id="analytics-privacy"')); assert.ok(privacy.includes('sessionStorage'));
     for (const title of ['First-party website statistics', '자체 홈페이지 방문 통계', '自社サイトのアクセス統計', 'Eigene Website-Statistik', 'Estadísticas propias del sitio']) assert.ok(legal.includes(title));
   });
-  await test('installation, trial and release-evidence guides remain untracked; four legacy references retain their IDs', async () => {
+  await test('all current PDF links retain explicit registered IDs or remain untracked', async () => {
     const env = environment({ path: '/docs/', language: 'ko-KR' }); env.start(); await flush();
     const links = [];
     for (const route of routes) {
       const html = fs.readFileSync(path.join(root, route.slice(1), 'index.html'), 'utf8');
       links.push(...Array.from(html.matchAll(/href="([^"]+\.pdf)"/g), match => match[1]));
     }
-    assert.equal(links.length, 11);
-    const releaseEvidence = links.filter(href => href === '/ODRE_PQC_Release_Evidence_20260910_EN.pdf');
-    assert.equal(releaseEvidence.length, 1, 'one release-evidence link was added after the legacy fixture');
-    const guides = links.filter(href => /^\/ODRE_PQC_Installation_License_Activation_Guide_v1\.2\.1_(EN|KO|JA|DE|ES)\.pdf$/.test(href));
-    assert.equal(guides.length, 5);
-    assert.equal(new Set(guides).size, 5);
-    const trialFallbacks = links.filter(href => href === '/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_EN.pdf');
-    assert.equal(trialFallbacks.length, 1);
-    const trialGuides = ['KO','EN','JA','ES','DE'].map(language => `/ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_${language}.pdf`);
-    for (const href of guides) assert.equal(env.pdfClick(href).defaultPrevented, false);
-    for (const href of trialGuides) assert.equal(env.pdfClick(href).defaultPrevented, false);
-    for (const href of releaseEvidence) assert.equal(env.pdfClick(href).defaultPrevented, false);
-    assert.equal(env.beacons.length, 0, 'new guides must not masquerade as registered v0.2.9 whitepapers');
-    for (const href of links.filter(href => !guides.includes(href) && !trialGuides.includes(href) && !releaseEvidence.includes(href))) assert.equal(env.pdfClick(href).defaultPrevented, false);
+    const registered = new Map([
+      ['Product_Overview_Security_Architecture_EN', 'overview_en'],
+      ['Public_Technical_Whitepaper_EN', 'whitepaper_en'],
+      ['제품_개요_및_보안_아키텍처_KO', 'overview_ko'],
+      ['공개_기술_백서_KO', 'whitepaper_ko'],
+      ['製品概要_セキュリティアーキテクチャ_JA', 'overview_ja'],
+      ['公開技術白書_JA', 'whitepaper_ja'],
+      ['Produktuebersicht_Sicherheitsarchitektur_DE', 'overview_de'],
+      ['Oeffentliches_Technisches_Whitepaper_DE', 'whitepaper_de'],
+      ['Descripcion_del_Producto_Arquitectura_de_Seguridad_ES', 'overview_es'],
+      ['Libro_Blanco_Tecnico_Publico_ES', 'whitepaper_es']
+    ].map(([file, id]) => ['/ODRE_PQC_v0.2.9_' + file + '.pdf', 'v029_' + id]));
+    const untracked = /^\/ODRE_PQC_(?:Installation_License_Activation_Guide_v1\.2\.1|14_Day_Free_Trial_Guide_v1\.3_RC[12]|Release_Evidence_20260910)_(?:EN|KO|JA|DE|ES)\.pdf$/;
+    const expectedIds = [];
+    assert.ok(links.length > 0);
+    for (const href of links) {
+      const id = registered.get(href), before = env.beacons.length;
+      assert.ok(id || untracked.test(href), 'every PDF link has an explicit collection contract: ' + href);
+      assert.equal(env.pdfClick(href).defaultPrevented, false);
+      assert.equal(env.beacons.length - before, id ? 1 : 0, href);
+      if (id) expectedIds.push(id);
+    }
+    assert.equal(new Set(expectedIds).size, 10, 'all five languages retain both registered documents');
     const sent = await Promise.all(env.beacons.map(async item => ({ url: item.url, payload: JSON.parse(await item.blob.text()) })));
-    assert.equal(sent.length, 4); assert.ok(sent.every(item => item.url.endsWith('/download-click')));
-    assert.equal(new Set(sent.map(item => item.payload.pdf_id)).size, 2);
-    assert.equal(new Set(sent.map(item => item.payload.event_id)).size, 4);
+    assert.deepEqual(sent.map(item => item.payload.pdf_id), expectedIds);
+    assert.ok(sent.every(item => item.url.endsWith('/download-click')));
+    assert.equal(new Set(sent.map(item => item.payload.event_id)).size, expectedIds.length);
     assert.ok(sent.every(item => item.payload.rendered_language === 'ko' && item.payload.path === '/docs/'));
     assert.ok(sent.some(item => item.payload.pdf_id === 'v029_whitepaper_en'));
     assert.ok(sent.every(item => !('url' in item.payload) && !('document_language' in item.payload)));
