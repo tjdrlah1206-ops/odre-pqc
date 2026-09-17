@@ -313,50 +313,50 @@
   var launchCopy = {
   "home": {
     "en": {
-      "seoTitle": "Post-Quantum Security for FastAPI APIs | ODRE PQC",
-      "seoDescription": "Server-side Post-Quantum Application Security for FastAPI APIs with ML-KEM-768, ML-DSA-65, replay protection and Fail-Closed handler enforcement."
+      "seoTitle": "ODRE PQC — Self-Managing Security Infrastructure for FastAPI",
+      "seoDescription": "ODRE PQC is self-managing security infrastructure for FastAPI. It enforces a Post-Quantum Security Boundary for FastAPI using ML-KEM-768 and ML-DSA-65, with fail-closed enforcement, replay defense, and automatic update and rollback."
     },
     "ko": {
-      "seoTitle": "FastAPI API를 위한 포스트양자 보안 | ODRE PQC",
-      "seoDescription": "FastAPI API를 위한 서버 측 포스트양자 애플리케이션 보안입니다. ML-KEM-768·ML-DSA-65, 재전송 방어, Fail-Closed 핸들러 통제를 적용합니다."
+      "seoTitle": "ODRE PQC — FastAPI를 위한 자가완결형 보안 운영 인프라",
+      "seoDescription": "ODRE PQC는 FastAPI를 위한 자가완결형 보안 운영 인프라입니다. ML-KEM-768·ML-DSA-65, Fail-Closed 통제, 재전송 방어와 자동 업데이트·롤백으로 Post-Quantum Security Boundary for FastAPI를 구현합니다."
     },
     "ja": {
-      "seoTitle": "FastAPI API向けポスト量子セキュリティ | ODRE PQC",
-      "seoDescription": "FastAPI API向けのサーバー側ポスト量子アプリケーションセキュリティ。ML-KEM-768、ML-DSA-65、リプレイ防御、Fail-ClosedによるHandler制御を適用します。"
+      "seoTitle": "ODRE PQC — FastAPI向け自己完結型セキュリティ運用インフラ",
+      "seoDescription": "ODRE PQCはFastAPI向け自己完結型セキュリティ運用インフラです。ML-KEM-768、ML-DSA-65、Fail-Closed制御、リプレイ防御、自動アップデート・ロールバックでPost-Quantum Security Boundary for FastAPIを実装します。"
     },
     "de": {
-      "seoTitle": "Post-Quantum-Sicherheit für FastAPI-APIs | ODRE PQC",
-      "seoDescription": "Serverseitige Post-Quantum Application Security für FastAPI-APIs mit ML-KEM-768, ML-DSA-65, Replay-Schutz und Fail-Closed-Handlerkontrolle."
+      "seoTitle": "ODRE PQC — Selbstverwaltete Sicherheitsinfrastruktur für FastAPI",
+      "seoDescription": "ODRE PQC ist eine selbstverwaltete Sicherheitsinfrastruktur für FastAPI. Sie setzt mit ML-KEM-768, ML-DSA-65, Fail-Closed-Kontrolle, Replay-Schutz sowie automatischem Update und Rollback eine Post-Quantum Security Boundary for FastAPI durch."
     },
     "es": {
-      "seoTitle": "Seguridad poscuántica para API FastAPI | ODRE PQC",
-      "seoDescription": "Seguridad de aplicaciones poscuántica en el servidor para API FastAPI con ML-KEM-768, ML-DSA-65, defensa contra replay y control Fail-Closed del handler."
+      "seoTitle": "ODRE PQC — Infraestructura de seguridad autogestionada para FastAPI",
+      "seoDescription": "ODRE PQC es una infraestructura de seguridad autogestionada para FastAPI. Aplica un Post-Quantum Security Boundary for FastAPI con ML-KEM-768, ML-DSA-65, control Fail-Closed, defensa contra replay y actualización y reversión automáticas."
     }
   },
   "product": {
     "en": {
-      "seoTitle": "Post-Quantum API Security & PQC Gateway | ODRE PQC",
-      "seoDescription": "Explore Post-Quantum Application Security for FastAPI: a PQC Gateway-to-Core boundary with ML-KEM-768, ML-DSA-65, replay defense and Fail-Closed execution."
+      "seoTitle": "ODRE PQC Product — FastAPI Security Boundary with ML-KEM-768 / ML-DSA-65",
+      "seoDescription": "ODRE PQC is a commercial, self-hosted FastAPI application-level security boundary using ML-KEM-768 and ML-DSA-65, with fail-closed enforcement, replay and sequence defense, request/response binding, a local data plane, offline licensing, and automatic update and rollback."
     },
     "ko": {
       "integrationDetails": "ODRE PQC를 import하고 install(app)으로 Core 경계를 등록한 뒤, main.py에 Gateway와 Commercial gate를 연결합니다. Gateway identity·key·trust·보호 route·startup/shutdown 설정이 필요하며 Core 등록만으로 통합이 완료되지는 않습니다.",
-      "seoTitle": "포스트양자 API 보안 및 PQC Gateway | ODRE PQC",
-      "seoDescription": "FastAPI용 포스트양자 애플리케이션 보안: ML-KEM-768·ML-DSA-65, 재전송 방어, Fail-Closed 실행을 갖춘 PQC Gateway-to-Core 경계입니다."
+      "seoTitle": "ODRE PQC 제품 — ML-KEM-768 / ML-DSA-65 기반 FastAPI Security Boundary",
+      "seoDescription": "ODRE PQC는 ML-KEM-768·ML-DSA-65를 사용하는 상용 self-hosted FastAPI Post-Quantum Security Boundary for FastAPI입니다. Fail-Closed 통제, 재전송·순서 방어, 요청/응답 바인딩, 로컬 데이터 plane, 오프라인 라이선싱과 자동 업데이트·롤백을 포함합니다."
     },
     "ja": {
       "integrationDetails": "ODRE PQCをimportし、install(app)でCore境界を登録した後、main.pyにGatewayとCommercial gateを接続します。Gatewayのidentity、key、trust、保護route、startup/shutdownを設定します。Core登録だけでは統合は完了しません。",
-      "seoTitle": "ポスト量子APIセキュリティとPQC Gateway | ODRE PQC",
-      "seoDescription": "FastAPI向けポスト量子アプリケーションセキュリティ。ML-KEM-768、ML-DSA-65、リプレイ防御、Fail-Closed実行を備えたGateway-to-Core境界です。"
+      "seoTitle": "ODRE PQC 製品 — ML-KEM-768 / ML-DSA-65によるFastAPI Security Boundary",
+      "seoDescription": "ODRE PQCはML-KEM-768とML-DSA-65を使用する商用self-hostedのPost-Quantum Security Boundary for FastAPIです。Fail-Closed制御、リプレイ・シーケンス防御、リクエスト/レスポンス結合、ローカルデータプレーン、オフラインライセンス、自動アップデート・ロールバックを備えます。"
     },
     "de": {
       "integrationDetails": "ODRE PQC importieren, die Core-Grenze mit install(app) registrieren und danach Gateway und Commercial gate in main.py anbinden. Gateway-Identity, Schlüssel, Trust, geschützte Routen und startup/shutdown konfigurieren. Die Core-Registrierung allein schließt die Integration nicht ab.",
-      "seoTitle": "Post-Quantum-API-Sicherheit & PQC Gateway | ODRE PQC",
-      "seoDescription": "Post-Quantum Application Security für FastAPI: eine PQC-Gateway-to-Core-Grenze mit ML-KEM-768, ML-DSA-65, Replay-Schutz und Fail-Closed-Ausführung."
+      "seoTitle": "ODRE PQC Produkt — FastAPI Security Boundary mit ML-KEM-768 / ML-DSA-65",
+      "seoDescription": "ODRE PQC ist eine kommerzielle, selbst gehostete Post-Quantum Security Boundary for FastAPI mit ML-KEM-768 und ML-DSA-65, Fail-Closed-Kontrolle, Replay- und Sequenzschutz, Request/Response-Bindung, lokaler Datenebene, Offline-Lizenzierung sowie automatischem Update und Rollback."
     },
     "es": {
       "integrationDetails": "Importa ODRE PQC, registra el límite Core con install(app) y después conecta Gateway y Commercial gate en main.py. Configura identity, claves, trust, rutas protegidas y startup/shutdown de Gateway. Registrar Core no completa por sí solo la integración.",
-      "seoTitle": "Seguridad API poscuántica y PQC Gateway | ODRE PQC",
-      "seoDescription": "Seguridad de aplicaciones poscuántica para FastAPI: un límite PQC de Gateway a Core con ML-KEM-768, ML-DSA-65, defensa contra replay y ejecución Fail-Closed."
+      "seoTitle": "Producto ODRE PQC — FastAPI Security Boundary con ML-KEM-768 / ML-DSA-65",
+      "seoDescription": "ODRE PQC es un Post-Quantum Security Boundary for FastAPI comercial y autoalojado con ML-KEM-768 y ML-DSA-65, control Fail-Closed, defensa contra replay y secuencia, vinculación de solicitud/respuesta, plano de datos local, licencia offline y actualización y reversión automáticas."
     }
   },
   "trust": {
