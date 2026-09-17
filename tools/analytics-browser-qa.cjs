@@ -8,7 +8,7 @@ const assert = require('node:assert/strict');
 const http = require('node:http');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, '.qa-artifacts');
-const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/company/', '/contact/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
+const routes = ['/', '/product/', '/security/', '/docs/', '/pricing/', '/trust/', '/changelog/', '/company/', '/contact/', '/releases/', '/license/', '/payment/', '/payment/register/', '/payment/success/', '/terms/', '/privacy/', '/refund/'];
 const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.ico': 'image/x-icon' };
 fs.mkdirSync(out, { recursive: true });
@@ -71,7 +71,9 @@ fs.mkdirSync(out, { recursive: true });
     for (let index=0; index<40 && excludedAdminRequests===0; index++) await inspection.waitForTimeout(100);
     assert.equal(excludedAdminRequests,1); await inspection.waitForTimeout(200);
     await inspection.evaluate(()=>document.dispatchEvent(new Event('odre:language')));
-    await inspection.locator('a[href$=".pdf"]').first().click();
+    const documentLink = inspection.locator('a[href$=".pdf"],a[data-paused-href$=".pdf"]').first();
+    assert.equal(await documentLink.count(), 1, 'docs expose a PDF link even while public actions are paused');
+    await documentLink.dispatchEvent('click');
     await inspection.goto('about:blank'); await administrator.close();
     assert.equal(excludedAdminRequests,1); assert.equal(visits.length,0); assert.equal(activities.length,0);
     assert.equal(downloads.length,0);
@@ -94,8 +96,8 @@ fs.mkdirSync(out, { recursive: true });
       if (overflow > 1) findings.push(`${locale} privacy360 overflow:${overflow}`);
       await view.screenshot({ path: path.join(out, `analytics-privacy-${rendered}-360.png`), fullPage: true });
       const before = visits.length;
-      await view.locator('#mobile-toggle').click();
-      await view.locator('.mobile-language-grid [data-language-choice="ja"]').click();
+      await view.locator('#language-button').click();
+      await view.locator('#language-menu [data-language-choice="ja"]').click();
       await view.waitForTimeout(100);
       assert.equal(visits.length, before, 'language change does not add pageview');
       assert.equal(activities.at(-1).selected_language, 'ja'); assert.equal(activities.at(-1).language_source, 'manual');
@@ -111,28 +113,16 @@ fs.mkdirSync(out, { recursive: true });
     assert.ok(await pay.locator('#activationView').isVisible());
     assert.equal(await pay.locator('#activationTab').getAttribute('aria-selected'), 'true');
     await payment.close();
-    const pdfContext = await contextFor('ko-KR', 360); const pdfPage = await pdfContext.newPage();
+    const pdfContext = await contextFor('ko-KR', 360); const pdfPage = await pdfContext.newPage(); let pausedDocumentLinks = 0;
     for (const route of ['/docs/', '/security/', '/trust/', '/releases/']) {
       await loaded(pdfPage, origin + route);
-      const links = pdfPage.locator('a[href$=".pdf"]'); const count = await links.count();
-      for (let index=0; index<count; index++) {
-        const href=await links.nth(index).getAttribute('href');
-        const isNewGuide=/^\/ODRE_PQC_Installation_License_Activation_Guide_v1\.2\.1_(EN|KO|JA|DE|ES)\.pdf$/.test(href);
-        const isReleaseEvidence=/^\/ODRE_PQC_Release_Evidence_20260910_(EN|KO|JA|DE|ES)\.pdf$/.test(href);
-        const before=downloads.length; await links.nth(index).click();
-        if (isNewGuide || isReleaseEvidence) {
-          await pdfPage.waitForTimeout(100);
-          assert.equal(downloads.length,before,'new guides have no approved server analytics ID');
-          continue;
-        }
-        for (let wait=0; wait<40 && downloads.length===before; wait++) await pdfPage.waitForTimeout(50);
-        assert.equal(downloads.length,before+1, `one event for each real PDF activation: ${route} ${href}`);
-        assert.equal(downloads.at(-1).path,route); assert.equal(downloads.at(-1).rendered_language,'ko');
-      }
+      const links = pdfPage.locator('a[data-paused-href$=".pdf"]'); const count = await links.count();
+      pausedDocumentLinks += count;
+      assert.equal(await pdfPage.locator('a[href$=".pdf"]').count(), 0, `PDF actions stay paused: ${route}`);
+      if (count) assert.equal(await links.first().getAttribute('aria-disabled'), 'true');
     }
-    assert.equal(downloads.length,4);
-    assert.deepEqual([...new Set(downloads.map(item=>item.pdf_id))].sort(), ['v029_overview_ko','v029_whitepaper_en','v029_whitepaper_ko']);
-    assert.equal(new Set(downloads.map(item=>item.event_id)).size,4);
+    assert.ok(pausedDocumentLinks > 0, 'document links were inspected in their paused state');
+    assert.equal(downloads.length,0, 'paused UI emits no document-click telemetry');
     await pdfContext.close();
     await new Promise(resolve => setTimeout(resolve, 200));
     assert.deepEqual(errors, [], 'no browser page errors'); assert.deepEqual(findings, [], 'no layout findings');
