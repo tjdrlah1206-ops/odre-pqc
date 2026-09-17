@@ -59,7 +59,7 @@ async function endpoint() {
   const languages = ['en', 'ko', 'ja', 'de', 'es'];
   const viewports = [{ name: 'desktop', width: 1440, height: 1000 }, { name: 'mobile', width: 390, height: 844 }];
   const expectedEnglishTitles = {
-    '/': 'Post-Quantum Security for FastAPI APIs | ODRE PQC',
+    '/': 'ODRE PQC — Self-Managing Security Infrastructure for FastAPI',
     '/product/': 'Post-Quantum API Security & PQC Gateway | ODRE PQC',
     '/security/': 'ML-KEM-768 & ML-DSA-65 Security Architecture | ODRE PQC',
     '/docs/': 'FastAPI PQC Integration Documentation | ODRE PQC',
