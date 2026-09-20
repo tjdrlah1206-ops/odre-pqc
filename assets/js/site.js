@@ -5,10 +5,10 @@
   var languageNames = { en: 'English', ko: '한국어', ja: '日本語', de: 'Deutsch', es: 'Español' };
   var common = {
     en: {
-      skip: 'Skip to content', homeLabel: 'ODRE PQC home', primaryNav: 'Primary navigation', menuLabel: 'Menu', mobileNav: 'Mobile navigation', product: 'Product', security: 'Security', docs: 'Documentation', pricing: 'Pricing', license: 'License', trust: 'Trust Center', company: 'Company', download: 'Download', language: 'Language', overview: 'Overview', how: 'How it works', deployment: 'Deployment', requirements: 'System requirements', architecture: 'Security architecture', cryptography: 'Cryptography', failclosed: 'Fail-closed protection', verification: 'Release & verification', quickstart: 'Quick start', installation: 'Installation', operations: 'Operations', activation: 'License delivery', licenseOptions: 'License options', licenseOptionsDesc: 'Plans, Units, and delivery', activateLicense: 'Activate License', activateLicenseDesc: 'Link a license to an installed server', faq: 'FAQ', releases: 'Release notes', integrity: 'Release integrity', advisories: 'Security advisories', disclosure: 'Vulnerability reporting', lifecycle: 'Support lifecycle', data: 'Data handling', about: 'ODRE AI',  contact: 'Contact', resources: 'Resources', legal: 'Legal', terms: 'Terms of Service', privacy: 'Privacy Policy', refund: 'Refund Policy', commercial: 'Commercial license terms', footerText: 'Application-embedded post-quantum protection for supported FastAPI environments.', korea: 'Korea', productDesc: 'Integration, deployment, and supported environments', securityDesc: 'Architecture, controls, and defined boundaries', docsDesc: 'Installation and operational guidance', trustDesc: 'Integrity, maintenance, and reporting', companyDesc: 'ODRE AI and commercial contact routes'
+      skip: 'Skip to content', homeLabel: 'ODRE PQC home', primaryNav: 'Primary navigation', menuLabel: 'Menu', mobileNav: 'Mobile navigation', product: 'Product', security: 'Security', docs: 'Documentation', pricing: 'Pricing', license: 'License', trust: 'Trust Center', company: 'Company', download: 'Download', language: 'Language', overview: 'Overview', how: 'How it works', deployment: 'Deployment', requirements: 'System requirements', performance: 'Measured performance', architecture: 'Security architecture', cryptography: 'Cryptography', failclosed: 'Fail-closed protection', verification: 'Release & verification', quickstart: 'Quick start', installation: 'Installation', operations: 'Operations', activation: 'License delivery', licenseOptions: 'License options', licenseOptionsDesc: 'Plans, Units, and delivery', activateLicense: 'Activate License', activateLicenseDesc: 'Link a license to an installed server', faq: 'FAQ', releases: 'Release notes', integrity: 'Release integrity', advisories: 'Security advisories', disclosure: 'Vulnerability reporting', lifecycle: 'Support lifecycle', data: 'Data handling', about: 'ODRE AI',  contact: 'Contact', resources: 'Resources', legal: 'Legal', terms: 'Terms of Service', privacy: 'Privacy Policy', refund: 'Refund Policy', commercial: 'Commercial license terms', footerText: 'Application-embedded post-quantum protection for supported FastAPI environments.', korea: 'Korea', productDesc: 'Integration, deployment, supported platforms, and measured performance', securityDesc: 'Architecture, controls, and defined boundaries', docsDesc: 'Installation and operational guidance', trustDesc: 'Integrity, maintenance, and reporting', companyDesc: 'ODRE AI and commercial contact routes'
     },
     ko: {
-      skip: '본문으로 건너뛰기', homeLabel: 'ODRE PQC 홈', primaryNav: '주요 메뉴', menuLabel: '메뉴', mobileNav: '모바일 메뉴', product: '제품', security: '보안', docs: '문서', pricing: '가격', license: '라이선스', trust: '신뢰 센터', company: '회사', download: '다운로드', language: '언어', overview: '개요', how: '작동 방식', deployment: '배포', requirements: '시스템 요구사항', architecture: '보안 아키텍처', cryptography: '암호 기술', failclosed: 'Fail-closed 보호', verification: '릴리스 및 검증', quickstart: '빠른 시작', installation: '설치', operations: '운영', activation: '라이선스 전달', licenseOptions: '라이선스 옵션', licenseOptionsDesc: '요금제, Unit, 전달 안내', activateLicense: '라이선스 활성화', activateLicenseDesc: '구매 라이선스를 설치 서버에 연결', faq: '자주 묻는 질문', releases: '릴리스 노트', integrity: '릴리스 무결성', advisories: '보안 공지', disclosure: '취약점 신고', lifecycle: '지원 수명주기', data: '데이터 처리', about: 'ODRE AI',  contact: '연락처', resources: '자료', legal: '법적 고지', terms: '서비스 이용약관', privacy: '개인정보 처리방침', refund: '환불 정책', commercial: '상용 라이선스 약관', footerText: '지원되는 FastAPI 환경을 위한 애플리케이션 내장형 포스트양자 보호.', korea: '대한민국', productDesc: '통합, 배포, 지원 환경', securityDesc: '아키텍처, 보호 통제, 명확한 범위', docsDesc: '설치와 운영 안내', trustDesc: '무결성, 유지보수, 신고', companyDesc: 'ODRE AI와 상업 문의 채널'
+      skip: '본문으로 건너뛰기', homeLabel: 'ODRE PQC 홈', primaryNav: '주요 메뉴', menuLabel: '메뉴', mobileNav: '모바일 메뉴', product: '제품', security: '보안', docs: '문서', pricing: '가격', license: '라이선스', trust: '신뢰 센터', company: '회사', download: '다운로드', language: '언어', overview: '개요', how: '작동 방식', deployment: '배포', requirements: '시스템 요구사항', performance: '성능 실측', architecture: '보안 아키텍처', cryptography: '암호 기술', failclosed: 'Fail-closed 보호', verification: '릴리스 및 검증', quickstart: '빠른 시작', installation: '설치', operations: '운영', activation: '라이선스 전달', licenseOptions: '라이선스 옵션', licenseOptionsDesc: '요금제, Unit, 전달 안내', activateLicense: '라이선스 활성화', activateLicenseDesc: '구매 라이선스를 설치 서버에 연결', faq: '자주 묻는 질문', releases: '릴리스 노트', integrity: '릴리스 무결성', advisories: '보안 공지', disclosure: '취약점 신고', lifecycle: '지원 수명주기', data: '데이터 처리', about: 'ODRE AI',  contact: '연락처', resources: '자료', legal: '법적 고지', terms: '서비스 이용약관', privacy: '개인정보 처리방침', refund: '환불 정책', commercial: '상용 라이선스 약관', footerText: '지원되는 FastAPI 환경을 위한 애플리케이션 내장형 포스트양자 보호.', korea: '대한민국', productDesc: '통합, 배포, 지원 환경과 성능 실측', securityDesc: '아키텍처, 보호 통제, 명확한 범위', docsDesc: '설치와 운영 안내', trustDesc: '무결성, 유지보수, 신고', companyDesc: 'ODRE AI와 상업 문의 채널'
     },
     ja: {
       skip: '本文へ移動', homeLabel: 'ODRE PQC ホーム', primaryNav: 'メインナビゲーション', menuLabel: 'メニュー', mobileNav: 'モバイルナビゲーション', product: '製品', security: 'セキュリティ', docs: 'ドキュメント', pricing: '価格', license: 'ライセンス', trust: 'トラストセンター', company: '会社', download: 'ダウンロード', language: '言語', overview: '概要', how: '仕組み', deployment: '導入', requirements: 'システム要件', architecture: 'セキュリティ構成', cryptography: '暗号技術', failclosed: 'Fail-closed保護', verification: 'リリースと検証', quickstart: 'クイックスタート', installation: 'インストール', operations: '運用', activation: 'ライセンス送付', licenseOptions: 'ライセンスオプション', licenseOptionsDesc: 'プラン、Unit、送付案内', activateLicense: 'ライセンスを有効化', activateLicenseDesc: '購入済みライセンスをサーバーに接続', faq: 'FAQ', releases: 'リリースノート', integrity: 'リリース整合性', advisories: 'セキュリティ勧告', disclosure: '脆弱性報告', lifecycle: 'サポートライフサイクル', data: 'データ処理', about: 'ODRE AI',  contact: 'お問い合わせ', resources: 'リソース', legal: '法務', terms: '利用規約', privacy: 'プライバシーポリシー', refund: '返金ポリシー', commercial: '商用ライセンス条件', footerText: '対応FastAPI環境向けのアプリケーション組み込み型ポスト量子保護。', korea: '韓国', productDesc: '統合、導入、対応環境', securityDesc: 'アーキテクチャ、制御、定義範囲', docsDesc: 'インストールと運用ガイド', trustDesc: '整合性、保守、報告', companyDesc: 'ODRE AIと商用窓口'
@@ -75,8 +75,20 @@
   var englishDescriptionNode = document.querySelector('meta[name="description"]');
   var englishDescription = englishDescriptionNode ? englishDescriptionNode.getAttribute('content') : '';
 
+  common.ja.performance = '計測性能';
+  common.de.performance = 'Gemessene Leistung';
+  common.es.performance = 'Rendimiento medido';
+
+  if (document.body.dataset.page === 'home') {
+    var homeMain = document.getElementById('main');
+    ['home-journey', 'environments', 'pricing-preview', 'product', 'how-it-works', 'deployment', 'release', 'resources'].forEach(function (id) {
+      var section = document.getElementById(id);
+      if (homeMain && section) homeMain.appendChild(section);
+    });
+  }
+
   var groups = [
-    { key: 'product', href: '/product/', items: [['overview','/product/','productDesc'],['how','/product/#how-it-works','how'],['deployment','/product/#deployment','deployment'],['requirements','/product/#system-requirements','requirements']] },
+    { key: 'product', href: '/product/', items: [['overview','/product/','productDesc'],['requirements','/product/#system-requirements','requirements'],['performance','/product/#performance','performance'],['deployment','/product/#deployment','deployment']] },
     { key: 'security', href: '/security/', items: [['architecture','/security/','securityDesc'],['cryptography','/security/#cryptography','cryptography'],['failclosed','/security/#fail-closed','failclosed'],['verification','/security/#release-verification','verification']] },
     { key: 'docs', href: '/docs/', items: [['quickstart','/docs/#quick-start','docsDesc'],['installation','/docs/#installation','installation'],['operations','/docs/#operations','operations'],['faq','/docs/#faq','faq'],['releases','/releases/','releases']] },
     { key: 'license', href: '/license/', items: [['licenseOptions','/license/','licenseOptionsDesc'],['activateLicense','/payment/register/?flow=activate','activateLicenseDesc'],['deviceTransfer','/payment/register/?flow=native','deviceTransferDesc']] },
@@ -123,7 +135,7 @@
 
   function footerMarkup() {
     return '<footer class="site-footer"><div class="container footer-main"><div class="footer-brand"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a><p data-common="footerText">' + t('footerText') + '</p></div>' +
-      footerColumn('product', [['overview','/product/'],['deployment','/product/#deployment'],['requirements','/product/#system-requirements'],['pricing','/pricing/']]) +
+      footerColumn('product', [['overview','/product/'],['requirements','/product/#system-requirements'],['performance','/product/#performance'],['pricing','/pricing/']]) +
       footerColumn('security', [['architecture','/security/'],['verification','/security/#release-verification'],['advisories','/trust/#security-advisories'],['integrity','/trust/#release-integrity']]) +
       footerColumn('resources', [['docs','/docs/'],['quickstart','/docs/#quick-start'],['releases','/releases/'],['faq','/docs/#faq']]) +
       footerColumn('company', [['about','/company/'],['contact','/contact/'],['activateLicense','/payment/register/?flow=activate'],['deviceTransfer','/payment/register/?flow=native']]) +
@@ -290,6 +302,29 @@
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   });
+
+  /* Keep the public Unit contract explicit and separate from test topology. */
+  var unitTopology = document.querySelector('[data-i18n="topologyTitle"]');
+  if (unitTopology && unitTopology.parentElement) unitTopology.parentElement.remove();
+  var workerFaq = document.querySelector('[data-i18n="faq2q"]');
+  if (workerFaq && workerFaq.closest('.faq-item')) workerFaq.closest('.faq-item').remove();
+
+  if (document.body.dataset.page === 'product') {
+    var performancePanel = document.querySelector('#performance .performance-panel');
+    var firstPerformance = performancePanel && performancePanel.querySelector('.performance-highlight');
+    if (firstPerformance && !performancePanel.querySelector('[data-single-worker-result]')) {
+      var singleWorker = document.createElement('div');
+      singleWorker.className = 'performance-highlight';
+      singleWorker.setAttribute('data-single-worker-result', '');
+      singleWorker.innerHTML = '<span data-i18n="performanceSingleWorker">Single-worker maximum stable result</span><strong>1,182.7626 RPS</strong><small data-i18n="performanceSingleWorkerDetail">stable concurrency 4 · p50 3.2581 ms · p95 4.1219 ms · p99 4.8010 ms · error rate 0</small>';
+      var singleWorkerScope = document.createElement('p');
+      singleWorkerScope.className = 'notice info';
+      singleWorkerScope.setAttribute('data-i18n', 'performanceSingleWorkerScope');
+      singleWorkerScope.textContent = 'Single-worker scope: g099, Windows Server 2022, one Uvicorn worker/process, one 4-core host, loopback network. This is not a multi-worker, multi-host, LAN/WAN, or Linux performance claim.';
+      performancePanel.insertBefore(singleWorker, firstPerformance);
+      performancePanel.insertBefore(singleWorkerScope, firstPerformance);
+    }
+  }
 
   document.querySelectorAll('.faq-question').forEach(function (button) {
     button.addEventListener('click', function () {

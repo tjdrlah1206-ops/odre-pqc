@@ -519,6 +519,56 @@
   if (launchCopy[page]) Object.keys(launchCopy[page]).forEach(function (language) { Object.assign(window.ODRE_PAGE_I18N[language], launchCopy[page][language]); });
 }());
 
+/* Explicit Unit contract and protected-traffic performance evidence. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N) return;
+  var page = document.body.dataset.page;
+  var commonUnit = {
+    en: { faq1a: '1 Server = 1 Device = 1 Unit.', unitCopy: '1 Server = 1 Device = 1 Unit. The standard range is 1–1,000 Units.', lead: '1 Server = 1 Device = 1 Unit. Standard licensing covers 1–1,000 Units.' },
+    ko: { faq1a: '1 Server = 1 Device = 1 Unit.', unitCopy: '1 Server = 1 Device = 1 Unit. 표준 범위는 1–1,000 Units입니다.', lead: '1 Server = 1 Device = 1 Unit. 표준 라이선스 범위는 1–1,000 Units입니다.' },
+    ja: { faq1a: '1 Server = 1 Device = 1 Unit.', unitCopy: '1 Server = 1 Device = 1 Unit. 標準範囲は1～1,000 Unitsです。', lead: '1 Server = 1 Device = 1 Unit. 標準ライセンス範囲は1～1,000 Unitsです。' },
+    de: { faq1a: '1 Server = 1 Device = 1 Unit.', unitCopy: '1 Server = 1 Device = 1 Unit. Der Standardumfang beträgt 1–1.000 Units.', lead: '1 Server = 1 Device = 1 Unit. Der Standard-Lizenzumfang beträgt 1–1.000 Units.' },
+    es: { faq1a: '1 Server = 1 Device = 1 Unit.', unitCopy: '1 Server = 1 Device = 1 Unit. El rango estándar es de 1 a 1.000 Units.', lead: '1 Server = 1 Device = 1 Unit. La licencia estándar abarca de 1 a 1.000 Units.' }
+  };
+  var performance = {
+    en: { performanceIntro: 'ODRE PQC 0.3.1 RC1 includes separate protected-traffic measurements for a single Uvicorn worker and for Gateway/Broker routing to 1, 2, 4, and 10 business backends.', performanceSingleWorker: 'Single-worker maximum stable result', performanceSingleWorkerDetail: 'stable concurrency 4 · p50 3.2581 ms · p95 4.1219 ms · p99 4.8010 ms · error rate 0', performanceSingleWorkerScope: 'Single-worker scope: g099, Windows Server 2022, one Uvicorn worker/process, one 4-core host, loopback network. This is not a multi-worker, multi-host, LAN/WAN, or Linux performance claim.' },
+    ko: { performanceIntro: 'ODRE PQC 0.3.1 RC1은 단일 Uvicorn worker 보호 트래픽과 Gateway/Broker가 1·2·4·10개 business backend로 라우팅한 보호 트래픽을 각각 측정했습니다.', performanceSingleWorker: '단일 워커 최대 안정 측정값', performanceSingleWorkerDetail: '안정 concurrency 4 · p50 3.2581 ms · p95 4.1219 ms · p99 4.8010 ms · 오류율 0', performanceSingleWorkerScope: '단일 워커 범위: g099, Windows Server 2022, Uvicorn 1 worker/process, 4-core 단일 호스트, loopback network. 다중 워커·다중 호스트·LAN/WAN·Linux 성능 주장이 아닙니다.' },
+    ja: { performanceIntro: 'ODRE PQC 0.3.1 RC1では、単一Uvicorn workerと、Gateway/Brokerから1・2・4・10のbusiness backendへの保護トラフィックを別々に測定しました。', performanceSingleWorker: '単一workerの最大安定測定値', performanceSingleWorkerDetail: '安定concurrency 4 · p50 3.2581 ms · p95 4.1219 ms · p99 4.8010 ms · error rate 0', performanceSingleWorkerScope: '単一worker範囲: g099、Windows Server 2022、Uvicorn 1 worker/process、4-core単一host、loopback network。複数worker・複数host・LAN/WAN・Linux性能の主張ではありません。' },
+    de: { performanceIntro: 'ODRE PQC 0.3.1 RC1 enthält getrennte Messungen für einen einzelnen Uvicorn-Worker und für Gateway/Broker-Routing zu 1, 2, 4 und 10 Business-Backends.', performanceSingleWorker: 'Maximal stabiler Einzel-Worker-Wert', performanceSingleWorkerDetail: 'stabile Parallelität 4 · p50 3,2581 ms · p95 4,1219 ms · p99 4,8010 ms · Fehlerrate 0', performanceSingleWorkerScope: 'Einzel-Worker-Umfang: g099, Windows Server 2022, ein Uvicorn-Worker/Prozess, ein 4-Core-Host, Loopback-Netzwerk. Keine Aussage für mehrere Worker/Hosts, LAN/WAN oder Linux.' },
+    es: { performanceIntro: 'ODRE PQC 0.3.1 RC1 incluye mediciones separadas con un solo worker Uvicorn y con Gateway/Broker hacia 1, 2, 4 y 10 backends de negocio.', performanceSingleWorker: 'Resultado estable máximo con un worker', performanceSingleWorkerDetail: 'concurrencia estable 4 · p50 3,2581 ms · p95 4,1219 ms · p99 4,8010 ms · tasa de error 0', performanceSingleWorkerScope: 'Alcance de un worker: g099, Windows Server 2022, un worker/proceso Uvicorn, un host de 4 cores y red loopback. No es una afirmación para varios workers/hosts, LAN/WAN o Linux.' }
+  };
+  Object.keys(window.ODRE_PAGE_I18N).forEach(function (language) {
+    var fields = {};
+    if (page === 'docs') fields.faq1a = commonUnit[language].faq1a;
+    if (page === 'pricing') fields.unitCopy = commonUnit[language].unitCopy;
+    if (page === 'license') fields.lead = commonUnit[language].lead;
+    if (page === 'product') Object.assign(fields, performance[language]);
+    Object.assign(window.ODRE_PAGE_I18N[language], fields);
+  });
+}());
+
+/* Guided homepage flow, 0.3.1 RC1 build status, and final g223 topology performance. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N) return;
+  var home = {
+    ko: { nextBuild:'다음 프로덕션 빌드',buildInProgress:'빌드 진행 중',journeyPlatforms:'지원 환경',journeyPricing:'가격 · AUM',journeyProduct:'제품 보호 경계',journeyPerformance:'성능 실측',journeyDeployment:'설치 절차',journeyEvidence:'검증 · 문서' },
+    ja: { nextBuild:'次のProductionビルド',buildInProgress:'ビルド進行中',journeyPlatforms:'対応環境',journeyPricing:'価格・AUM',journeyProduct:'製品の保護境界',journeyPerformance:'計測性能',journeyDeployment:'導入手順',journeyEvidence:'検証・文書' },
+    de: { nextBuild:'Nächster Production-Build',buildInProgress:'Build läuft',journeyPlatforms:'Unterstützte Plattformen',journeyPricing:'Preise · AUM',journeyProduct:'Produktschutzgrenze',journeyPerformance:'Gemessene Leistung',journeyDeployment:'Installationsweg',journeyEvidence:'Nachweise · Dokumente' },
+    es: { nextBuild:'Próxima compilación Production',buildInProgress:'Compilación en curso',journeyPlatforms:'Plataformas compatibles',journeyPricing:'Precios · AUM',journeyProduct:'Límite de protección',journeyPerformance:'Rendimiento medido',journeyDeployment:'Ruta de instalación',journeyEvidence:'Evidencia · documentos' }
+  };
+  var product = {
+    ko: { performanceTitle:'보호 트래픽 성능 실측.',performanceIntro:'ODRE PQC 0.3.1 RC1에서 인증된 단일 Core owner와 Gateway/Broker가 1·2·4·10개 업무 backend로 보호 요청을 전달하는 실제 제품 토폴로지를 측정했습니다.',performanceTenNode:'10-backend 실측 결과',performanceStable:'안정 concurrency 16 · 안정 구간 오류 0',backendCount:'업무 backend 수',stableConcurrency:'안정 concurrency',recovery:'복구',performanceInvariant1:'안정 구간 HTTP 오류 0 · 보안 실패 0',performanceInvariant2:'성공한 보호 요청과 Handler 실행이 정확히 1:1',performanceInvariant3:'평문 fallback 없음 · 포화 후 복구 PASS',performanceScope:'범위: Windows Server 2022, 4-logical-CPU 단일 호스트, loopback, persistent TLS, 단일 Core owner. 다른 운영체제, 물리 네트워크 또는 다중 호스트 성능 주장으로 확대하지 않습니다.',nextEvidence:'검증 자료 보기' },
+    ja: { performanceTitle:'保護トラフィックの実測性能。',performanceIntro:'ODRE PQC 0.3.1 RC1で、認証済みの単一Core ownerとGateway/Brokerが1・2・4・10個の業務backendへ保護リクエストを転送する実製品トポロジーを測定しました。',performanceTenNode:'10-backend実測結果',performanceStable:'安定concurrency 16・安定区間エラー0',backendCount:'業務backend数',stableConcurrency:'安定concurrency',recovery:'復旧',performanceInvariant1:'安定区間HTTPエラー0・セキュリティ失敗0',performanceInvariant2:'成功した保護リクエストとHandler実行は正確に1:1',performanceInvariant3:'平文fallbackなし・飽和後の復旧PASS',performanceScope:'範囲: Windows Server 2022、4 logical CPUの単一ホスト、loopback、persistent TLS、単一Core owner。他のOS、物理ネットワーク、複数ホストへの性能主張には拡張しません。',nextEvidence:'検証資料を見る' },
+    de: { performanceTitle:'Gemessene Leistung des geschützten Traffics.',performanceIntro:'Für ODRE PQC 0.3.1 RC1 wurde die reale Produkttopologie mit einem authentifizierten Core Owner und Gateway/Broker zu 1, 2, 4 und 10 Business-Backends gemessen.',performanceTenNode:'Messwert mit 10 Backends',performanceStable:'stabile Concurrency 16 · null Fehler im stabilen Intervall',backendCount:'Business-Backends',stableConcurrency:'Stabile Concurrency',recovery:'Erholung',performanceInvariant1:'HTTP-Fehler im stabilen Intervall: 0 · Sicherheitsfehler: 0',performanceInvariant2:'Erfolgreiche geschützte Anfragen und Handler-Ausführung exakt 1:1',performanceInvariant3:'Kein Plaintext-Fallback · Erholung nach Sättigung PASS',performanceScope:'Umfang: Windows Server 2022, ein Host mit 4 logischen CPUs, Loopback, persistentes TLS, ein Core Owner. Keine Leistungsaussage für andere Betriebssysteme, physische Netze oder Multi-Host-Bereitstellungen.',nextEvidence:'Nachweise ansehen' },
+    es: { performanceTitle:'Rendimiento medido del tráfico protegido.',performanceIntro:'ODRE PQC 0.3.1 RC1 se midió con un único Core owner autenticado y Gateway/Broker enviando solicitudes protegidas a 1, 2, 4 y 10 backends de negocio.',performanceTenNode:'Resultado medido con 10 backends',performanceStable:'concurrency estable 16 · cero errores en el intervalo estable',backendCount:'Backends de negocio',stableConcurrency:'Concurrency estable',recovery:'Recuperación',performanceInvariant1:'Errores HTTP en intervalo estable: 0 · Fallos de seguridad: 0',performanceInvariant2:'Solicitudes protegidas correctas y ejecución del Handler exactamente 1:1',performanceInvariant3:'Sin fallback a texto plano · Recuperación tras saturación PASS',performanceScope:'Alcance: Windows Server 2022, un host con 4 CPU lógicas, loopback, TLS persistente y un único Core owner. No se generaliza a otros sistemas operativos, redes físicas o despliegues multihost.',nextEvidence:'Ver evidencia' }
+  };
+  var page = document.body.dataset.page;
+  if (page === 'home') Object.keys(home).forEach(function (language) { if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], home[language]); });
+  if (page === 'product') Object.keys(product).forEach(function (language) { if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], product[language]); });
+}());
+
 (function () {
   'use strict';
   var page = document.body.dataset.page;
