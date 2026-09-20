@@ -550,6 +550,42 @@
   });
 }());
 
+/* Owner-approved Hero copy translations. */
+(function () {
+  'use strict';
+  if (document.body.dataset.page !== 'home' || !window.ODRE_PAGE_I18N) return;
+  var copy = {
+    en: {
+      heroApprovedLine1: 'Stop building and operating',
+      heroApprovedLine2: 'your own PQC security stack.',
+      heroApprovedSupport: 'Keep your clients as they are. Server setup stays simple.<br>If protection cannot be verified, the request is blocked.'
+    },
+    ko: {
+      heroApprovedLine1: 'PQC 보안 스택을 직접 만들고 운영하는 일,',
+      heroApprovedLine2: '이제 그만.',
+      heroApprovedSupport: '클라이언트는 그대로. 서버 설치는 간편하게.<br>보호를 검증할 수 없으면, 요청을 차단합니다.'
+    },
+    ja: {
+      heroApprovedLine1: '独自のPQCセキュリティスタックを',
+      heroApprovedLine2: '自社で構築・運用する必要はありません。',
+      heroApprovedSupport: 'クライアントはそのまま。サーバー導入はシンプルに。<br>保護を検証できなければ、リクエストを遮断します。'
+    },
+    de: {
+      heroApprovedLine1: 'Hören Sie auf, Ihren eigenen',
+      heroApprovedLine2: 'PQC-Sicherheits-Stack aufzubauen und zu betreiben.',
+      heroApprovedSupport: 'Clients bleiben unverändert. Die Serverinstallation ist unkompliziert.<br>Lässt sich der Schutz nicht verifizieren, wird die Anfrage blockiert.'
+    },
+    es: {
+      heroApprovedLine1: 'Deje de crear y mantener',
+      heroApprovedLine2: 'su propio stack de seguridad PQC.',
+      heroApprovedSupport: 'Sin cambios en los clientes. Instalación sencilla en el servidor.<br>Si no se puede verificar la protección, la solicitud se bloquea.'
+    }
+  };
+  Object.keys(copy).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[language]);
+  });
+}());
+
 /* Approved device-transfer and maintenance availability. */
 (function () {
   'use strict';
@@ -628,10 +664,10 @@
   'use strict';
   if (!window.ODRE_PAGE_I18N) return;
   var home = {
-    ko: { nextBuild:'다음 프로덕션 빌드',buildInProgress:'빌드 진행 중',journeyPlatforms:'지원 환경',journeyPricing:'가격 · AUM',journeyProduct:'제품 보호 경계',journeyPerformance:'성능 실측',journeyDeployment:'설치 절차',journeyEvidence:'검증 · 문서' },
-    ja: { nextBuild:'次のProductionビルド',buildInProgress:'ビルド進行中',journeyPlatforms:'対応環境',journeyPricing:'価格・AUM',journeyProduct:'製品の保護境界',journeyPerformance:'計測性能',journeyDeployment:'導入手順',journeyEvidence:'検証・文書' },
-    de: { nextBuild:'Nächster Production-Build',buildInProgress:'Build läuft',journeyPlatforms:'Unterstützte Plattformen',journeyPricing:'Preise · AUM',journeyProduct:'Produktschutzgrenze',journeyPerformance:'Gemessene Leistung',journeyDeployment:'Installationsweg',journeyEvidence:'Nachweise · Dokumente' },
-    es: { nextBuild:'Próxima compilación Production',buildInProgress:'Compilación en curso',journeyPlatforms:'Plataformas compatibles',journeyPricing:'Precios · AUM',journeyProduct:'Límite de protección',journeyPerformance:'Rendimiento medido',journeyDeployment:'Ruta de instalación',journeyEvidence:'Evidencia · documentos' }
+    ko: { nextBuild:'다음 프로덕션 빌드',buildInProgress:'빌드 진행 중',journeyPlatforms:'지원 환경',journeyPricing:'가격 · AMU',journeyProduct:'제품 보호 경계',journeyPerformance:'성능 실측',journeyDeployment:'설치 절차',journeyEvidence:'검증 · 문서' },
+    ja: { nextBuild:'次のProductionビルド',buildInProgress:'ビルド進行中',journeyPlatforms:'対応環境',journeyPricing:'価格・AMU',journeyProduct:'製品の保護境界',journeyPerformance:'計測性能',journeyDeployment:'導入手順',journeyEvidence:'検証・文書' },
+    de: { nextBuild:'Nächster Production-Build',buildInProgress:'Build läuft',journeyPlatforms:'Unterstützte Plattformen',journeyPricing:'Preise · AMU',journeyProduct:'Produktschutzgrenze',journeyPerformance:'Gemessene Leistung',journeyDeployment:'Installationsweg',journeyEvidence:'Nachweise · Dokumente' },
+    es: { nextBuild:'Próxima compilación Production',buildInProgress:'Compilación en curso',journeyPlatforms:'Plataformas compatibles',journeyPricing:'Precios · AMU',journeyProduct:'Límite de protección',journeyPerformance:'Rendimiento medido',journeyDeployment:'Ruta de instalación',journeyEvidence:'Evidencia · documentos' }
   };
   var product = {
     ko: { performanceTitle:'보호 트래픽 성능 실측.',performanceIntro:'ODRE PQC 0.3.1 RC1에서 인증된 단일 Core owner와 Gateway/Broker가 1·2·4·10개 업무 backend로 보호 요청을 전달하는 실제 제품 토폴로지를 측정했습니다.',performanceTenNode:'10-backend 실측 결과',performanceStable:'안정 concurrency 16 · 안정 구간 오류 0',backendCount:'업무 backend 수',stableConcurrency:'안정 concurrency',recovery:'복구',performanceInvariant1:'안정 구간 HTTP 오류 0 · 보안 실패 0',performanceInvariant2:'성공한 보호 요청과 Handler 실행이 정확히 1:1',performanceInvariant3:'평문 fallback 없음 · 포화 후 복구 PASS',performanceScope:'범위: Windows Server 2022, 4-logical-CPU 단일 호스트, loopback, persistent TLS, 단일 Core owner. 다른 운영체제, 물리 네트워크 또는 다중 호스트 성능 주장으로 확대하지 않습니다.',nextEvidence:'검증 자료 보기' },
