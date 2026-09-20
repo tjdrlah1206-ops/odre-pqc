@@ -79,14 +79,6 @@
   common.de.performance = 'Gemessene Leistung';
   common.es.performance = 'Rendimiento medido';
 
-  if (document.body.dataset.page === 'home') {
-    var homeMain = document.getElementById('main');
-    ['home-journey', 'environments', 'pricing-preview', 'product', 'how-it-works', 'deployment', 'release', 'resources'].forEach(function (id) {
-      var section = document.getElementById(id);
-      if (homeMain && section) homeMain.appendChild(section);
-    });
-  }
-
   var groups = [
     { key: 'product', href: '/product/', items: [['overview','/product/','productDesc'],['requirements','/product/#system-requirements','requirements'],['performance','/product/#performance','performance'],['deployment','/product/#deployment','deployment']] },
     { key: 'security', href: '/security/', items: [['architecture','/security/','securityDesc'],['cryptography','/security/#cryptography','cryptography'],['failclosed','/security/#fail-closed','failclosed'],['verification','/security/#release-verification','verification']] },
