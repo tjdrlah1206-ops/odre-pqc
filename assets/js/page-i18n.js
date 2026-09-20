@@ -657,3 +657,35 @@
     if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[page][language]);
   });
 }());
+
+
+/* Homepage supported-platform and included-module copy. */
+(function () {
+  'use strict';
+  if (document.body.dataset.page !== 'home' || !window.ODRE_PAGE_I18N) return;
+  var copy = {
+    ko: {
+      heroFeatureServerCopy: '기존 FastAPI 앱에서 ODRE PQC를 import하고, install(app)으로 Core 경계를 등록한 뒤 Gateway를 연결합니다. AMD64 기준 Windows Server 2022, Ubuntu 22.04·24.04, Debian 12, Rocky Linux 9, AlmaLinux 9를 지원합니다.',
+      environmentCopy: '지원하는 AMD64 플랫폼을 아래에 기재합니다. 그 밖의 운영체제와 아키텍처는 지원 대상으로 표시하지 않습니다.',
+      pricingCopy: '14일 동안 평가할 수 있습니다. 월간·연간 상용 요금제는 정기구독이며 Automatic Update Module, 제품 유지보수와 보안 업데이트를 기본 포함합니다.'
+    },
+    ja: {
+      heroFeatureServerCopy: '既存のFastAPIアプリでODRE PQCをimportし、install(app)でCore境界を登録してからGatewayを接続します。AMD64ではWindows Server 2022、Ubuntu 22.04・24.04、Debian 12、Rocky Linux 9、AlmaLinux 9に対応します。',
+      environmentCopy: '対応するAMD64プラットフォームを以下に示します。その他のOSとアーキテクチャは対応対象として表示しません。',
+      pricingCopy: '14日間評価できます。月間・年間プランにはAutomatic Update Module、製品保守、対応範囲のセキュリティ更新が含まれます。'
+    },
+    de: {
+      heroFeatureServerCopy: 'Importieren Sie ODRE PQC in Ihre bestehende FastAPI-App, registrieren Sie die Core-Grenze mit install(app) und binden Sie anschließend Gateway an. Unterstützt werden Windows Server 2022, Ubuntu 22.04 und 24.04, Debian 12, Rocky Linux 9 und AlmaLinux 9 auf AMD64.',
+      environmentCopy: 'Die unterstützten AMD64-Plattformen sind unten aufgeführt. Andere Betriebssysteme und Architekturen werden nicht als unterstützt dargestellt.',
+      pricingCopy: '14 Tage evaluieren. Monats- und Jahrespläne enthalten das Automatic Update Module, Produktwartung und Sicherheitsupdates im unterstützten Umfang.'
+    },
+    es: {
+      heroFeatureServerCopy: 'Importe ODRE PQC en su aplicación FastAPI existente, registre el límite Core con install(app) y después conecte Gateway. Se admiten Windows Server 2022, Ubuntu 22.04 y 24.04, Debian 12, Rocky Linux 9 y AlmaLinux 9 en AMD64.',
+      environmentCopy: 'A continuación se indican las plataformas AMD64 compatibles. Otros sistemas operativos y arquitecturas no se presentan como compatibles.',
+      pricingCopy: 'Evaluación de 14 días. Los planes mensual y anual incluyen Automatic Update Module, mantenimiento del producto y actualizaciones de seguridad dentro del alcance compatible.'
+    }
+  };
+  Object.keys(copy).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[language]);
+  });
+}());
