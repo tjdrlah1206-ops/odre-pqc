@@ -79,13 +79,15 @@
   common.de.performance = 'Gemessene Leistung';
   common.es.performance = 'Rendimiento medido';
 
-  var groups = [
-    { key: 'product', href: '/product/', items: [['overview','/product/','productDesc'],['requirements','/product/#system-requirements','requirements'],['performance','/product/#performance','performance'],['deployment','/product/#deployment','deployment']] },
-    { key: 'security', href: '/security/', items: [['architecture','/security/','securityDesc'],['cryptography','/security/#cryptography','cryptography'],['failclosed','/security/#fail-closed','failclosed'],['verification','/security/#release-verification','verification']] },
-    { key: 'docs', href: '/docs/', items: [['quickstart','/docs/#quick-start','docsDesc'],['installation','/docs/#installation','installation'],['operations','/docs/#operations','operations'],['faq','/docs/#faq','faq'],['releases','/releases/','releases']] },
-    { key: 'license', href: '/license/', items: [['licenseOptions','/license/','licenseOptionsDesc'],['activateLicense','/payment/register/?flow=activate','activateLicenseDesc'],['deviceTransfer','/payment/register/?flow=native','deviceTransferDesc']] },
-    { key: 'trust', href: '/trust/', items: [['integrity','/trust/#release-integrity','trustDesc'],['advisories','/trust/#security-advisories','advisories'],['disclosure','/trust/#vulnerability-reporting','disclosure'],['lifecycle','/trust/#support-lifecycle','lifecycle'],['data','/trust/#data-handling','data']] },
-    { key: 'company', href: '/company/', items: [['about','/company/','companyDesc'],['contact','/contact/','contact']] }
+  // Keep the primary path short and identical on every page. Detailed routes
+  // remain available in-page and in the footer instead of competing in the
+  // global header.
+  var primaryLinks = [
+    ['product', '/product/'],
+    ['security', '/security/'],
+    ['docs', '/docs/'],
+    ['pricing', '/pricing/'],
+    ['trust', '/trust/']
   ];
 
   function desktopGroup(group, index) {
@@ -109,15 +111,21 @@
   }
 
   function headerMarkup() {
+    var desktopLinks = primaryLinks.map(function (item) {
+      return '<a class="nav-direct" href="' + item[1] + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>';
+    }).join('');
+    var mobileLinks = primaryLinks.map(function (item) {
+      return '<a class="mobile-direct" href="' + item[1] + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>';
+    }).join('');
     return '<a class="skip-link" href="#main" data-common="skip">' + t('skip') + '</a>' +
       '<header class="site-header" id="site-header"><div class="header-inner">' +
       '<a class="brand" href="/" data-brand-home aria-label="' + t('homeLabel') + '"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a>' +
-      '<nav class="desktop-nav" data-primary-nav aria-label="' + t('primaryNav') + '">' + groups.slice(0, 3).map(desktopGroup).join('') + '<a class="nav-direct" href="/pricing/" data-common="pricing">' + t('pricing') + '</a>' + groups.slice(3).map(function(group,index){ return desktopGroup(group,index+3); }).join('') + '</nav>' +
-      '<div class="header-actions"><a class="header-download" href="/docs/#downloads" data-common="download">' + t('download') + '</a>' +
+      '<nav class="desktop-nav" data-primary-nav aria-label="' + t('primaryNav') + '">' + desktopLinks + '</nav>' +
+      '<div class="header-actions"><a class="header-license" href="/payment/register/?flow=activate" data-common="activateLicense">' + t('activateLicense') + '</a><a class="header-download" href="/docs/#downloads" data-common="download">' + t('download') + '</a>' +
       '<div class="language-wrap"><button class="language-button" id="language-button" type="button" aria-expanded="false" aria-controls="language-menu" aria-label="' + t('language') + '">' + current + '</button><div class="language-menu" id="language-menu" role="menu" hidden>' + languageButtons(false) + '</div></div>' +
       '<button class="mobile-toggle" id="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="' + t('menuLabel') + '"><span></span></button></div></div></header>' +
       '<div class="mobile-overlay" id="mobile-overlay"></div><aside class="mobile-drawer" id="mobile-drawer" aria-label="' + t('mobileNav') + '" aria-hidden="true"><nav class="mobile-nav">' +
-      groups.slice(0, 3).map(mobileGroup).join('') + '<a class="mobile-direct" href="/pricing/" data-common="pricing">' + t('pricing') + '</a>' + groups.slice(3).map(function(group,index){ return mobileGroup(group,index+3); }).join('') +
+      mobileLinks + '<a class="mobile-direct mobile-license" href="/payment/register/?flow=activate" data-common="activateLicense">' + t('activateLicense') + '</a>' +
       '<a class="button mobile-primary" href="/docs/#downloads" data-common="download">' + t('download') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
   }
 
@@ -139,6 +147,10 @@
   var footerHost = document.querySelector('[data-site-footer]');
   if (headerHost) headerHost.innerHTML = headerMarkup();
   if (footerHost) footerHost.innerHTML = footerMarkup();
+  var currentPath = location.pathname.replace(/index\.html$/, '');
+  document.querySelectorAll('[data-primary-nav] a, .mobile-nav a').forEach(function (link) {
+    if (new URL(link.href, location.href).pathname === currentPath) link.setAttribute('aria-current', 'page');
+  });
 
   var header = document.getElementById('site-header');
   var mobileToggle = document.getElementById('mobile-toggle');

@@ -519,6 +519,46 @@
   if (launchCopy[page]) Object.keys(launchCopy[page]).forEach(function (language) { Object.assign(window.ODRE_PAGE_I18N[language], launchCopy[page][language]); });
 }());
 
+/* Security, Trust, and release-page role separation. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N) return;
+  var page = document.body.dataset.page;
+  var copy = {
+    security: {
+      ko:{releaseCopy:'위 보안 모델은 모든 환경이 아니라 특정 검증 범위에 연결됩니다.',trustCopy:'현재 artifact 식별정보, 지원 플랫폼, SHA-256, 검증 결과, 보안 공지와 유지보수 상태는 Trust Center에서 관리합니다.',integrityLink:'릴리스 증거 열기'},
+      ja:{releaseCopy:'上記のセキュリティモデルは、すべての環境ではなく特定の検証範囲に結び付いています。',trustCopy:'現在のartifact識別情報、対応プラットフォーム、SHA-256、検証結果、勧告、保守状態はTrust Centerで管理します。',integrityLink:'リリース証拠を開く'},
+      de:{releaseCopy:'Das Sicherheitsmodell ist an einen bestimmten verifizierten Release-Umfang gebunden, nicht an jede Umgebung.',trustCopy:'Aktuelle Artefaktidentität, unterstützte Plattformen, SHA-256-Werte, Prüfergebnisse, Hinweise und Wartungsstatus stehen im Trust Center.',integrityLink:'Release-Nachweise öffnen'},
+      es:{releaseCopy:'El modelo de seguridad está vinculado a un alcance de versión verificado, no a todos los entornos.',trustCopy:'La identidad actual del artefacto, plataformas compatibles, valores SHA-256, resultados, avisos y mantenimiento se conservan en Trust Center.',integrityLink:'Abrir evidencia de versión'}
+    },
+    releases: {
+      ko:{evidenceLabel:'증거',releaseEvidenceLink:'현재 artifact 식별정보와 무결성'},
+      ja:{evidenceLabel:'証拠',releaseEvidenceLink:'現在のartifact識別情報と整合性'},
+      de:{evidenceLabel:'Nachweis',releaseEvidenceLink:'Aktuelle Artefaktidentität und Integrität'},
+      es:{evidenceLabel:'Evidencia',releaseEvidenceLink:'Identidad e integridad actuales del artefacto'}
+    }
+  };
+  if (!copy[page]) return;
+  Object.keys(copy[page]).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[page][language]);
+  });
+}());
+
+/* Documentation path chooser. */
+(function () {
+  'use strict';
+  if (document.body.dataset.page !== 'docs' || !window.ODRE_PAGE_I18N) return;
+  var copy = {
+    ko: { pathTitle:'필요한 작업을 선택하세요',pathStart:'처음 시작',pathStartCopy:'검증된 설치까지의 가장 짧은 경로',pathIntegrate:'연결',pathIntegrateCopy:'FastAPI, Gateway, Core, Commercial gate 연결',pathOperate:'운영',pathOperateCopy:'doctor, verify, status와 복구 안내',pathFix:'문제 해결',pathFixCopy:'일반적인 차단 원인과 다음 조치' },
+    ja: { pathTitle:'目的を選択',pathStart:'はじめる',pathStartCopy:'検証済みインストールまでの最短手順',pathIntegrate:'統合',pathIntegrateCopy:'FastAPI、Gateway、Core、Commercial gateを接続',pathOperate:'運用',pathOperateCopy:'doctor、verify、status、復旧の案内',pathFix:'問題を解決',pathFixCopy:'一般的な阻害要因と次の対応' },
+    de: { pathTitle:'Vorgehen wählen',pathStart:'Hier starten',pathStartCopy:'Kürzester Weg zu einer verifizierten Installation',pathIntegrate:'Integrieren',pathIntegrateCopy:'FastAPI, Gateway, Core und Commercial Gate verbinden',pathOperate:'Betreiben',pathOperateCopy:'Doctor, Verify, Status und Wiederherstellung',pathFix:'Problem lösen',pathFixCopy:'Häufige Blocker und der richtige nächste Schritt' },
+    es: { pathTitle:'Elige una ruta',pathStart:'Empezar aquí',pathStartCopy:'Ruta más corta a una instalación verificada',pathIntegrate:'Integrar',pathIntegrateCopy:'Conecta FastAPI, Gateway, Core y Commercial gate',pathOperate:'Operar',pathOperateCopy:'Guía de doctor, verify, status y recuperación',pathFix:'Resolver un problema',pathFixCopy:'Bloqueos comunes y la siguiente acción correcta' }
+  };
+  Object.keys(copy).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[language]);
+  });
+}());
+
 /* Six-platform validation scope. */
 (function () {
   'use strict';
