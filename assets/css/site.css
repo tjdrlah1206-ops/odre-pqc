@@ -355,6 +355,20 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
 .docs-section > summary::after { content: "+"; float: right; color: var(--cyan-soft); }
 .docs-section[open] > summary::after { content: "−"; }
 .docs-section-body { padding-bottom: 42px; }
+.docs-hub-section { padding-top: 52px; }
+.docs-hub { width: 100%; }
+.docs-hub > .docs-hub-entry { margin-top: 0; border-top: 1px solid var(--line); }
+.docs-hub > .docs-hub-entry:last-child { border-bottom: 1px solid var(--line); }
+.docs-hub > .docs-hub-entry > summary { min-height: 84px; padding-block: 24px; font-size: clamp(1.15rem,2vw,1.5rem); }
+.docs-hub > .docs-hub-entry > .docs-group-body { padding-bottom: 34px; }
+.docs-hub-entry .docs-group-body > section { padding: 32px 0; margin: 0; border-top: 1px solid var(--line); border-bottom: 0; }
+.docs-hub-entry .docs-group-body > section:first-child { border-top: 0; }
+.docs-hub-entry .docs-group-body > section h2 { margin-bottom: 16px; font-size: clamp(1.35rem,3vw,2rem); }
+.pdf-document-list { margin-top: 22px; }
+.pdf-document-list .pdf-document { margin-top: 0; }
+.pdf-language-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.pdf-language-links a { display: inline-flex; min-width: 56px; min-height: 46px; align-items: center; justify-content: center; padding: 0 14px; border: 1px solid var(--line-strong); color: var(--cyan-soft); font-weight: 750; text-decoration: none !important; }
+.pdf-language-links a:hover, .pdf-language-links a:focus-visible { border-color: var(--cyan); background: rgba(73,198,214,.06); }
 .document-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .document-link { min-width: 0; padding: 18px; border: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; }
 .document-link:hover { border-color: var(--cyan); }
@@ -434,6 +448,7 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
   .docs-sidebar { position: static; display: none; padding: 10px 14px; margin: -16px 0 32px; border: 1px solid var(--line-strong); }
   .docs-sidebar.open { display: block; }
   .docs-mobile-toggle { display: flex; }
+  .docs-hub-section { padding-top: 36px; }
   .footer-main { grid-template-columns: 1.5fr 1fr 1fr; }
 }
 
@@ -480,11 +495,15 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
   .page-disclosure-body { padding-bottom: 34px; }
   .page-disclosure-body .section-intro, .page-disclosure-body .prose p, .page-disclosure-body .notice { max-width: 68ch; }
   .code-block { margin-inline: -4px; padding: 18px 14px; font-size: 12px; }
+  .docs-hub > .docs-hub-entry > summary { min-height: 72px; padding-block: 20px; }
+  .pdf-language-links { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 7px; }
+  .pdf-language-links a { min-width: 0; padding-inline: 6px; }
 }
 
 @media (max-width: 390px) {
   .container, .narrow { width: min(calc(100% - 28px), var(--max)); }
   .mobile-nav { padding-inline: 14px; }
+  .pdf-language-links { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .footer-main { grid-template-columns: 1fr; }
   .footer-brand { grid-column: auto; }
   .tech-line span:not(:last-child)::after { margin-inline: 7px; }

@@ -352,26 +352,34 @@
 
   // Keep long documentation in place, but reveal only the section the reader asks for.
   if (document.body.dataset.page === 'docs') {
-    document.querySelectorAll('.docs-content > section:not(.docs-paths)').forEach(function (section) {
-      var heading = section.querySelector(':scope > h2');
-      if (!heading) return;
-      var details = document.createElement('details');
-      details.className = 'docs-section';
-      details.id = section.id;
-      var summary = document.createElement('summary');
-      summary.innerHTML = heading.innerHTML;
-      Array.from(heading.attributes).forEach(function (attribute) {
-        if (attribute.name !== 'id') summary.setAttribute(attribute.name, attribute.value);
+    if (!document.querySelector('.docs-content > details.docs-hub-entry')) {
+      document.querySelectorAll('.docs-content > section:not(.docs-paths)').forEach(function (section) {
+        var heading = section.querySelector(':scope > h2');
+        if (!heading) return;
+        var details = document.createElement('details');
+        details.className = 'docs-section';
+        details.id = section.id;
+        var summary = document.createElement('summary');
+        summary.innerHTML = heading.innerHTML;
+        Array.from(heading.attributes).forEach(function (attribute) {
+          if (attribute.name !== 'id') summary.setAttribute(attribute.name, attribute.value);
+        });
+        var body = document.createElement('div');
+        body.className = 'docs-section-body';
+        Array.from(section.childNodes).forEach(function (node) { if (node !== heading) body.appendChild(node); });
+        details.append(summary, body);
+        section.replaceWith(details);
       });
-      var body = document.createElement('div');
-      body.className = 'docs-section-body';
-      Array.from(section.childNodes).forEach(function (node) { if (node !== heading) body.appendChild(node); });
-      details.append(summary, body);
-      section.replaceWith(details);
-    });
+    }
     function openDocsTarget() {
       var target = location.hash && document.querySelector(location.hash);
-      if (target && target.matches('details.docs-section')) target.open = true;
+      if (!target) return;
+      if (target.matches('details')) target.open = true;
+      var parent = target.closest('details');
+      while (parent) {
+        parent.open = true;
+        parent = parent.parentElement && parent.parentElement.closest('details');
+      }
     }
     openDocsTarget();
     window.addEventListener('hashchange', openDocsTarget);

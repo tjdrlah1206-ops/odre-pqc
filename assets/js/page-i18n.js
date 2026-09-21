@@ -519,6 +519,116 @@
   if (launchCopy[page]) Object.keys(launchCopy[page]).forEach(function (language) { Object.assign(window.ODRE_PAGE_I18N[language], launchCopy[page][language]); });
 }());
 
+/* Renewal 4: five-entry Docs hub and one public PDF entry point. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N) return;
+  var page = document.body.dataset.page;
+  var downloadsLink = {
+    en: 'Open document downloads',
+    ko: '문서 다운로드 열기',
+    ja: '文書ダウンロードを開く',
+    de: 'Dokumentdownloads öffnen',
+    es: 'Abrir descargas de documentos'
+  };
+  window.ODRE_RENEWAL4_COMMON = downloadsLink;
+  Object.keys(downloadsLink).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) window.ODRE_PAGE_I18N[language].docsDownloadsLink = downloadsLink[language];
+  });
+  if (page !== 'docs') return;
+  var copy = {
+    en: {
+      title:'Find the document or task you need.',
+      lead:'Download an official PDF or open one of four task guides.',
+      documentDownloadsTitle:'Document downloads',
+      documentDownloadsCopy:'Choose an official document, then select a language.',
+      groupStart:'Getting started',
+      groupInstall:'Installation & connection',
+      groupOperate:'Operations & updates',
+      groupHelp:'Problem solving',
+      pdfOverview:'Product Overview',
+      pdfWhitepaper:'Public Technical Whitepaper',
+      pdfEvidence:'Release Evidence',
+      pdfTrial:'14-Day Free Trial Guide',
+      pdfInstallation:'Installation & License Activation / Operations Guide',
+      updateTitle:'Update',
+      updateCopy:'Verified updates use the supported update path. If an update cannot complete safely, the active version is not switched.'
+    },
+    ko: {
+      title:'필요한 문서나 작업을 찾으세요.',
+      lead:'공식 PDF를 받거나 필요한 사용 가이드만 펼쳐봅니다.',
+      documentDownloadsTitle:'문서 다운로드',
+      documentDownloadsCopy:'공식 문서를 고른 뒤 언어를 선택하세요.',
+      groupStart:'시작하기',
+      groupInstall:'설치·연결',
+      groupOperate:'운영·업데이트',
+      groupHelp:'문제 해결',
+      pdfOverview:'제품·보안 아키텍처 개요',
+      pdfWhitepaper:'공개 기술백서',
+      pdfEvidence:'릴리스 검증자료',
+      pdfTrial:'14일 무료체험 안내',
+      pdfInstallation:'설치·라이선스 활성화·운영 안내',
+      updateTitle:'업데이트',
+      updateCopy:'검증된 업데이트는 지원되는 업데이트 경로로 적용합니다. 안전하게 완료할 수 없으면 활성 버전을 전환하지 않습니다.'
+    },
+    ja: {
+      title:'必要な文書や作業を探す。',
+      lead:'公式PDFをダウンロードするか、必要なガイドだけを開きます。',
+      documentDownloadsTitle:'文書ダウンロード',
+      documentDownloadsCopy:'公式文書を選び、言語を指定してください。',
+      groupStart:'はじめる',
+      groupInstall:'インストール・接続',
+      groupOperate:'運用・アップデート',
+      groupHelp:'問題解決',
+      pdfOverview:'製品・セキュリティ構成概要',
+      pdfWhitepaper:'公開技術白書',
+      pdfEvidence:'リリース証拠',
+      pdfTrial:'14日間無料トライアルガイド',
+      pdfInstallation:'インストール・ライセンス有効化・運用ガイド',
+      updateTitle:'アップデート',
+      updateCopy:'検証済みアップデートは対応する更新経路で適用します。安全に完了できない場合、稼働中の版は切り替えません。'
+    },
+    de: {
+      title:'Dokument oder Aufgabe finden.',
+      lead:'Laden Sie ein offizielles PDF herunter oder öffnen Sie nur den benötigten Leitfaden.',
+      documentDownloadsTitle:'Dokumentdownloads',
+      documentDownloadsCopy:'Wählen Sie ein offizielles Dokument und dann die Sprache.',
+      groupStart:'Erste Schritte',
+      groupInstall:'Installation & Anbindung',
+      groupOperate:'Betrieb & Updates',
+      groupHelp:'Problemlösung',
+      pdfOverview:'Produkt- und Sicherheitsarchitektur',
+      pdfWhitepaper:'Öffentliches technisches Whitepaper',
+      pdfEvidence:'Release-Nachweise',
+      pdfTrial:'Leitfaden zum 14-Tage-Trial',
+      pdfInstallation:'Installation, Lizenzaktivierung & Betrieb',
+      updateTitle:'Update',
+      updateCopy:'Verifizierte Updates verwenden den unterstützten Aktualisierungspfad. Schlägt ein sicherer Abschluss fehl, wird die aktive Version nicht umgeschaltet.'
+    },
+    es: {
+      title:'Encuentra el documento o la tarea.',
+      lead:'Descarga un PDF oficial o abre solo la guía que necesitas.',
+      documentDownloadsTitle:'Descarga de documentos',
+      documentDownloadsCopy:'Elige un documento oficial y después el idioma.',
+      groupStart:'Primeros pasos',
+      groupInstall:'Instalación y conexión',
+      groupOperate:'Operación y actualizaciones',
+      groupHelp:'Solución de problemas',
+      pdfOverview:'Resumen de producto y arquitectura de seguridad',
+      pdfWhitepaper:'Libro blanco técnico público',
+      pdfEvidence:'Evidencia de la versión',
+      pdfTrial:'Guía de prueba gratuita de 14 días',
+      pdfInstallation:'Instalación, activación de licencia y operaciones',
+      updateTitle:'Actualización',
+      updateCopy:'Las actualizaciones verificadas usan la ruta compatible. Si no pueden completarse con seguridad, la versión activa no cambia.'
+    }
+  };
+  window.ODRE_RENEWAL4_I18N = copy;
+  Object.keys(copy).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[language]);
+  });
+}());
+
 /* Renewal 3: short first view; details stay in place behind disclosure. */
 (function () {
   'use strict';
@@ -1014,5 +1124,20 @@
   if (!window.ODRE_PAGE_I18N || !window.ODRE_RENEWAL3_I18N) return;
   Object.keys(window.ODRE_RENEWAL3_I18N).forEach(function (language) {
     if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], window.ODRE_RENEWAL3_I18N[language]);
+  });
+}());
+
+/* Final Renewal 4 precedence after every legacy override. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N) return;
+  if (window.ODRE_RENEWAL4_COMMON) {
+    Object.keys(window.ODRE_RENEWAL4_COMMON).forEach(function (language) {
+      if (window.ODRE_PAGE_I18N[language]) window.ODRE_PAGE_I18N[language].docsDownloadsLink = window.ODRE_RENEWAL4_COMMON[language];
+    });
+  }
+  if (document.body.dataset.page !== 'docs' || !window.ODRE_RENEWAL4_I18N) return;
+  Object.keys(window.ODRE_RENEWAL4_I18N).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], window.ODRE_RENEWAL4_I18N[language]);
   });
 }());

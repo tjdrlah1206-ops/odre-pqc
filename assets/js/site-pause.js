@@ -11,6 +11,7 @@
   };
   function reason() { return copy[document.documentElement.lang] || copy.en; }
   function kind(el) {
+    if (el.hasAttribute('data-site-download-allowed')) return '';
     if (el.hasAttribute('data-site-paused')) return el.getAttribute('data-site-paused');
     var href = el.getAttribute('href') || '';
     var key = [el.getAttribute('data-i18n'), el.getAttribute('data-common'), el.id].join(' ');
@@ -61,4 +62,3 @@
   document.addEventListener('DOMContentLoaded', refresh);
   refresh();
 }());
-
