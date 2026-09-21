@@ -24,7 +24,7 @@
   var deviceMenuCopy={"en": {"deviceTransfer": "Device transfer & replacement", "deviceTransferDesc": "Move an existing Unit or recover a failed device"}, "ko": {"deviceTransfer": "장치 이전 · 기기 변경", "deviceTransferDesc": "기존 Unit 이전과 고장 장치 복구"}, "ja": {"deviceTransfer": "デバイス移行・交換", "deviceTransferDesc": "既存Unitの移行と故障デバイスの復旧"}, "de": {"deviceTransfer": "Gerät übertragen oder ersetzen", "deviceTransferDesc": "Bestehende Unit übertragen oder defektes Gerät ersetzen"}, "es": {"deviceTransfer": "Traslado y cambio de dispositivo", "deviceTransferDesc": "Trasladar una Unit o recuperar un dispositivo averiado"}};
   supported.forEach(function(code){Object.assign(common[code],deviceMenuCopy[code]);});
   var trialMenuCopy = { en: 'Free Trial', ko: '무료체험', ja: '無料トライアル', de: 'Kostenlos testen', es: 'Prueba gratuita' };
-  supported.forEach(function (code) { common[code].download = trialMenuCopy[code]; });
+  supported.forEach(function (code) { common[code].freeTrial = trialMenuCopy[code]; });
 
   function t(key) { return (common[current] && common[current][key]) || common.en[key] || key; }
   function storedLanguage() { try { return localStorage.getItem('odre-pqc-lang'); } catch (error) { return null; } }
@@ -122,12 +122,12 @@
       '<header class="site-header" id="site-header"><div class="header-inner">' +
       '<a class="brand" href="/" data-brand-home aria-label="' + t('homeLabel') + '"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a>' +
       '<nav class="desktop-nav" data-primary-nav aria-label="' + t('primaryNav') + '">' + desktopLinks + '</nav>' +
-      '<div class="header-actions"><a class="header-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a><a class="header-download" href="/#trial" data-common="download">' + t('download') + '</a>' +
+      '<div class="header-actions"><a class="header-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a><a class="header-download" href="/#trial" data-common="freeTrial">' + t('freeTrial') + '</a>' +
       '<div class="language-wrap"><button class="language-button" id="language-button" type="button" aria-expanded="false" aria-controls="language-menu" aria-label="' + t('language') + '">' + current + '</button><div class="language-menu" id="language-menu" role="menu" hidden>' + languageButtons(false) + '</div></div>' +
       '<button class="mobile-toggle" id="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="' + t('menuLabel') + '"><span></span></button></div></div></header>' +
       '<div class="mobile-overlay" id="mobile-overlay"></div><aside class="mobile-drawer" id="mobile-drawer" aria-label="' + t('mobileNav') + '" aria-hidden="true"><nav class="mobile-nav">' +
       mobileLinks + '<a class="mobile-direct mobile-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a>' +
-      '<a class="button mobile-primary" href="/#trial" data-common="download">' + t('download') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
+      '<a class="button mobile-primary" href="/#trial" data-common="freeTrial">' + t('freeTrial') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
   }
 
   function footerColumn(title, links) {
