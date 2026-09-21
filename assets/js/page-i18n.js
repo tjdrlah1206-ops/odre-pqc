@@ -519,6 +519,62 @@
   if (launchCopy[page]) Object.keys(launchCopy[page]).forEach(function (language) { Object.assign(window.ODRE_PAGE_I18N[language], launchCopy[page][language]); });
 }());
 
+/* Renewal 3: short first view; details stay in place behind disclosure. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N) return;
+  var page = document.body.dataset.page;
+  var copy = {
+    product: {
+      en: { title:'Post-quantum protection for FastAPI.', lead:'ODRE PQC verifies protected requests inside the server before the FastAPI handler runs.', quick:'Quick start', security:'How protection works' },
+      ko: { title:'FastAPI를 위한 포스트양자 보호.', lead:'ODRE PQC는 서버 내부에서 보호 요청을 검증한 뒤 FastAPI Handler를 실행합니다.', quick:'빠른 시작', security:'보호 방식' },
+      ja: { title:'FastAPI向け耐量子保護。', lead:'ODRE PQCはサーバー内部で保護リクエストを検証してからFastAPI Handlerを実行します。', quick:'クイックスタート', security:'保護の仕組み' },
+      de: { title:'Post-Quanten-Schutz für FastAPI.', lead:'ODRE PQC prüft geschützte Anfragen im Server, bevor der FastAPI-Handler ausgeführt wird.', quick:'Schnellstart', security:'So funktioniert der Schutz' },
+      es: { title:'Protección poscuántica para FastAPI.', lead:'ODRE PQC verifica las solicitudes protegidas dentro del servidor antes de ejecutar el Handler de FastAPI.', quick:'Inicio rápido', security:'Cómo protege' }
+    },
+    security: {
+      en: { title:'How protected requests are admitted.', lead:'Runtime, session, sequence, replay and request checks must pass before a protected handler runs.', architectureCopy:'ML-KEM-768 and ML-DSA-65 operate inside the server-side boundary. Unverifiable protected requests are blocked.', releaseCopy:'Security describes the controls. Trust holds the current artifact and verification evidence.', trustCopy:'Open Trust for artifact identity, supported platforms, hashes, validation results and maintenance status.' },
+      ko: { title:'보호 요청이 실행되는 조건.', lead:'Runtime, 세션, 순서, 재전송, 요청 검증을 통과해야 보호 Handler가 실행됩니다.', architectureCopy:'ML-KEM-768과 ML-DSA-65는 서버 내부 경계에서 동작합니다. 검증할 수 없는 보호 요청은 차단됩니다.', releaseCopy:'Security는 보호 통제를 설명하고 Trust는 현재 산출물과 검증자료를 보관합니다.', trustCopy:'산출물 식별정보, 지원 플랫폼, 해시, 검증 결과와 유지보수 상태는 Trust에서 확인합니다.' },
+      ja: { title:'保護リクエストを実行する条件。', lead:'Runtime、Session、Sequence、Replay、Requestの検証を通過した場合のみ保護Handlerを実行します。', architectureCopy:'ML-KEM-768とML-DSA-65はサーバー内部の境界で動作します。検証できない保護リクエストは遮断します。', releaseCopy:'Securityは保護制御を説明し、Trustは現在の成果物と検証証拠を保持します。', trustCopy:'成果物識別、対応環境、Hash、検証結果、保守状況はTrustで確認できます。' },
+      de: { title:'Wann geschützte Anfragen ausgeführt werden.', lead:'Laufzeit-, Sitzungs-, Sequenz-, Replay- und Anfrageprüfungen müssen vor dem geschützten Handler bestehen.', architectureCopy:'ML-KEM-768 und ML-DSA-65 arbeiten innerhalb der serverseitigen Grenze. Nicht verifizierbare geschützte Anfragen werden blockiert.', releaseCopy:'Security beschreibt die Kontrollen. Trust enthält das aktuelle Artefakt und die Nachweise.', trustCopy:'Artefaktidentität, Plattformen, Hashes, Ergebnisse und Wartungsstatus stehen im Trust Center.' },
+      es: { title:'Cuándo se ejecuta una solicitud protegida.', lead:'Runtime, sesión, secuencia, replay y solicitud deben validarse antes de ejecutar el Handler protegido.', architectureCopy:'ML-KEM-768 y ML-DSA-65 operan dentro del límite del servidor. Las solicitudes protegidas no verificables se bloquean.', releaseCopy:'Security describe los controles. Trust conserva el artefacto actual y su evidencia.', trustCopy:'La identidad, plataformas, hashes, resultados y mantenimiento están en Trust.' }
+    },
+    trust: {
+      en: { title:'Current release evidence.', lead:'Verify artifact identity, supported platforms, hashes, validation results and maintenance status here.' },
+      ko: { title:'현재 릴리스 검증자료.', lead:'산출물 식별정보, 지원 플랫폼, 해시, 검증 결과와 유지보수 상태를 확인합니다.' },
+      ja: { title:'現在のリリース証拠。', lead:'成果物識別、対応環境、Hash、検証結果、保守状況を確認できます。' },
+      de: { title:'Nachweise zum aktuellen Release.', lead:'Prüfen Sie Artefaktidentität, unterstützte Plattformen, Hashes, Ergebnisse und Wartungsstatus.' },
+      es: { title:'Evidencia de la versión actual.', lead:'Verifica identidad, plataformas compatibles, hashes, resultados y estado de mantenimiento.' }
+    },
+    pricing: {
+      en: { title:'Choose monthly or annual billing.', lead:'1 Server = 1 Device = 1 Unit. Both plans include the same product features and updates.', unitPolicy:'Standard licensing covers 1–1,000 Units.', trialLink:'Need to evaluate first? Start the 14-day free trial.', monthlyCopy:'Recurring monthly subscription.', annualCopy:'About 10.2% less than 12 monthly payments: save $488 per Unit/year before tax.' },
+      ko: { title:'월간 또는 연간 결제를 선택하세요.', lead:'1 Server = 1 Device = 1 Unit. 두 요금제의 제품 기능과 업데이트는 같습니다.', unitPolicy:'표준 라이선스 범위는 1–1,000 Unit입니다.', trialLink:'먼저 평가하려면 14일 무료체험을 시작하세요.', monthlyCopy:'월 단위 정기구독입니다.', annualCopy:'월간 12회 결제보다 약 10.2% 낮습니다. Unit당 연간 $488(세전) 절감됩니다.' },
+      ja: { title:'月額または年額を選択。', lead:'1 Server = 1 Device = 1 Unit。機能と更新内容は同じです。', unitPolicy:'標準ライセンスは1〜1,000 Unitです。', trialLink:'先に評価する場合は14日間無料トライアルを開始してください。', monthlyCopy:'月額の継続契約です。', annualCopy:'月額12回より約10.2%低く、Unitあたり年$488（税別）節約できます。' },
+      de: { title:'Monatliche oder jährliche Abrechnung.', lead:'1 Server = 1 Device = 1 Unit. Funktionen und Updates sind in beiden Plänen gleich.', unitPolicy:'Standardlizenzen umfassen 1–1.000 Units.', trialLink:'Erst testen? Starten Sie den 14-Tage-Trial.', monthlyCopy:'Monatlich wiederkehrendes Abonnement.', annualCopy:'Rund 10,2 % weniger als zwölf Monatszahlungen: $488 Ersparnis pro Unit/Jahr vor Steuern.' },
+      es: { title:'Elige facturación mensual o anual.', lead:'1 Server = 1 Device = 1 Unit. Ambos planes incluyen las mismas funciones y actualizaciones.', unitPolicy:'La licencia estándar cubre 1–1.000 Units.', trialLink:'¿Quieres evaluar primero? Inicia la prueba gratuita de 14 días.', monthlyCopy:'Suscripción mensual recurrente.', annualCopy:'Aproximadamente un 10,2 % menos que 12 pagos mensuales: ahorro de $488 por Unit/año antes de impuestos.' }
+    },
+    license: {
+      en: { title:'Complete the purchase.', lead:'Choose monthly or annual billing and the required Unit quantity.', availabilityTitle:'Checkout status', securityStatusLabel:'Release evidence', securityStatusCopy:'Current verification evidence remains in the Trust Center.', deliveryTitle:'After payment', deliveryCopy:'License information is sent only after the signed payment and checkout email are verified.' },
+      ko: { title:'구매를 완료하세요.', lead:'월간 또는 연간 결제와 필요한 Unit 수량을 선택합니다.', availabilityTitle:'결제 상태', securityStatusLabel:'릴리스 검증자료', securityStatusCopy:'현재 검증자료는 Trust Center에서 확인합니다.', deliveryTitle:'결제 후', deliveryCopy:'서명된 결제와 결제 이메일을 검증한 뒤에만 라이선스 정보를 보냅니다.' },
+      ja: { title:'購入を完了。', lead:'月額または年額と必要なUnit数を選択します。', availabilityTitle:'決済状況', securityStatusLabel:'リリース証拠', securityStatusCopy:'現在の検証証拠はTrust Centerで確認できます。', deliveryTitle:'支払い後', deliveryCopy:'署名済み決済と購入メールを検証した後にのみライセンス情報を送付します。' },
+      de: { title:'Kauf abschließen.', lead:'Wählen Sie Monats- oder Jahresabrechnung und die benötigte Unit-Anzahl.', availabilityTitle:'Checkout-Status', securityStatusLabel:'Release-Nachweise', securityStatusCopy:'Aktuelle Nachweise stehen im Trust Center.', deliveryTitle:'Nach der Zahlung', deliveryCopy:'Lizenzdaten werden erst nach Prüfung der signierten Zahlung und Checkout-E-Mail gesendet.' },
+      es: { title:'Completa la compra.', lead:'Elige facturación mensual o anual y la cantidad de Units.', availabilityTitle:'Estado del pago', securityStatusLabel:'Evidencia de versión', securityStatusCopy:'La evidencia actual está en Trust Center.', deliveryTitle:'Después del pago', deliveryCopy:'La licencia se envía solo tras verificar el pago firmado y el correo de compra.' }
+    },
+    docs: {
+      en: { title:'Find the task you need.', lead:'Choose a category, then open only the procedure you need.' },
+      ko: { title:'필요한 작업을 찾으세요.', lead:'카테고리를 고른 뒤 필요한 절차만 펼쳐봅니다.' },
+      ja: { title:'必要な作業を探す。', lead:'カテゴリを選び、必要な手順だけを開きます。' },
+      de: { title:'Die passende Aufgabe finden.', lead:'Kategorie wählen und nur die benötigte Anleitung öffnen.' },
+      es: { title:'Encuentra la tarea que necesitas.', lead:'Elige una categoría y abre solo el procedimiento necesario.' }
+    }
+  };
+  if (!copy[page]) return;
+  window.ODRE_RENEWAL3_I18N = copy[page];
+  Object.keys(copy[page]).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], copy[page][language]);
+  });
+}());
+
 /* Renewal 2: concise, expandable homepage and documentation labels. */
 (function () {
   'use strict';
@@ -949,5 +1005,14 @@
   if (!window.ODRE_PAGE_I18N || !window.ODRE_RENEWAL2_I18N) return;
   Object.keys(window.ODRE_RENEWAL2_I18N).forEach(function (language) {
     if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], window.ODRE_RENEWAL2_I18N[language]);
+  });
+}());
+
+/* Final Renewal 3 precedence after every legacy authority-preserving override. */
+(function () {
+  'use strict';
+  if (!window.ODRE_PAGE_I18N || !window.ODRE_RENEWAL3_I18N) return;
+  Object.keys(window.ODRE_RENEWAL3_I18N).forEach(function (language) {
+    if (window.ODRE_PAGE_I18N[language]) Object.assign(window.ODRE_PAGE_I18N[language], window.ODRE_RENEWAL3_I18N[language]);
   });
 }());

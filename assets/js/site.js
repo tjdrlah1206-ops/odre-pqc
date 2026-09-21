@@ -376,6 +376,52 @@
     openDocsTarget();
     window.addEventListener('hashchange', openDocsTarget);
   }
+
+  // Product explains what the product is, Security explains how it protects,
+  // and Trust holds the evidence. Keep their full, authoritative content in
+  // place while showing only the section the reader chooses to inspect.
+  if (['product', 'security', 'trust'].indexOf(document.body.dataset.page) >= 0) {
+    document.querySelectorAll('main > section.section[id]').forEach(function (section) {
+      var heading = section.querySelector('.section-title');
+      if (!heading) return;
+      var index = section.querySelector('.section-index');
+      var details = document.createElement('details');
+      details.className = 'page-disclosure';
+      section.classList.add('section-disclosure');
+
+      var summary = document.createElement('summary');
+      if (index) {
+        var number = document.createElement('span');
+        number.className = 'section-index';
+        number.textContent = index.textContent;
+        summary.appendChild(number);
+      }
+      var label = document.createElement('strong');
+      label.innerHTML = heading.innerHTML;
+      Array.from(heading.attributes).forEach(function (attribute) {
+        if (attribute.name !== 'class' && attribute.name !== 'id') label.setAttribute(attribute.name, attribute.value);
+      });
+      summary.appendChild(label);
+
+      var body = document.createElement('div');
+      body.className = 'page-disclosure-body';
+      Array.from(section.childNodes).forEach(function (node) { body.appendChild(node); });
+      heading.remove();
+      if (index) index.remove();
+      details.append(summary, body);
+      section.appendChild(details);
+    });
+
+    function openPageTarget() {
+      if (!location.hash) return;
+      var target = document.querySelector(location.hash);
+      if (!target) return;
+      var disclosure = target.matches('section.section') ? target.querySelector(':scope > details.page-disclosure') : target.closest('details.page-disclosure');
+      if (disclosure) disclosure.open = true;
+    }
+    openPageTarget();
+    window.addEventListener('hashchange', openPageTarget);
+  }
   applyLanguage(current);
   window.ODRE_SITE = { language: function () { return current; }, setLanguage: function (code) { applyLanguage(code, 'manual'); }, analyticsLanguage: analyticsLanguage };
   // One asynchronous common inclusion covers all public pages. The tracker
