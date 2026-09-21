@@ -11,16 +11,15 @@ const oldPrice = /\$120\b|\$1,300\b|USD\s+120\b|USD\s+1[,.]300\b|"price":"(?:120
 const priceFiles = ['index.html', 'pricing/index.html', 'license/index.html', 'terms/index.html', 'legal.js', 'assets/js/checkout.js'];
 for (const file of priceFiles) assert(!oldPrice.test(read(file)), `Old price in ${file}`);
 for (const file of ['index.html', 'pricing/index.html', 'license/index.html']) {
-  assert(read(file).includes('$250 <small'), `Monthly card in ${file}`);
-  assert(read(file).includes('$2,700 <small'), `Annual card in ${file}`);
+  assert(read(file).includes('$399 <small'), `Monthly card in ${file}`);
+  assert(read(file).includes('$4,300 <small'), `Annual card in ${file}`);
 }
 const home = read('index.html');
 const schema = JSON.parse(home.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 const product = Array.isArray(schema) ? schema.find(item => item.offers) : schema;
-assert.deepEqual(product.offers.map(offer => [offer.price, offer.priceCurrency]), [['250', 'USD'], ['2700', 'USD']]);
+assert.deepEqual(product.offers.map(offer => [offer.price, offer.priceCurrency]), [['399', 'USD'], ['4300', 'USD']]);
 const monthlyPrice = Number(product.offers[0].price), annualPrice = Number(product.offers[1].price);
-assert.equal(monthlyPrice * 12 - annualPrice, 300);
-assert.equal((monthlyPrice * 12 - annualPrice) * 100, monthlyPrice * 12 * 10);
+assert.equal(monthlyPrice * 12 - annualPrice, 488);
 const licenseHtml = read('license/index.html');
 assert.equal((licenseHtml.match(/data-i18n="annualSavings"/g) || []).length, 1);
 assert(licenseHtml.indexOf('data-i18n="annualSavings"') > licenseHtml.indexOf('data-i18n="annualCopy"'));
@@ -29,15 +28,15 @@ const translatedWindow = {};
 vm.runInNewContext(read('assets/js/page-i18n.js'), { window: translatedWindow, document: { body: { dataset: { page: 'license' } }, querySelectorAll: () => translatedNodes } }, { timeout: 1000 });
 for (const language of ['en', 'ko', 'ja', 'de', 'es']) {
   const savings = translatedWindow.ODRE_PAGE_I18N[language].annualSavings;
-  assert(/10\s*%/.test(savings) && /12/.test(savings) && /300/.test(savings), 'Annual savings copy: ' + language);
+  assert(/10[.,]?2\s*%/.test(savings) && /12/.test(savings) && /488/.test(savings), 'Annual savings copy: ' + language);
   if (language !== 'en') assert.notEqual(savings, translatedWindow.ODRE_PAGE_I18N.en.annualSavings);
 }
-assert.equal((read('terms/index.html').match(/USD 250 per Unit per month/g) || []).length, 2);
-assert.equal((read('terms/index.html').match(/USD 2,700 per Unit per year/g) || []).length, 2);
+assert.equal((read('terms/index.html').match(/USD 399 per Unit per month/g) || []).length, 2);
+assert.equal((read('terms/index.html').match(/USD 4,300 per Unit per year/g) || []).length, 2);
 const translations = read('legal.js');
-assert.equal((translations.match(/USD 250/g) || []).length, 4);
-assert.equal((translations.match(/USD 2,700/g) || []).length, 2);
-assert.equal((translations.match(/USD 2\.700/g) || []).length, 2);
+assert.equal((translations.match(/USD 399/g) || []).length, 4);
+assert.equal((translations.match(/USD 4,300/g) || []).length, 2);
+assert.equal((translations.match(/USD 4\.300/g) || []).length, 2);
 
 function element(id, value = '1') {
   return { id, value, textContent: '', disabled: false, dataset: {}, listeners: {},
@@ -62,9 +61,9 @@ vm.runInNewContext(read('assets/js/checkout.js'), {
   document, URLSearchParams, location: { search: '', assign: unexpected },
   window: { alert: unexpected, setTimeout: unexpected }, console
 }, { timeout: 1000 });
-assert.equal(requestedScripts, 1); // Approved public gate requests Paddle.js, but this test never loads it.
+assert.equal(requestedScripts, 0); // Paused checkout must not request Paddle.js.
 let quantityCases = 0;
-for (const [quantity, monthly, annual] of [['1', '$250', '$2,700'], ['2', '$500', '$5,400'], ['20', '$5,000', '$54,000'], ['0', '$250', '$2,700'], ['21', '$5,250', '$56,700'], ['999', '$249,750', '$2,697,300'], ['1000', '$250,000', '$2,700,000'], ['1001', '$250,000', '$2,700,000'], ['invalid', '$250', '$2,700']]) {
+for (const [quantity, monthly, annual] of [['1', '$399', '$4,300'], ['2', '$798', '$8,600'], ['20', '$7,980', '$86,000'], ['0', '$399', '$4,300'], ['21', '$8,379', '$90,300'], ['999', '$398,601', '$4,295,700'], ['1000', '$399,000', '$4,300,000'], ['1001', '$399,000', '$4,300,000'], ['invalid', '$399', '$4,300']]) {
   nodes.monthlyUnits.value = quantity;
   nodes.annualUnits.value = quantity;
   nodes.monthlyUnits.listeners.input();
@@ -73,9 +72,9 @@ for (const [quantity, monthly, annual] of [['1', '$250', '$2,700'], ['2', '$500'
   quantityCases++;
 }
 buttons.find(button => button.dataset.quantityTarget === 'monthlyUnits' && button.dataset.quantityDelta === '1').listeners.click();
-assert.equal(nodes.monthlyTotal.textContent, '$500');
+assert.equal(nodes.monthlyTotal.textContent, '$798');
 buttons.find(button => button.dataset.quantityTarget === 'annualUnits' && button.dataset.quantityDelta === '1').listeners.click();
-assert.equal(nodes.annualTotal.textContent, '$5,400');
+assert.equal(nodes.annualTotal.textContent, '$8,600');
 for (const target of ['monthlyUnits', 'annualUnits']) {
   const minus = buttons.find(button => button.dataset.quantityTarget === target && button.dataset.quantityDelta === '-1');
   const plus = buttons.find(button => button.dataset.quantityTarget === target && button.dataset.quantityDelta === '1');
@@ -87,4 +86,4 @@ for (const target of ['monthlyUnits', 'annualUnits']) {
   minus.listeners.click(); assert.equal(Number(nodes[target].value), 1);
 }
 assert(nodes.monthlyCheckout.disabled && nodes.annualCheckout.disabled);
-console.log(JSON.stringify({ staticPriceFiles: priceFiles.length, languagePriceCoverage: ['en', 'ko', 'ja', 'de', 'es'], quantityCases, stepButtons: 'PASS', structuredData: 'PASS', paddleScriptRequests: 1, actualNetworkRequests: 0, checkoutOpened: 0, pass: true }, null, 2));
+console.log(JSON.stringify({ staticPriceFiles: priceFiles.length, languagePriceCoverage: ['en', 'ko', 'ja', 'de', 'es'], quantityCases, stepButtons: 'PASS', structuredData: 'PASS', paddleScriptRequests: 0, actualNetworkRequests: 0, checkoutOpened: 0, pass: true }, null, 2));

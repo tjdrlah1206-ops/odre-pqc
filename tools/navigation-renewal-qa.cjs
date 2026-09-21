@@ -8,7 +8,7 @@ const cp = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const pages = ['index.html','product/index.html','security/index.html','docs/index.html','pricing/index.html','license/index.html','trust/index.html','releases/index.html','company/index.html','contact/index.html','terms/index.html','privacy/index.html','refund/index.html'];
-const primary = ['/product/','/security/','/docs/','/pricing/','/trust/'];
+const primary = ['/product/','/docs/','/pricing/','/trust/'];
 
 for (const file of pages) {
   const html = read(file);
@@ -16,31 +16,33 @@ for (const file of pages) {
   assert(nav, `${file}: static fallback navigation missing`);
   for (const href of primary) assert(nav.includes(`href="${href}"`), `${file}: ${href} missing`);
   assert(nav.includes('/payment/register/?flow=activate'), `${file}: License Center route missing`);
-  assert(nav.includes('/docs/#downloads'), `${file}: Download route missing`);
+  assert(nav.includes('/#trial'), `${file}: Free Trial route missing`);
+  assert(!nav.includes('/security/'), `${file}: Security belongs in the footer, not primary nav`);
   assert(!nav.includes('/company/'), `${file}: Company must remain in footer, not primary nav`);
   assert(!nav.includes('/contact/'), `${file}: Contact must remain in footer, not primary nav`);
 }
 
 const site = read('assets/js/site.js');
-for (const href of primary) assert(site.includes(`['${primary.indexOf(href) === 0 ? 'product' : primary.indexOf(href) === 1 ? 'security' : primary.indexOf(href) === 2 ? 'docs' : primary.indexOf(href) === 3 ? 'pricing' : 'trust'}', '${href}']`));
+for (const [key, href] of [['product','/product/'],['docs','/docs/'],['pricing','/pricing/'],['trust','/trust/']]) assert(site.includes(`['${key}', '${href}']`));
 assert(site.includes('mobile-direct mobile-license'));
 assert(site.includes("link.setAttribute('aria-current', 'page')"));
 
 const css = read('assets/css/site.css');
 assert(css.includes('.header-license'));
 assert(css.includes('.mobile-license'));
-assert(css.includes('.docs-path-grid'));
+assert(css.includes('.docs-category-list'));
 assert(css.includes('.pricing-details details'));
 assert(css.includes('.desktop-nav, .header-download, .header-license'));
 
 const home = read('index.html');
-const releaseSummary = home.match(/<aside class="hero-release"[\s\S]*?<\/aside>/)?.[0] || '';
-assert.equal((releaseSummary.match(/<a /g) || []).length, 2, 'Home release summary should expose only two navigation exits');
-assert.equal((releaseSummary.match(/class="release-row"/g) || []).length, 7);
+assert(!home.includes('class="hero-release"'), 'Home must not front-load release detail');
+assert(home.includes('id="trial"'), 'Home must end with the 14-day Trial entry');
+assert(home.includes('class="inline-disclosure"'), 'Home details must expand inline');
 
 const docs = read('docs/index.html');
-assert.equal((docs.match(/class="docs-path-grid"/g) || []).length, 1);
-assert.equal((docs.match(/class="docs-path-grid"[\s\S]*?<\/div>/)?.[0].match(/<a /g) || []).length, 4);
+assert.equal((docs.match(/class="docs-category-list"/g) || []).length, 1);
+assert.equal((docs.match(/class="docs-category-list"[\s\S]*?<\/section>/)?.[0].match(/<details /g) || []).length, 4);
+assert(site.includes("document.body.dataset.page === 'docs'"), 'Docs sections must become inline disclosures');
 
 const pricing = read('pricing/index.html');
 assert(pricing.includes('<details id="unit">'));
@@ -62,4 +64,4 @@ assert(!read('security/index.html').includes('class="hash"'), 'Security architec
 assert(!read('contact/index.html').includes('id="trial"'), 'Contact must contain contact routes only');
 for (const file of pages) assert(!read(file).includes('/contact/#trial'), `${file}: removed Contact download route remains`);
 
-console.log(JSON.stringify({ pages: pages.length, primaryLinks: primary.length, homeReleaseExits: 2, docsPaths: 4, pricingAccordions: 2, paymentRuntimeChanged: false }, null, 2));
+console.log(JSON.stringify({ pages: pages.length, primaryLinks: primary.length, homeSections: 5, docsCategories: 4, pricingAccordions: 2, paymentRuntimeChanged: false }, null, 2));

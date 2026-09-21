@@ -268,6 +268,18 @@ h1 { max-width: 880px; margin: 0; font-size: clamp(48px, 6vw, 84px); line-height
 .pricing-details summary strong { color: var(--paper-ink); font-size: clamp(21px,3vw,31px); line-height: 1.25; }
 .pricing-details .disclosure-body { max-width: 860px; padding: 0 0 46px 82px; }
 .pricing-details .rule-list { margin-top: 8px; }
+.inline-disclosure { margin-top: 26px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.inline-disclosure + .inline-disclosure { margin-top: -1px; }
+.inline-disclosure summary { position: relative; padding: 20px 44px 20px 0; color: var(--cyan-soft); font-weight: 700; cursor: pointer; list-style: none; }
+.inline-disclosure summary::-webkit-details-marker { display: none; }
+.inline-disclosure summary::after { content: "⌄"; position: absolute; right: 8px; transition: transform .2s ease; }
+.inline-disclosure[open] summary::after { transform: rotate(180deg); }
+.inline-disclosure .disclosure-body { padding: 0 0 28px; }
+.home-disclosures { margin-top: 24px; }
+.compact-pricing { margin-top: 38px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.trial-final { padding-bottom: 110px; }
+.trial-panel { padding: clamp(32px,6vw,72px); border: 1px solid var(--cyan); background: linear-gradient(135deg,rgba(73,198,214,.12),rgba(16,37,44,.4)); }
+.trial-panel .section-title { margin-top: 16px; }
 
 .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); }
 table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px; }
@@ -318,6 +330,17 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
 .docs-path-grid a:hover { border-color: var(--cyan); background: rgba(73,198,214,.045); }
 .docs-path-grid strong { color: var(--ink); font-size: 16px; }
 .docs-path-grid span { color: var(--muted); font-size: 13px; }
+.docs-category-list { display: grid; gap: 0; }
+.docs-category-list .inline-disclosure { margin-top: 0; }
+.docs-category-list .disclosure-body { display: flex; flex-wrap: wrap; gap: 10px 24px; }
+.docs-category-list .disclosure-body a { color: var(--cyan-soft); font-weight: 650; }
+.docs-content > details.docs-section { border-top: 1px solid var(--line); }
+.docs-content > details.docs-section:last-child { border-bottom: 1px solid var(--line); }
+.docs-section > summary { padding: 22px 42px 22px 0; font-size: clamp(1.15rem,2vw,1.5rem); font-weight: 750; cursor: pointer; list-style: none; }
+.docs-section > summary::-webkit-details-marker { display: none; }
+.docs-section > summary::after { content: "+"; float: right; color: var(--cyan-soft); }
+.docs-section[open] > summary::after { content: "−"; }
+.docs-section-body { padding-bottom: 42px; }
 .document-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .document-link { min-width: 0; padding: 18px; border: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; }
 .document-link:hover { border-color: var(--cyan); }
@@ -420,6 +443,9 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
   .section { padding: 68px 0; }
   .section-title { font-size: 36px; }
   .split, .cards-3, .document-list, .form-grid, .docs-path-grid { grid-template-columns: 1fr; gap: 16px; }
+  .compact-pricing { grid-template-columns: 1fr; }
+  .trial-final { padding-bottom: 72px; }
+  .trial-panel { padding: 28px 20px; }
   .release-evidence-metrics th, .release-evidence-metrics td { padding: 14px 12px; }
   .architecture { padding: 20px; }
   .architecture-flow { grid-template-columns: 1fr; gap: 12px; }
