@@ -513,3 +513,34 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Docs PDF language switcher — one selector, five visible documents. */
+.docs-download-panel { margin-bottom: 0; padding: 34px 0 42px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.docs-download-heading { display: grid; grid-template-columns: 58px minmax(0,1fr); gap: 20px; align-items: start; }
+.docs-download-heading .section-index { margin-top: 5px; }
+.docs-download-heading h2 { margin: 0; font-size: clamp(1.5rem,3vw,2.3rem); }
+.docs-download-heading p { margin: 10px 0 0; color: var(--muted); }
+.docs-language-selector { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 18px 78px; }
+.docs-language-selector button { min-height: 42px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--muted); font: inherit; font-weight: 750; cursor: pointer; }
+.docs-language-selector button:hover { border-color: var(--cyan); color: var(--text); }
+.docs-language-selector button[aria-selected="true"] { border-color: var(--cyan); background: var(--cyan); color: var(--navy); }
+.docs-language-selector button:focus-visible { outline: 3px solid rgba(73,198,214,.34); outline-offset: 3px; }
+.docs-pdf-list { margin-left: 78px; border-top: 1px solid var(--line); }
+.docs-pdf-row { display: grid; grid-template-columns: 46px minmax(0,1fr) auto; gap: 18px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.docs-pdf-index { align-self: start; padding-top: 3px; color: var(--cyan-soft); font-size: .82rem; font-weight: 800; letter-spacing: .12em; }
+.docs-pdf-copy { min-width: 0; }
+.docs-pdf-copy h3 { margin: 0; font-size: clamp(1.02rem,2vw,1.22rem); line-height: 1.35; overflow-wrap: anywhere; }
+.docs-pdf-subtitle { margin: 4px 0 0; color: var(--cyan-soft); font-size: .78rem; font-weight: 700; letter-spacing: .025em; }
+.docs-pdf-description { margin: 7px 0 0; color: var(--muted); line-height: 1.55; }
+.docs-pdf-button { min-width: 112px; white-space: nowrap; }
+
+@media (max-width: 720px) {
+  .docs-download-panel { padding: 26px 0 32px; }
+  .docs-download-heading { grid-template-columns: 38px minmax(0,1fr); gap: 12px; }
+  .docs-language-selector { flex-wrap: nowrap; margin: 22px 0 16px; padding: 3px 2px 7px; overflow-x: auto; scrollbar-width: thin; }
+  .docs-language-selector button { flex: 0 0 auto; min-height: 40px; padding-inline: 14px; }
+  .docs-pdf-list { margin-left: 0; }
+  .docs-pdf-row { grid-template-columns: 32px minmax(0,1fr); gap: 8px 12px; padding: 18px 0; }
+  .docs-pdf-copy { grid-column: 2; }
+  .docs-pdf-button { grid-column: 2; justify-self: start; min-width: 0; margin-top: 4px; }
+}
