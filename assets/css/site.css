@@ -260,6 +260,7 @@ h1 { max-width: 880px; margin: 0; font-size: clamp(48px, 6vw, 84px); line-height
 .price-card li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 1px; background: var(--cyan); }
 .price-card .button { width: 100%; }
 .price-card.featured { background: var(--navy-850); }
+#pricing-preview .price-card.featured .price { color: #fff; }
 .pricing-details details { border-top: 1px solid #cad6d9; }
 .pricing-details details:last-child { border-bottom: 1px solid #cad6d9; }
 .pricing-details summary { display: grid; grid-template-columns: 64px minmax(0,1fr) auto; align-items: center; gap: 18px; min-height: 88px; cursor: pointer; list-style: none; }
