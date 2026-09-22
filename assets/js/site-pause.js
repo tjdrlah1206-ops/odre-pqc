@@ -1,1 +1,2 @@
-/* Public downloads and checkout reopened by owner request on 2026-09-21.\n   Kept as an inert compatibility asset for existing page references. */\n
+/* Public downloads and checkout reopened by owner request on 2026-09-21.
+   Kept as an inert compatibility asset for existing page references. */
