@@ -2,6 +2,30 @@
   'use strict';
 
   var supported = ['en', 'ko', 'ja', 'de', 'es'];
+  var staticLocalePages = ['/', '/product/', '/docs/', '/pricing/', '/trust/', '/security/', '/license/', '/terms/', '/privacy/', '/refund/', '/contact/', '/releases/'];
+  function explicitPathLanguage() {
+    var match = location.pathname.match(/^\/(ko|ja|de|es)(?:\/|$)/);
+    return match ? match[1] : null;
+  }
+  function baseStaticPath() {
+    var path = location.pathname.replace(/\/index\.html$/, '/');
+    path = path.replace(/^\/(ko|ja|de|es)(?=\/)/, '');
+    if (!path.startsWith('/')) path = '/' + path;
+    return staticLocalePages.indexOf(path) >= 0 ? path : null;
+  }
+  function staticLocaleUrl(code) {
+    var path = baseStaticPath();
+    if (!path || supported.indexOf(code) < 0) return null;
+    var localized = code === 'en' ? path : '/' + code + path;
+    return localized + location.hash;
+  }
+  function localizedInternalHref(href) {
+    var code = explicitLocale();
+    if (!code || !href || href.charAt(0) !== '/') return href;
+    var target = new URL(href, location.href);
+    if (staticLocalePages.indexOf(target.pathname) < 0) return href;
+    return '/' + code + target.pathname + target.search + target.hash;
+  }
   var languageNames = { en: 'English', ko: '한국어', ja: '日本語', de: 'Deutsch', es: 'Español' };
   var common = {
     en: {
@@ -31,6 +55,8 @@
   function initialLanguage() {
     var fixed=document.body.getAttribute('data-document-language');
     if(supported.indexOf(fixed)>=0)return fixed;
+    var explicit=explicitPathLanguage();
+    if(explicit)return explicit;
     var query = new URLSearchParams(location.search).get('lang');
     if (supported.indexOf(query) >= 0) return query;
     var stored = storedLanguage();
@@ -39,6 +65,14 @@
     return supported.indexOf(browser) >= 0 ? browser : 'en';
   }
   var current = initialLanguage();
+  var compatibilityLanguage = new URLSearchParams(location.search).get('lang');
+  if (!explicitPathLanguage() && supported.indexOf(compatibilityLanguage) >= 0 && baseStaticPath()) {
+    var compatibilityTarget = staticLocaleUrl(compatibilityLanguage);
+    if (compatibilityTarget && compatibilityTarget !== location.pathname + location.hash) {
+      location.replace(compatibilityTarget);
+      return;
+    }
+  }
   // A legacy saved language may have been selected automatically. Never label it
   // as a manual choice without provenance from the actual language selector.
   function initialLanguageState() {
@@ -94,14 +128,14 @@
   function desktopGroup(group, index) {
     var id = 'desktop-menu-' + index;
     var links = group.items.map(function (item) {
-      return '<a href="' + item[1] + '"><strong data-common="' + item[0] + '">' + t(item[0]) + '</strong><span data-common="' + item[2] + '">' + t(item[2]) + '</span></a>';
+      return '<a href="' + localizedInternalHref(item[1]) + '"><strong data-common="' + item[0] + '">' + t(item[0]) + '</strong><span data-common="' + item[2] + '">' + t(item[2]) + '</span></a>';
     }).join('');
     return '<div class="nav-group"><button class="nav-trigger" type="button" aria-expanded="false" aria-controls="' + id + '" data-common="' + group.key + '">' + t(group.key) + '</button><div class="nav-panel" id="' + id + '">' + links + '</div></div>';
   }
 
   function mobileGroup(group, index) {
     var id = 'mobile-menu-' + index;
-    var links = group.items.map(function (item) { return '<a href="' + item[1] + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>'; }).join('');
+    var links = group.items.map(function (item) { return '<a href="' + localizedInternalHref(item[1]) + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>'; }).join('');
     return '<div class="mobile-group"><button class="mobile-group-head" type="button" aria-expanded="false" aria-controls="' + id + '" data-common="' + group.key + '">' + t(group.key) + '</button><div class="mobile-submenu" id="' + id + '" hidden>' + links + '</div></div>';
   }
 
@@ -113,29 +147,29 @@
 
   function headerMarkup() {
     var desktopLinks = primaryLinks.map(function (item) {
-      return '<a class="nav-direct" href="' + item[1] + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>';
+      return '<a class="nav-direct" href="' + localizedInternalHref(item[1]) + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>';
     }).join('');
     var mobileLinks = primaryLinks.map(function (item) {
-      return '<a class="mobile-direct" href="' + item[1] + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>';
+      return '<a class="mobile-direct" href="' + localizedInternalHref(item[1]) + '" data-common="' + item[0] + '">' + t(item[0]) + '</a>';
     }).join('');
     return '<a class="skip-link" href="#main" data-common="skip">' + t('skip') + '</a>' +
       '<header class="site-header" id="site-header"><div class="header-inner">' +
-      '<a class="brand" href="/" data-brand-home aria-label="' + t('homeLabel') + '"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a>' +
+      '<a class="brand" href="' + localizedInternalHref('/') + '" data-brand-home aria-label="' + t('homeLabel') + '"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a>' +
       '<nav class="desktop-nav" data-primary-nav aria-label="' + t('primaryNav') + '">' + desktopLinks + '</nav>' +
-      '<div class="header-actions"><a class="header-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a><a class="header-download" href="/#trial" data-common="freeTrial">' + t('freeTrial') + '</a>' +
+      '<div class="header-actions"><a class="header-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a><a class="header-download" href="' + localizedInternalHref('/#trial') + '" data-common="freeTrial">' + t('freeTrial') + '</a>' +
       '<div class="language-wrap"><button class="language-button" id="language-button" type="button" aria-expanded="false" aria-controls="language-menu" aria-label="' + t('language') + '">' + current + '</button><div class="language-menu" id="language-menu" role="menu" hidden>' + languageButtons(false) + '</div></div>' +
       '<button class="mobile-toggle" id="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="' + t('menuLabel') + '"><span></span></button></div></div></header>' +
       '<div class="mobile-overlay" id="mobile-overlay"></div><aside class="mobile-drawer" id="mobile-drawer" aria-label="' + t('mobileNav') + '" aria-hidden="true"><nav class="mobile-nav">' +
       mobileLinks + '<a class="mobile-direct mobile-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a>' +
-      '<a class="button mobile-primary" href="/#trial" data-common="freeTrial">' + t('freeTrial') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
+      '<a class="button mobile-primary" href="' + localizedInternalHref('/#trial') + '" data-common="freeTrial">' + t('freeTrial') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
   }
 
   function footerColumn(title, links) {
-    return '<div class="footer-column"><strong data-common="' + title + '">' + t(title) + '</strong>' + links.map(function (link) { return '<a href="' + link[1] + '" data-common="' + link[0] + '">' + t(link[0]) + '</a>'; }).join('') + '</div>';
+    return '<div class="footer-column"><strong data-common="' + title + '">' + t(title) + '</strong>' + links.map(function (link) { return '<a href="' + localizedInternalHref(link[1]) + '" data-common="' + link[0] + '">' + t(link[0]) + '</a>'; }).join('') + '</div>';
   }
 
   function footerMarkup() {
-    return '<footer class="site-footer"><div class="container footer-main"><div class="footer-brand"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a><p data-common="footerText">' + t('footerText') + '</p></div>' +
+    return '<footer class="site-footer"><div class="container footer-main"><div class="footer-brand"><a class="brand" href="' + localizedInternalHref('/') + '"><span class="brand-mark" aria-hidden="true"></span><span>ODRE PQC</span></a><p data-common="footerText">' + t('footerText') + '</p></div>' +
       footerColumn('product', [['overview','/product/'],['requirements','/product/#system-requirements'],['performance','/product/#performance'],['pricing','/pricing/']]) +
       footerColumn('security', [['architecture','/security/'],['verification','/security/#release-verification'],['advisories','/trust/#security-advisories'],['integrity','/trust/#release-integrity']]) +
       footerColumn('resources', [['docs','/docs/'],['quickstart','/docs/#quick-start'],['releases','/releases/'],['faq','/docs/#faq']]) +
@@ -148,6 +182,12 @@
   var footerHost = document.querySelector('[data-site-footer]');
   if (headerHost) headerHost.innerHTML = headerMarkup();
   if (footerHost) footerHost.innerHTML = footerMarkup();
+  [headerHost, footerHost].forEach(function (host) {
+    if (!host) return;
+    host.querySelectorAll('a[href]').forEach(function (link) {
+      link.setAttribute('href', localizedInternalHref(link.getAttribute('href')));
+    });
+  });
   var currentPath = location.pathname.replace(/index\.html$/, '');
   document.querySelectorAll('[data-primary-nav] a, .mobile-nav a').forEach(function (link) {
     if (new URL(link.href, location.href).pathname === currentPath) link.setAttribute('aria-current', 'page');
@@ -248,6 +288,14 @@
   }
 
   function applyLanguage(code, source) {
+    if(source==='manual'){
+      var staticTarget=staticLocaleUrl(code);
+      if(staticTarget&&staticTarget!==location.pathname+location.hash){
+        try{localStorage.setItem('odre-pqc-lang',code);localStorage.setItem('odre-pqc-language-provenance',JSON.stringify({language:code,source:'manual'}));}catch(error){}
+        location.assign(staticTarget);
+        return;
+      }
+    }
     var localeBase=document.body.getAttribute('data-localized-base');
     if(source==='manual'&&localeBase&&supported.indexOf(code)>=0&&code!==document.body.getAttribute('data-document-language')){try{localStorage.setItem('odre-pqc-lang',code);localStorage.setItem('odre-pqc-language-provenance',JSON.stringify({language:code,source:'manual'}));}catch(error){}var target=new URL(localeBase+(code==='en'?'':code+'.html'),location.href);target.hash=location.hash;location.assign(target.href);return;}
     if (supported.indexOf(code) < 0) code = 'en';

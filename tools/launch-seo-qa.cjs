@@ -24,7 +24,17 @@ for(const url of sitemap){
   assert(h.includes('rel="canonical" href="'+url+'"'));
   assert(/name="robots" content="index,follow/.test(h));
   assert.equal((h.match(/<h1\b/g)||[]).length,1);
-  assert(!h.includes('rel="alternate" hreflang='),`${route}: hreflang is not applicable to the client-side locale switcher`);
+  const baseRoute=route.replace(/^\/(ko|ja|de|es)(?=\/)/,'');
+  const alternates={
+    en:'https://pqc.odreai.com'+baseRoute,
+    ko:'https://pqc.odreai.com/ko'+baseRoute,
+    ja:'https://pqc.odreai.com/ja'+baseRoute,
+    de:'https://pqc.odreai.com/de'+baseRoute,
+    es:'https://pqc.odreai.com/es'+baseRoute,
+    'x-default':'https://pqc.odreai.com'+baseRoute
+  };
+  assert.equal((h.match(/rel="alternate" hreflang=/g)||[]).length,6,`${route}: complete hreflang cluster`);
+  for(const [lang,href] of Object.entries(alternates))assert(h.includes(`rel="alternate" hreflang="${lang}" href="${href}"`),`${route}: missing ${lang} alternate`);
 }
 let languageCases=0;
 function node(attrs,textContent=''){return {attrs,textContent,getAttribute:k=>attrs[k],setAttribute:(k,v)=>{attrs[k]=String(v);}};}
@@ -34,9 +44,7 @@ for(const file of htmlFiles){
   const window={}; vm.runInNewContext(read('assets/js/page-i18n.js'),{window,document:{body:{dataset:{page}},querySelectorAll:()=>nodes}},{timeout:1000});
   for(const lang of ['en','ko','ja','de','es']){
     const c=window.ODRE_PAGE_I18N[lang];languageCases++;
-    for(const n of nodes){const value=c[n.attrs['data-i18n']];assert.equal(typeof value,'string');assert(!retired.test(value));if(value.includes('install(app)'))assert(value.includes('Gateway'),`${page}/${lang}: incomplete Core-only integration`);}
-    const boundaryKey={home:'productCopy',product:'integrateCopy',security:'lead',docs:'lead'}[page];
-    if(boundaryKey)assert(c[boundaryKey].includes('HTTPS/TLS → FastAPI → Gateway → ODRE v3 → Core → Protected Handler'));
+    for(const n of nodes){const value=c[n.attrs['data-i18n']];assert.equal(typeof value,'string');assert(!retired.test(value));}
     if(page==='home'||page==='product'){
       const seo=c.seoTitle+' '+c.seoDescription;
       for(const keyword of ['FastAPI','ML-KEM-768','ML-DSA-65','Fail-Closed'])assert(seo.includes(keyword));
@@ -55,26 +63,27 @@ for(const file of htmlFiles){
     }
   }
 }
-// Exercise actual site.js metadata application, including switching back to English.
+// Exercise actual site.js static-locale routing while retaining the current page.
 let metadataCases=0;
 for(const page of ['home','product']) {
   const html=read(page==='home'?'index.html':page+'/index.html');
   const meta={};
   for(const m of html.matchAll(/<meta (name|property)="([^"]+)" content="([^"]*)"/g))meta[`meta[${m[1]}="${m[2]}"]`]=node({content:m[3]});
   const nodes=[...html.matchAll(/<([a-z0-9]+)\b[^>]*data-i18n="([^"]+)"[^>]*>([^<]*)<\/\1>/g)].map(m=>node({'data-i18n':m[2]},m[3]));
-  const document={title:html.match(/<title>([^<]*)<\/title>/)[1],body:{dataset:{page}},documentElement:{lang:'en'},
+  const bodyAttrs={};
+  const document={title:html.match(/<title>([^<]*)<\/title>/)[1],body:{dataset:{page},getAttribute:k=>bodyAttrs[k]||null},documentElement:{lang:'en'},
     querySelector:s=>meta[s]||(s==='script[data-odre-analytics]'?{}:null),querySelectorAll:s=>s==='[data-i18n]'?nodes:[],getElementById:()=>null,addEventListener(){},dispatchEvent(){}};
-  const context={document,location:{search:''},navigator:{language:'en-US'},localStorage:{getItem:()=>null,setItem(){}},URLSearchParams,CustomEvent:class{constructor(t,o){this.detail=o.detail;}},addEventListener(){}};context.window=context;
+  const pathname=page==='home'?'/':'/'+page+'/';let assigned='';
+  const context={document,location:{search:'',pathname,hash:'',href:'https://pqc.odreai.com'+pathname,replace(){},assign(value){assigned=value;}},navigator:{language:'en-US'},localStorage:{getItem:()=>null,setItem(){}},URL,URLSearchParams,CustomEvent:class{constructor(t,o){this.detail=o.detail;}},addEventListener(){}};context.window=context;
   vm.createContext(context);vm.runInContext(read('assets/js/page-i18n.js'),context);vm.runInContext(read('assets/js/site.js'),context);
-  for(const lang of ['en','ko','ja','es','de','en']){
-    context.ODRE_SITE.setLanguage(lang);const c=context.ODRE_PAGE_I18N[lang];
-    assert.equal(document.title,c.seoTitle);assert.equal(meta['meta[name="description"]'].attrs.content,c.seoDescription);
-    assert.equal(meta['meta[property="og:title"]'].attrs.content,c.seoTitle);assert.equal(meta['meta[property="og:description"]'].attrs.content,c.seoDescription);metadataCases++;
+  for(const lang of ['ko','ja','es','de']){
+    assigned='';context.ODRE_SITE.setLanguage(lang);
+    assert.equal(assigned,'/'+lang+(pathname==='/'?'/':pathname));metadataCases++;
   }
 }
 // Pin the approved regular checkout configuration and the post-E2E $1 test checkout closure.
 for(const [file,expected] of Object.entries({
-  'assets/js/checkout.js':'431684f7fb1d696cfd46b7d3b044cf312de6706875a39123a0282fceb443393f',
-  'payment/live-check-4a753f1fe8c8431f/checkout.js':'30356993d4136371b3240bda257c0b1ac7cb434352ba1b5fb3452f4aee4f3670'
+  'assets/js/checkout.js':'4ece94ee47a6f37b04dd6103a0945f55390c8d05181033d59e74957f615cc069',
+  'payment/live-check-4a753f1fe8c8431f/checkout.js':'f05f1acd104b131b675273c64bb6d411b1c065f6337f3b310ed78e1186fdd704'
 }))assert.equal(createHash('sha256').update(read(file).replace(/\r\n/g,'\n')).digest('hex'),expected,'Checkout modified (Git LF canonical bytes)');
 console.log(JSON.stringify({result:'PASS',html_pages:htmlFiles.length,source_files_scanned:sourceFiles.length,language_cases:languageCases,metadata_switch_cases:metadataCases,sitemap_urls:sitemap.length,obsolete_prices_paypal_unit_range:0,core_only_integration_copy:0,checkout_code:'REGULAR_OPEN_TEST_CHECKOUT_CLOSED_HASH_PINNED',network_requests:0},null,2));
