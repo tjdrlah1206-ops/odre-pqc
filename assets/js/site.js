@@ -314,23 +314,6 @@
   var workerFaq = document.querySelector('[data-i18n="faq2q"]');
   if (workerFaq && workerFaq.closest('.faq-item')) workerFaq.closest('.faq-item').remove();
 
-  if (document.body.dataset.page === 'product') {
-    var performancePanel = document.querySelector('#performance .performance-panel');
-    var firstPerformance = performancePanel && performancePanel.querySelector('.performance-highlight');
-    if (firstPerformance && !performancePanel.querySelector('[data-single-worker-result]')) {
-      var singleWorker = document.createElement('div');
-      singleWorker.className = 'performance-highlight';
-      singleWorker.setAttribute('data-single-worker-result', '');
-      singleWorker.innerHTML = '<span data-i18n="performanceSingleWorker">Single-worker maximum stable result</span><strong>1,182.7626 RPS</strong><small data-i18n="performanceSingleWorkerDetail">stable concurrency 4 · p50 3.2581 ms · p95 4.1219 ms · p99 4.8010 ms · error rate 0</small>';
-      var singleWorkerScope = document.createElement('p');
-      singleWorkerScope.className = 'notice info';
-      singleWorkerScope.setAttribute('data-i18n', 'performanceSingleWorkerScope');
-      singleWorkerScope.textContent = 'Single-worker scope: g099, Windows Server 2022, one Uvicorn worker/process, one 4-core host, loopback network. This is not a multi-worker, multi-host, LAN/WAN, or Linux performance claim.';
-      performancePanel.insertBefore(singleWorker, firstPerformance);
-      performancePanel.insertBefore(singleWorkerScope, firstPerformance);
-    }
-  }
-
   document.querySelectorAll('.faq-question').forEach(function (button) {
     button.addEventListener('click', function () {
       var answer = document.getElementById(button.getAttribute('aria-controls'));
