@@ -388,7 +388,7 @@
   // Product explains what the product is, Security explains how it protects,
   // and Trust holds the evidence. Keep their full, authoritative content in
   // place while showing only the section the reader chooses to inspect.
-  if (['product', 'security', 'trust'].indexOf(document.body.dataset.page) >= 0) {
+  if (['security', 'trust'].indexOf(document.body.dataset.page) >= 0) {
     document.querySelectorAll('main > section.section[id]').forEach(function (section) {
       var heading = section.querySelector('.section-title');
       if (!heading) return;
