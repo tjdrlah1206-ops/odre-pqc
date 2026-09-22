@@ -544,3 +544,119 @@ code, .code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospac
   .docs-pdf-copy { grid-column: 2; }
   .docs-pdf-button { grid-column: 2; justify-self: start; min-width: 0; margin-top: 4px; }
 }
+
+
+/* Product page finishing — compact, centered content without full-width section stripes. */
+body[data-page="product"] .page-hero { padding-bottom: 58px; }
+body[data-page="product"] .page-hero .container { max-width: 1160px; }
+.product-snapshots {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 12px;
+  margin-top: 38px;
+}
+.product-snapshot {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.025);
+}
+.product-snapshot strong { display: block; color: var(--ink); font-size: 1rem; }
+.product-snapshot span { display: block; margin-top: 6px; color: var(--muted); font-size: .84rem; }
+body[data-page="product"] .product-section {
+  padding: 18px 0;
+  background: transparent;
+}
+body[data-page="product"] .product-section:first-of-type { padding-top: 58px; }
+body[data-page="product"] .product-section .section-grid {
+  max-width: 1160px;
+  grid-template-columns: 64px minmax(0,1fr);
+  gap: 28px;
+  padding: clamp(30px,5vw,56px);
+  border: 1px solid var(--line);
+  background: var(--navy-900);
+}
+body[data-page="product"] .product-section.light .section-grid {
+  border-color: #cbd6d9;
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+body[data-page="product"] .product-section.light .section-title,
+body[data-page="product"] .product-section.light h3 { color: var(--paper-ink); }
+body[data-page="product"] .product-section.light p,
+body[data-page="product"] .product-section.light li,
+body[data-page="product"] .product-section.light .section-intro { color: var(--paper-muted); }
+.product-flow {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 8px;
+  margin: 28px 0;
+}
+.product-flow span {
+  position: relative;
+  min-width: 0;
+  padding: 15px 12px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-align: center;
+  font-size: .78rem;
+  overflow-wrap: anywhere;
+}
+.product-flow span:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  z-index: 1;
+  right: -11px;
+  top: 50%;
+  width: 14px;
+  transform: translateY(-50%);
+  color: var(--cyan-soft);
+}
+.product-route-flow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 26px;
+}
+.product-route {
+  padding: 24px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.02);
+}
+.product-route strong { display: block; margin-bottom: 9px; color: var(--ink); }
+.product-route p { margin: 0; }
+.product-route.protected { border-top: 3px solid var(--cyan); }
+.product-route.public { border-top: 3px solid var(--muted-2); }
+.product-benchmark-pending {
+  margin-top: 26px;
+  padding: 26px;
+  border: 1px solid var(--line-strong);
+  background: rgba(73,198,214,.04);
+}
+.product-benchmark-pending strong { display: block; color: var(--cyan-soft); font-size: 1.05rem; }
+.product-benchmark-pending p { max-width: 72ch; margin: 8px 0 0; color: var(--muted); }
+body[data-page="product"] .table-wrap { margin-top: 26px !important; }
+body[data-page="product"] .product-next { margin-top: 44px; padding-top: 54px; }
+
+@media (max-width: 900px) {
+  .product-snapshots { grid-template-columns: 1fr; }
+  body[data-page="product"] .product-section .section-grid { grid-template-columns: 1fr; gap: 16px; }
+  .product-flow { grid-template-columns: 1fr; }
+  .product-flow span { text-align: left; }
+  .product-flow span:not(:last-child)::after {
+    content: "↓";
+    right: auto;
+    left: 18px;
+    top: auto;
+    bottom: -17px;
+    transform: none;
+  }
+}
+@media (max-width: 640px) {
+  body[data-page="product"] .page-hero { padding-bottom: 42px; }
+  body[data-page="product"] .product-section { padding: 8px 0; }
+  body[data-page="product"] .product-section:first-of-type { padding-top: 34px; }
+  body[data-page="product"] .product-section .section-grid { padding: 26px 20px; }
+  .product-route-flow { grid-template-columns: 1fr; }
+  .product-benchmark-pending { padding: 21px 18px; }
+}
