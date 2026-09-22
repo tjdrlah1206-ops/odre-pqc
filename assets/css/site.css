@@ -11,7 +11,7 @@
   --line-strong: rgba(161, 215, 217, .38);
   --cyan: #49c6d6;
   --cyan-soft: #a7e8ef;
-  --paper: #eaf3f1;
+  --paper: #f7f2e8;
   --paper-ink: #10212a;
   --paper-muted: #536872;
   --success: #79c9a5;
@@ -240,7 +240,7 @@ h1 { max-width: 880px; margin: 0; font-size: clamp(48px, 6vw, 84px); line-height
 
 .cards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .card { padding: 30px; border: 1px solid var(--line); background: rgba(255,255,255,.018); }
-.light .card { border-color: #cbd6d9; background: #fff; }
+.light .card { border-color: #d6cdbc; background: #fffaf0; }
 .card h3 { margin: 0; font-size: 21px; font-weight: 610; }
 .card p { margin: 13px 0 0; color: var(--muted); font-size: 14px; }
 .light .card p { color: var(--paper-muted); }
