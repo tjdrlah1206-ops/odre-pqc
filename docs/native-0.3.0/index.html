@@ -1,104 +1,29 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ODRE PQC 0.3.1 RC1 - Native device registration and Unit transfer guide</title><link rel="stylesheet" href="/assets/css/site.css?v=renewal3-20260921"><link rel="stylesheet" href="/assets/css/customer-guidance.css?v=web-restore-20260912"><meta name="description" content="Current authority: ODRE PQC 0.3.1 RC1 · Release 64 · Closure g270 · official supported OS 6/6 PASS. Verify the Release 64 customer archive and signed package metadata before running product code. This page preserves the existing device registration, License, Unit and Offline Lease transfer contract."><link rel="canonical" href="https://pqc.odreai.com/docs/native-0.3.0/"><meta property="og:type" content="website"><meta property="og:title" content="ODRE PQC 0.3.1 RC1 - Native device registration and Unit transfer guide"><meta property="og:description" content="Current authority: ODRE PQC 0.3.1 RC1 · Release 64 · Closure g270 · official supported OS 6/6 PASS. Verify the Release 64 customer archive and signed package metadata before running product code. This page preserves the existing device registration, License, Unit and Offline Lease transfer contract."><meta property="og:url" content="https://pqc.odreai.com/docs/native-0.3.0/"><meta name="twitter:card" content="summary"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="alternate" hreflang="en" href="https://pqc.odreai.com/docs/native-0.3.0/"><link rel="alternate" hreflang="ko" href="https://pqc.odreai.com/docs/native-0.3.0/ko.html"><link rel="alternate" hreflang="ja" href="https://pqc.odreai.com/docs/native-0.3.0/ja.html"><link rel="alternate" hreflang="de" href="https://pqc.odreai.com/docs/native-0.3.0/de.html"><link rel="alternate" hreflang="es" href="https://pqc.odreai.com/docs/native-0.3.0/es.html"><link rel="alternate" hreflang="x-default" href="https://pqc.odreai.com/docs/native-0.3.0/"><script src="/assets/js/site-pause.js?v=actions-open-20260921"></script><link rel="stylesheet" href="/assets/css/site-pause.css?v=actions-open-20260921"></head><body data-document-language="en" data-localized-base="/docs/native-0.3.0/"><div data-site-header class="site-header-placeholder"></div><main id="main" class="guide-main"><nav class="breadcrumbs"><a href="/">ODRE PQC</a><a href="/docs/" data-guidance="docs">Documentation</a></nav><h1>ODRE PQC 0.3.1 RC1 - Native device registration and Unit transfer guide</h1>
-<p>Current authority: ODRE PQC 0.3.1 RC1 · Release 64 · Closure g270 · official supported OS 6/6 PASS. Verify the Release 64 customer archive and signed package metadata before running product code. This page preserves the existing device registration, License, Unit and Offline Lease transfer contract.</p>
-<p>ODRE PQC registers and activates devices using the installation identity and device keys, without customer sign-up or login. An operating-system execution account below controls file permissions and process execution; it is not an ODRE customer account.</p>
-<h2>Protection boundary</h2>
-<p>External Client → HTTPS/TLS → customer Nginx → Native HTTPS Gateway → ODRE v3 / Native Lease gate → in-memory Private Core → customer Protected Handler. A client PQC SDK is unnecessary when the supported API contract matches. This is not client-to-handler E2E PQC. Keep customer authentication, authorization and input validation. Never proxy a protected route directly to the backend. This product does not replace a WAF, HSM or OS security.</p>
-<h2>Verification before installation</h2>
-<p>Use the verifier, trust pin and final ZIP SHA-256 received through an independently trusted channel. Do not execute bundled Python or Native before verifying the outer CMS, inner Ed25519 signatures, file inventory and runtime. Do not bypass failure by extracting manually. Use verifier --install-new only for a new empty destination. Follow the upgrade contract for an existing installation.</p>
-<p>The official verification model is Release pin → CMS signing authority → signed CRL → independent verifier → manifest/SHA. Windows Server 2022 is supported and verified within the Release 64 scope. Public Authenticode is not the release trust authority; do not import the private root into Windows Trusted Root or weaken Windows security controls.</p>
-<h2>Supported environments and first installation</h2>
-<p>The official AMD64 scope is Windows Server 2022, Ubuntu 22.04, Ubuntu 24.04, Debian 12, Rocky Linux 9 and AlmaLinux 9 (6/6 PASS). The command examples below show Windows Server 2022 and Ubuntu 24.04; use the approved SH entrypoint supplied for the other supported Linux targets. Keep Linux runtime files root-owned and run under a dedicated non-root operating-system account. Preserve the included Windows runtime. First installation: verify/install → identity once → trial → status → configure Gateway/backend → run → verify protected requests and restart → open traffic. Core initialization, doctor and verify run inside the authenticated in-memory Native path. Do not invoke nonexistent init/doctor/verify launcher actions or install a plaintext Core Wheel.</p>
-<h2>14-Day Free Trial and Paid conversion</h2>
-<p>Free download; no email required; downloading does not start Trial; 14 days from first successful activation; one Device, one Trial; downloading or reinstalling cannot reset it; protected routes fail closed after expiry; purchase converts to Paid without reinstalling. Keep the same operating-system execution account, state-directory and identity. The paid action reads License ID in a normal prompt and License Key in a hidden prompt, then passes them through stdin. Native Paid is not the Wheel web Device Code approval flow. Check status and protected requests after conversion; restart the same run when necessary.</p>
-<h2>Using the commands</h2>
-<p>Run from the installed folder for the selected OS. Replace &lt;...&gt; with approved absolute paths or public SHA-256 values. Use the same state-directory for every action. Never place secret values on the command line. A separate business venv contains customer application dependencies only.</p>
-<h3>Windows Server 2022</h3>
-<pre><code>$state = &#x27;C:\ProgramData\ODRE\native-commercial&#x27;
-$trust = &#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
-$trustPin = &#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
-&amp; .\runtime\python.exe .\odre-native.py identity `
-  --state-directory $state
-&amp; .\runtime\python.exe .\odre-native.py trial `
-  --state-directory $state `
-  --trust-config $trust --trust-pin $trustPin
-&amp; .\runtime\python.exe .\odre-native.py status `
-  --state-directory $state `
-  --trust-config $trust --trust-pin $trustPin
-&amp; .\runtime\python.exe .\odre-native.py run `
-  --state-directory $state `
-  --trust-config $trust --trust-pin $trustPin `
-  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; `
-  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; `
-  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; `
-  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27;</code></pre>
-<h3>Ubuntu 24.04</h3>
-<pre><code>state=&quot;$HOME/.local/state/odre-pqc/native-commercial&quot;
-trust=&#x27;&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;&#x27;
-trust_pin=&#x27;&lt;INDEPENDENT_TRUST_SHA256&gt;&#x27;
-python3.12 ./odre-native-ubuntu.py identity \
-  --state-directory &quot;$state&quot;
-python3.12 ./odre-native-ubuntu.py trial \
-  --state-directory &quot;$state&quot; \
-  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
-python3.12 ./odre-native-ubuntu.py status \
-  --state-directory &quot;$state&quot; \
-  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;
-python3.12 ./odre-native-ubuntu.py run \
-  --state-directory &quot;$state&quot; \
-  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
-  --gateway-config &#x27;&lt;GATEWAY_JSON_ABSOLUTE_PATH&gt;&#x27; \
-  --gateway-pin &#x27;&lt;GATEWAY_JSON_SHA256&gt;&#x27; \
-  --backend-script &#x27;&lt;BACKEND_ENTRYPOINT_ABSOLUTE_PATH&gt;&#x27; \
-  --backend-python &#x27;&lt;BUSINESS_VENV_PYTHON_ABSOLUTE_PATH&gt;&#x27; \
-  --core-startup-seconds 120</code></pre>
-<h2>Gateway and business processes</h2>
-<p>The configuration accepts only the exact keys in the schema below. Bind to 127.0.0.1 with port 1024–65535, distinct from the Native port and ten consecutive backend ports. Specify 1–128 method/path entries. After /secure/, only letters, digits, underscores, hyphens and slashes are allowed; no duplicate/trailing slash, wildcard or path parameter. GET/POST/PUT/PATCH/DELETE/OPTIONS/HEAD may be listed. POST requires an application/json object and rejects duplicate JSON keys. Do not assume array, multipart, raw upload or large-payload support. max_pending is 1–16, not a throughput promise. Maintain CORS and existing authentication separately.</p>
-<p>The backend must bind to 127.0.0.1 at the ODRE_R1_BACKEND_PORT environment value. Native manages workers on ten consecutive ports. Do not run shared DB migrations or a singleton scheduler in every worker. Supply Gateway TLS certificates and encrypted PEM private keys through approved absolute paths with restricted permissions. Inject the password through the ODRE_GATEWAY_TLS_KEY_PASSWORD secret environment variable; Native removes it from the business backend environment. Pin the exact reviewed Gateway JSON bytes using --gateway-pin.</p>
-<pre><code>{
-  &quot;schema&quot;: &quot;odre-native-gateway-host/v1&quot;,
-  &quot;listen_host&quot;: &quot;127.0.0.1&quot;,
-  &quot;listen_port&quot;: 29443,
-  &quot;routes&quot;: [
-    {
-      &quot;method&quot;: &quot;POST&quot;,
-      &quot;path&quot;: &quot;/secure/echo&quot;
-    }
-  ],
-  &quot;tls_certificate&quot;: &quot;&lt;ABSOLUTE_CERTIFICATE_PATH&gt;&quot;,
-  &quot;tls_private_key&quot;: &quot;&lt;ABSOLUTE_ENCRYPTED_PEM_PATH&gt;&quot;,
-  &quot;max_pending&quot;: 16
-}</code></pre>
-<h2>State, upgrades and recovery</h2>
-<p>Preserve Gateway identity at state-directory/r1-broker-home/gateway-identity. Retain Windows DPAPI/restricted ACL and Ubuntu operating-system service-account-owned 0600 encrypted state. Local Linux encryption is not an HSM against administrator compromise. Preserve identity, device.json, original Trial times, Paid entitlement, Unit ownership and Lease generation. Do not initialize identity or rerun init on reinstall/upgrade, or copy state to another device. Verify the new Bundle in a separate directory and apply only authority-approved source/target upgrade contracts. Never add arbitrary allowlist entries or downgrade.</p>
-<p>After prepare and before authority commit, abort restores the last valid state. If the response is lost after authority commit, recover the same authenticated commit by rolling forward. Do not restore old files after commit. Use authenticated recovery instead of deleting corrupted state to register again. Stale artifacts and tampered migration metadata must be rejected.</p>
-<h2>Expiry, operational checks and scope</h2>
-<p>A valid Lease/status alone does not prove business integration. Match successful protected responses to one Handler execution using distinct request IDs. After Lease expiry, Core rejects with 403; when Native stops the broker, Nginx may return 502. Do not convert failure to 200 or automatically resend business requests. Preserve public-route policy. Isolated Nginx HTTPS → Gateway → Core → Handler, Trial/Paid, restart, natural Lease expiry and RC2.5 upgrades were tested on both OSes. Consult the final report for final-ZIP clean-room and complete load gates.</p>
-<p>Windows Nginx named-pipe password delivery was not verified. The isolated test used an ACL-restricted temporary test password file deleted immediately after Nginx started; no production key was used. Protect production secret delivery for the customer environment. Functional or fuzz counts do not establish maximum RPS, unlimited concurrency, SLA, absence of long-term memory leaks or 128KiB/1MiB payload support.</p>
-<h2>New Paid registration and existing Unit transfer</h2>
-<p>For a new Paid device without Trial, create identity once and run register. Use paid only to convert an existing Trial on the same device, preserving its identity and Trial history. Trial device transfer is unsupported.</p>
-<p>Run register on the new server and enter its Device Code at https://pqc.odreai.com/payment/register/?flow=native . Verify License ID and License Key there, then explicitly choose a new Unit or an existing Unit transfer. No customer account or login is required. Never place License Key in command arguments, support messages or the source request file.</p>
-<p>For transfer, select the existing installation and normal replacement or inaccessible source. Registration alone never transfers a Unit. Normal replacement requires an approved source version supporting transfer-release; upgrade older installations through the authorized identity-preserving contract first.</p>
-<p>Normal replacement: stop new incoming business traffic while keeping the source Native running. Download the source transfer request JSON from the page, then run transfer-release below on the source. Native closes admission, drains in-flight requests, persists protected intent and submits signed device proof. Do not restart the retired source after completion.</p>
-<p>Broken-device replacement needs support approval. If Native stops during normal drain, select the inaccessible-source confirmation and recovery action in the same web operation. The new Native signs separate recovery consent and support approves it. Do not change the selected Unit or assume a successful drain. Both paths wait for every previous Offline Lease to expire before issuing new protected execution authority.</p>
-<p>Resume register with the same state-directory. After server commit, lost responses or disk errors recover the same operation result, verify signatures and new-device binding, then store atomically. Do not allocate another Unit, register another Trial, restore old state or copy private keys, DPAPI or Gateway identity between devices. The destination uses its own keys and Gateway identity.</p>
-<p>LICENSE_UNIT_LIMIT means transfer or additional capacity is required. SUPPORT_PENDING awaits approval; WAITING_OLD_LEASE awaits expiry. COMMITTED means server commit, while APPLIED confirms local Native storage. Neither proves business integration. Verify status, Gateway→Core→Handler requests and restart before opening traffic.</p>
-<h3>Run on the new device</h3>
-<h3>Windows Server 2022</h3>
-<pre><code>&amp; .\runtime\python.exe .\odre-native.py register `
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ODRE PQC Device Migration Guide</title><link rel="stylesheet" href="/assets/css/site.css?v=renewal3-20260921"><link rel="stylesheet" href="/assets/css/customer-guidance.css?v=web-restore-20260912"><meta name="description" content="Safely transfer an existing Paid License Unit from an old ODRE PQC device to a new device."><link rel="canonical" href="https://pqc.odreai.com/docs/native-0.3.0/"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="alternate" hreflang="en" href="https://pqc.odreai.com/docs/native-0.3.0/"><link rel="alternate" hreflang="ko" href="https://pqc.odreai.com/docs/native-0.3.0/ko.html"><link rel="alternate" hreflang="ja" href="https://pqc.odreai.com/docs/native-0.3.0/ja.html"><link rel="alternate" hreflang="de" href="https://pqc.odreai.com/docs/native-0.3.0/de.html"><link rel="alternate" hreflang="es" href="https://pqc.odreai.com/docs/native-0.3.0/es.html"><link rel="alternate" hreflang="x-default" href="https://pqc.odreai.com/docs/native-0.3.0/"><script src="/assets/js/site-pause.js?v=actions-open-20260921"></script><link rel="stylesheet" href="/assets/css/site-pause.css?v=actions-open-20260921"></head><body data-document-language="en" data-localized-base="/docs/native-0.3.0/"><div data-site-header class="site-header-placeholder"></div><main id="main" class="guide-main"><nav class="breadcrumbs"><a href="/">ODRE PQC</a><a href="/docs/">Documentation</a></nav><h1>Device Migration</h1>
+<h2>1. What is device migration?</h2><p>Device migration moves an existing Unit of an active Paid License from an old ODRE PQC installation to a new installation. The new device creates its own identity and device keys. Do not copy private keys, <code>device.json</code>, DPAPI state, or Gateway identity from the old device. Trial migration is unsupported.</p>
+<h2>2. When is it needed?</h2><ul><li><strong>Server replacement:</strong> the same License Unit must run on a replacement server.</li><li><strong>OS reinstallation:</strong> the existing installation identity and protected state cannot be retained.</li><li><strong>Hardware change:</strong> the installation must register with a new device identity.</li></ul><p>An update that preserves the existing state and identity is not a device migration.</p>
+<h2>3. Before migration</h2><ul><li>Have the Paid License ID and License Key ready. Never place the License Key on a command line or in a support message.</li><li>Install the approved delivery on the new device and use a new-device state directory.</li><li>Decide whether the old device is accessible for a normal replacement or unavailable for recovery.</li><li>Do not delete or reset the old identity or state.</li></ul><p>Run <code>register</code> with the installed OS launcher on the new device. Enter its Device Code at the <a href="https://pqc.odreai.com/payment/register/?flow=native">Native registration and transfer portal</a>, verify the License ID/Key, then choose <strong>Transfer an existing Unit</strong>, the source installation, and the replacement reason. Keep the same operation and state directory throughout.</p>
+<h3>New Windows device</h3><pre><code>$state = 'C:\ProgramData\ODRE\native-commercial'
+$trust = '&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;'
+$trustPin = '&lt;INDEPENDENT_TRUST_SHA256&gt;'
+&amp; .\runtime\python.exe .\odre-native.py register `
   --state-directory $state `
   --trust-config $trust --trust-pin $trustPin</code></pre>
-<h3>Ubuntu 24.04</h3>
-<pre><code>python3.12 ./odre-native-ubuntu.py register \
-  --state-directory &quot;$state&quot; \
-  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot;</code></pre>
-<h3>Release the source for normal replacement</h3>
-<h3>Windows Server 2022</h3>
-<pre><code>&amp; .\runtime\python.exe .\odre-native.py transfer-release `
+<h3>New Linux device</h3><pre><code>state="$HOME/.local/state/odre-pqc/native-commercial"
+trust='&lt;APPROVED_TRUST_JSON_ABSOLUTE_PATH&gt;'
+trust_pin='&lt;INDEPENDENT_TRUST_SHA256&gt;'
+python3.12 ./odre-native-ubuntu.py register \
+  --state-directory "$state" \
+  --trust-config "$trust" --trust-pin "$trust_pin"</code></pre>
+<h2>4. Handle the old device</h2><p><strong>Normal replacement:</strong> stop new business traffic but keep Native running until drain confirmation completes. Download <code>odre-device-transfer-request.json</code> from the portal, move it to the old device, and run:</p>
+<h3>Old Windows device</h3><pre><code>&amp; .\runtime\python.exe .\odre-native.py transfer-release `
   --state-directory $state `
   --trust-config $trust --trust-pin $trustPin `
-  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre>
-<h3>Ubuntu 24.04</h3>
-<pre><code>python3.12 ./odre-native-ubuntu.py transfer-release \
-  --state-directory &quot;$state&quot; \
-  --trust-config &quot;$trust&quot; --trust-pin &quot;$trust_pin&quot; \
-  --transfer-request &quot;&lt;TRANSFER_REQUEST_JSON&gt;&quot; --confirm-stop</code></pre></main><div data-site-footer></div><script src="/assets/js/site.js?v=renewal3-20260921"></script><script src="/assets/js/customer-guidance.js?v=web-restore-20260912"></script></body></html>
+  --transfer-request ".\odre-device-transfer-request.json" --confirm-stop</code></pre>
+<h3>Old Linux device</h3><pre><code>python3.12 ./odre-native-ubuntu.py transfer-release \
+  --state-directory "$state" \
+  --trust-config "$trust" --trust-pin "$trust_pin" \
+  --transfer-request "./odre-device-transfer-request.json" --confirm-stop</code></pre>
+<p>Do not restart the old device after release. New authority may wait for all old Offline Leases to expire.</p><p><strong>Old device unavailable:</strong> request source recovery in the same portal operation. Continue the same <code>register</code> operation on the new device to confirm consent, then wait for support approval and old Lease expiry.</p>
+<h2>5. Activate the new device</h2><p>Continue with the same <code>register</code> command and state directory. If it times out, do not reset identity or create another operation; run the same command again. After the server commit and destination binding pass, Native stores the Lease atomically on the new device.</p>
+<h2>6. Confirm completion</h2><p>Wait for portal state <code>APPLIED</code> and Native confirmation of local Lease storage, then check the installed product's <code>status</code>. Verify a Gateway → Core → Protected Handler request and one Handler execution per request before opening traffic. <code>COMMITTED</code> alone is not migration completion or application-integration proof.</p>
+<h2>7. Failures and cautions</h2><ul><li><code>LICENSE_UNIT_LIMIT</code>: transfer an existing Unit or obtain more capacity.</li><li><code>SUPPORT_PENDING</code>: wait for new-device consent and support approval.</li><li><code>WAITING_OLD_LEASE</code>: wait for the old Offline Lease to expire.</li><li>If a Device Code expires, check the same Native operation first. Do not create a second operation after selection is fixed.</li><li>After interruption or a lost response, recover with the same <code>register</code> operation and state directory.</li><li>Never copy, delete, or reset identities, private keys, state, or Lease files between devices.</li><li>Do not bypass verification or force the old device back into service.</li></ul></main><div data-site-footer></div><script src="/assets/js/site.js?v=renewal3-20260921"></script><script src="/assets/js/customer-guidance.js?v=web-restore-20260912"></script></body></html>
