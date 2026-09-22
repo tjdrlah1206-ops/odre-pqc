@@ -805,27 +805,27 @@
     en: {
       heroApprovedLine1: 'Stop building and operating',
       heroApprovedLine2: 'your own PQC security stack.',
-      heroApprovedSupport: 'Keep your clients as they are. Server setup stays simple.<br>If protection cannot be verified, the request is blocked.'
+      heroApprovedSupport: 'Add ML-KEM-768 · ML-DSA-65-based post-quantum protection to FastAPI. Keep your clients unchanged.<br>If protection cannot be verified, the request is blocked.'
     },
     ko: {
       heroApprovedLine1: 'PQC 보안 스택을 직접 만들고 운영하는 일,',
       heroApprovedLine2: '이제 그만하세요.',
-      heroApprovedSupport: '클라이언트는 그대로. 서버 설치는 간편하게.<br>보호를 검증할 수 없으면, 요청을 차단합니다.'
+      heroApprovedSupport: 'FastAPI에 ML-KEM-768 · ML-DSA-65 기반 포스트양자 보호를 더합니다. 클라이언트는 바꾸지 않습니다.<br>보호를 검증할 수 없으면, 요청을 차단합니다.'
     },
     ja: {
       heroApprovedLine1: '独自のPQCセキュリティスタックを',
       heroApprovedLine2: '自社で構築・運用する必要はありません。',
-      heroApprovedSupport: 'クライアントはそのまま。サーバー導入はシンプルに。<br>保護を検証できなければ、リクエストを遮断します。'
+      heroApprovedSupport: 'FastAPIにML-KEM-768 · ML-DSA-65ベースの耐量子保護を追加します。クライアントは変更しません。<br>保護を検証できなければ、リクエストを遮断します。'
     },
     de: {
       heroApprovedLine1: 'Hören Sie auf, Ihren eigenen',
       heroApprovedLine2: 'PQC-Sicherheits-Stack aufzubauen und zu betreiben.',
-      heroApprovedSupport: 'Clients bleiben unverändert. Die Serverinstallation ist unkompliziert.<br>Lässt sich der Schutz nicht verifizieren, wird die Anfrage blockiert.'
+      heroApprovedSupport: 'FastAPI erhält Post-Quantum-Schutz auf Basis von ML-KEM-768 · ML-DSA-65. Clients bleiben unverändert.<br>Lässt sich der Schutz nicht verifizieren, wird die Anfrage blockiert.'
     },
     es: {
       heroApprovedLine1: 'Deje de crear y mantener',
       heroApprovedLine2: 'su propio stack de seguridad PQC.',
-      heroApprovedSupport: 'Sin cambios en los clientes. Instalación sencilla en el servidor.<br>Si no se puede verificar la protección, la solicitud se bloquea.'
+      heroApprovedSupport: 'FastAPI incorpora protección poscuántica basada en ML-KEM-768 · ML-DSA-65. Los clientes no cambian.<br>Si no se puede verificar la protección, la solicitud se bloquea.'
     }
   };
   Object.keys(copy).forEach(function (language) {
