@@ -981,10 +981,10 @@ Object.keys(window.ODRE_PAGE_I18N).forEach(function (language) {
       es: { current:'Referencia de verificación del Core sellado' }
     },
     license: {
-      ko: { availabilityCopy:'현재 상용 정기구독의 Live 결제를 이용할 수 있습니다. 실제 정기구독이 생성되며 적용 세금은 Paddle 결제창에서 계산됩니다.',downloadProduct:'v0.3.1 문서 다운로드 →' },
-      ja: { availabilityCopy:'現在の商用サブスクリプションの本番決済をご利用いただけます。実際の継続課金が作成され、適用税額はPaddleの決済画面で計算されます。',downloadProduct:'v0.3.1 ドキュメントをダウンロード →' },
-      de: { availabilityCopy:'Der Live-Checkout für das aktuelle kommerzielle Abonnement ist verfügbar. Dabei wird ein echtes Abonnement erstellt; Paddle berechnet anfallende Steuern im Checkout.',downloadProduct:'v0.3.1 Dokumente herunterladen →' },
-      es: { availabilityCopy:'El pago real está disponible para la suscripción comercial actual. Se crea una suscripción recurrente real; Paddle calcula los impuestos aplicables al pagar.',downloadProduct:'Descargar documentos de v0.3.1 →' }
+      ko: { availabilityCopy:'현재 상용 정기구독의 Live 결제를 이용할 수 있습니다. 실제 정기구독이 생성되며 적용 세금은 Paddle 결제창에서 계산됩니다.',downloadProduct:'v0.3.1 문서 다운로드' },
+      ja: { availabilityCopy:'現在の商用サブスクリプションの本番決済をご利用いただけます。実際の継続課金が作成され、適用税額はPaddleの決済画面で計算されます。',downloadProduct:'v0.3.1 ドキュメントをダウンロード' },
+      de: { availabilityCopy:'Der Live-Checkout für das aktuelle kommerzielle Abonnement ist verfügbar. Dabei wird ein echtes Abonnement erstellt; Paddle berechnet anfallende Steuern im Checkout.',downloadProduct:'v0.3.1 Dokumente herunterladen' },
+      es: { availabilityCopy:'El pago real está disponible para la suscripción comercial actual. Se crea una suscripción recurrente real; Paddle calcula los impuestos aplicables al pagar.',downloadProduct:'Descargar documentos de v0.3.1' }
     },
     trust: {
       ko: { productDownloadTitle:'ODRE PQC v0.3.0 고객 배포본',productDownloadCopy:'공식 고객 배포 ZIP에는 암호가 필요하지 않습니다. 열기 전에 공개 SHA-256을 검증하세요. 불일치하면 파일을 사용하면 안 됩니다.',archive:'압축파일',size:'크기',archiveSha:'고객 배포 압축파일 SHA-256',downloadProduct:'v0.3.0 다운로드',downloadChecksum:'SHA-256 파일 다운로드',coreEvidenceBoundary:'봉인된 v0.2.9 Core Wheel과 공개 검증자료는 아래에 별도 무결성 기준으로 유지됩니다. Core Wheel 해시는 고객 배포 압축파일 해시가 아닙니다.' },
