@@ -127,7 +127,7 @@
       '<button class="mobile-toggle" id="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="' + t('menuLabel') + '"><span></span></button></div></div></header>' +
       '<div class="mobile-overlay" id="mobile-overlay"></div><aside class="mobile-drawer" id="mobile-drawer" aria-label="' + t('mobileNav') + '" aria-hidden="true"><nav class="mobile-nav">' +
       mobileLinks + '<a class="mobile-direct mobile-license" href="/payment/register/?flow=activate" data-common="license">' + t('license') + '</a>' +
-      '<a class="button mobile-primary" href="/#trial" data-common="freeTrial">' + t('freeTrial') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
+      '<a class="button mobile-primary" href="https://odreai.com/odre-pqc/downloads/current/odre-pqc.zip" data-common="freeTrial">' + t('freeTrial') + '</a><div class="mobile-languages"><strong data-common="language">' + t('language') + '</strong><div class="mobile-language-grid" role="menu">' + languageButtons(true) + '</div></div></nav></aside>';
   }
 
   function footerColumn(title, links) {
