@@ -222,18 +222,7 @@
 
   // Only explicitly marked document links follow the selected page language.
   // Keep the original English href usable when JavaScript is unavailable.
-  var publicDocuments = {
-    en: { whitepaper: 'ODRE_PQC_v0.2.9_Public_Technical_Whitepaper_EN.pdf', overview: 'ODRE_PQC_v0.2.9_Product_Overview_Security_Architecture_EN.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_EN.pdf' },
-    ko: { whitepaper: 'ODRE_PQC_v0.2.9_공개_기술_백서_KO.pdf', overview: 'ODRE_PQC_v0.2.9_제품_개요_및_보안_아키텍처_KO.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_KO.pdf' },
-    ja: { whitepaper: 'ODRE_PQC_v0.2.9_公開技術白書_JA.pdf', overview: 'ODRE_PQC_v0.2.9_製品概要_セキュリティアーキテクチャ_JA.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_JA.pdf' },
-    de: { whitepaper: 'ODRE_PQC_v0.2.9_Oeffentliches_Technisches_Whitepaper_DE.pdf', overview: 'ODRE_PQC_v0.2.9_Produktuebersicht_Sicherheitsarchitektur_DE.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_DE.pdf' },
-    es: { whitepaper: 'ODRE_PQC_v0.2.9_Libro_Blanco_Tecnico_Publico_ES.pdf', overview: 'ODRE_PQC_v0.2.9_Descripcion_del_Producto_Arquitectura_de_Seguridad_ES.pdf', evidence: 'ODRE_PQC_Release_Evidence_20260910_ES.pdf' }
-  };
-
-  // Trial guides are reviewed, separate PDFs in all five site languages.
-  Object.keys(publicDocuments).forEach(function (code) {
-    publicDocuments[code].trial = 'ODRE_PQC_14_Day_Free_Trial_Guide_v1.3_RC2_' + code.toUpperCase() + '.pdf';
-  });
+  var publicDocuments = {"en": {"whitepaper": "ODRE_PQC_0.3.1_Public_Technical_Whitepaper_EN.pdf", "overview": "ODRE_PQC_0.3.1_Product_Overview_Security_Architecture_EN.pdf", "evidence": "ODRE_PQC_0.3.1_Release_Evidence_EN.pdf", "trial": "ODRE_PQC_0.3.1_RC1_14_Day_Free_Trial_Guide_EN.pdf"}, "ko": {"whitepaper": "ODRE_PQC_0.3.1_Public_Technical_Whitepaper_KO.pdf", "overview": "ODRE_PQC_0.3.1_Product_Overview_Security_Architecture_KO.pdf", "evidence": "ODRE_PQC_0.3.1_Release_Evidence_KO.pdf", "trial": "ODRE_PQC_0.3.1_RC1_14_Day_Free_Trial_Guide_KO.pdf"}, "ja": {"whitepaper": "ODRE_PQC_0.3.1_Public_Technical_Whitepaper_JA.pdf", "overview": "ODRE_PQC_0.3.1_Product_Overview_Security_Architecture_JA.pdf", "evidence": "ODRE_PQC_0.3.1_Release_Evidence_JA.pdf", "trial": "ODRE_PQC_0.3.1_RC1_14_Day_Free_Trial_Guide_JA.pdf"}, "de": {"whitepaper": "ODRE_PQC_0.3.1_Public_Technical_Whitepaper_DE.pdf", "overview": "ODRE_PQC_0.3.1_Product_Overview_Security_Architecture_DE.pdf", "evidence": "ODRE_PQC_0.3.1_Release_Evidence_DE.pdf", "trial": "ODRE_PQC_0.3.1_RC1_14_Day_Free_Trial_Guide_DE.pdf"}, "es": {"whitepaper": "ODRE_PQC_0.3.1_Public_Technical_Whitepaper_ES.pdf", "overview": "ODRE_PQC_0.3.1_Product_Overview_Security_Architecture_ES.pdf", "evidence": "ODRE_PQC_0.3.1_Release_Evidence_ES.pdf", "trial": "ODRE_PQC_0.3.1_RC1_14_Day_Free_Trial_Guide_ES.pdf"}};
 
   function applyDocumentLanguage(code) {
     var documents = publicDocuments[code] || publicDocuments.en;

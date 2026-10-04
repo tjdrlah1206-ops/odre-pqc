@@ -98,6 +98,8 @@
   var manuallySelected = false;
   var current = 'en';
 
+  var historical={"en": "Historical PDFs — for current RC2 installation and verification use the web guides.", "ko": "과거 PDF — 현재 RC2 설치·검증은 웹 가이드를 사용하세요.", "ja": "過去のPDF — 現在のRC2導入・検証にはWebガイドをご利用ください。", "de": "Historische PDFs — aktuelle RC2-Installation und Verifikation stehen in den Web-Anleitungen.", "es": "PDF históricos — use las guías web para instalar y verificar RC2 actual."};
+  Object.keys(copy).forEach(function(lang){copy[lang].panel=historical[lang];Object.keys(files[lang]).forEach(function(key){copy[lang][key][1]=historical[lang];});});
   function normalizedLanguage(value) {
     var code = String(value || '').slice(0, 2).toLowerCase();
     return supported.indexOf(code) >= 0 ? code : 'en';
