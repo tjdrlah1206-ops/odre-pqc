@@ -8,11 +8,11 @@
 
   var translations = {
     en: {
-      close:'Close', definition:'AUM — Automatic Update Management', definitionBody:'AUM is the customer-facing update capability and contract. It discovers approved ODRE PQC Release candidates, verifies them against the existing signed authority, ordering and compatibility rules, and permits only validated updates. An incomplete, altered, duplicate or lower-generation candidate fails closed without changing the active customer product.',
+      close:'Close', definition:'AUM — Automatic Update Management', definitionBody:"The configured RC2 customer updater checks approved local input every 15 seconds and passes it to local AUM after signature, integrity and compatibility verification. Current RC2 does not download new releases from a central update server.",
       sections:[
-        ['AUM scope','Discover an approved release; verify signature, manifest, inventory, SHA-256, envelope, release order and compatibility; reject partial, altered, duplicate and lower-generation candidates; and apply only an update allowed by the customer contract.'],
+        ['AUM scope',"The configured RC2 customer updater checks approved local input every 15 seconds and passes it to local AUM after signature, integrity and compatibility verification. Current RC2 does not download new releases from a central update server."],
         ['AUM core principle','Unverified updates never apply. A filename or apparent recency is not authority, and a verification failure is never converted into success.'],
-        ['FULL AUM definition','FULL AUM runs on the ODRE PQC operating server and extends the same signed verification foundation across preparation, atomic transition, post-switch verification, automatic rollback, crash recovery, restart recovery and durable lifecycle state. It is not a separate or weaker verification system.'],
+        ['FULL AUM definition',"FULL AUM describes the ODRE operating-server update lifecycle. Verification results apply only to the artifacts, environments and transactions documented in Trust Center."],
         ['1. Release discovery and input stability','Only the approved update input is inspected. A candidate is not trusted because a ZIP exists or its size appears stable: signed manifest, envelope, inventory, expected SHA-256, Product Release and compatibility authority must all agree. A partially copied artifact is not applied.'],
         ['2. Single writer','Only one apply transaction may own the update lifecycle. Periodic checks, manual invocation and service restart cannot create duplicate writers; lock failure produces no apply and no active-product change.'],
         ['3. Pre-switch safety checks','Before staging or switching, FULL AUM verifies staging capacity, rollback capacity, current release authority, policy generation, consumer pin and previous known-good assets. Rollback material is never deleted to make room for a new candidate.'],
@@ -30,17 +30,17 @@
         ['15. Normal flow','DISCOVER → VERIFY INPUT STABILITY → VERIFY SIGNED AUTHORITY → CHECK RELEASE ORDER → ACQUIRE SINGLE-WRITER LOCK → CHECK CAPACITY → STAGE → PRE-SWITCH VERIFY → PREPARED → ATOMIC SWITCH → RUNTIME READINESS → HEALTH AND PROTECTED-REQUEST VERIFY → DURABLE COMMIT → RESTART RECOVERY CHECK → COMMITTED.'],
         ['16. Failure and rollback flow','DISCOVER → VERIFY → STAGE → ATOMIC SWITCH → REQUIRED CHECK FAIL → COMMIT PROHIBITED → ROLLING_BACK → RESTORE PREVIOUS PRODUCT/POLICY/PIN/RUNTIME → REVERIFY HEALTH AND PROTECTED REQUEST → ROLLED_BACK. The initial failure and corrective evidence are retained.'],
         ['17. Process-crash recovery flow','PROCESS RESTART → READ DURABLE JOURNAL → INSPECT ACTUAL POINTERS → COMPARE PRODUCT/POLICY/PIN/RUNTIME → DETERMINE TRANSACTION PHASE → SAFE RESUME OR AUTOMATIC ROLLBACK → REVERIFY HEALTH → REBUILD CANONICAL STATE → COMMITTED OR ROLLED_BACK.'],
-        ['Contract boundary','FULL AUM-related modules may physically exist in the customer delivery. That does not change the contract: the customer is exposed to AUM, while the ODRE PQC operating server executes the complete FULL AUM lifecycle on the same signed verification foundation.']
-        ,['AUM / FULL AUM difference','AUM is the customer-facing contract that selects, verifies and permits approved updates. FULL AUM is the ODRE operating-server transaction lifecycle that adds single-writer staging, atomic switch, verification, automatic rollback and durable recovery to the same verification base.']
-        ,['One-line summary','AUM safely permits verified customer updates; FULL AUM completes and recovers the entire ODRE server update transaction.']
+        ['Contract boundary',"Customer-facing update capability and contract remain AUM. FULL AUM describes the ODRE operating-server lifecycle; module presence in a delivery does not extend the customer contract. Current RC2 verification results are limited to the published artifacts, environments and transactions."]
+        ,['AUM / FULL AUM difference',"AUM verifies approved local customer update input. FULL AUM describes the ODRE operating-server transaction lifecycle on the same signed verification foundation; the published evidence defines the verification scope."]
+        ,['One-line summary',"AUM verifies approved local customer update input; FULL AUM describes ODRE server update transactions within the published verification scope."]
       ]
     },
     ko: {
-      close:'닫기',definition:'AUM — Automatic Update Management',definitionBody:'AUM은 고객에게 노출되는 업데이트 기능 및 계약입니다. 승인된 ODRE PQC Release 후보를 발견하고 기존 signed authority, release ordering 및 compatibility 규칙으로 검증하여 허용된 업데이트만 적용합니다. 불완전·변조·중복·낮은 generation 후보는 활성 고객 제품을 변경하지 않고 Fail-Closed로 거부합니다.',
+      close:'닫기',definition:'AUM — Automatic Update Management',definitionBody:"설정된 RC2 고객 Updater는 승인된 로컬 입력을 15초마다 확인하고 서명·무결성·호환성 검증 후 로컬 AUM에 전달합니다. 현재 RC2는 중앙 업데이트 서버에서 새 릴리스를 다운로드하지 않습니다.",
       sections:[
-        ['AUM 주요 범위','승인된 Release 발견, signature·manifest·inventory·SHA-256·envelope·release ordering·compatibility 검증, partial·변조·중복·낮은 generation 거부와 고객 계약상 허용된 update 적용을 포함합니다.'],
+        ['AUM 주요 범위',"설정된 RC2 고객 Updater는 승인된 로컬 입력을 15초마다 확인하고 서명·무결성·호환성 검증 후 로컬 AUM에 전달합니다. 현재 RC2는 중앙 업데이트 서버에서 새 릴리스를 다운로드하지 않습니다."],
         ['AUM 핵심 원칙','검증되지 않은 update는 적용하지 않습니다. 파일명이나 최신처럼 보이는 상태는 authority가 아니며 verification failure를 성공으로 변환하지 않습니다.'],
-        ['FULL AUM 정의','FULL AUM은 ODRE PQC 운영 서버에서 동일 signed verification 기반을 준비, atomic transition, post-switch verification, automatic rollback, crash/restart recovery와 durable lifecycle state 전체로 확장합니다. 별도이거나 약화된 검증 시스템이 아닙니다.'],
+        ['FULL AUM 정의',"FULL AUM은 ODRE 운영 서버의 업데이트 lifecycle을 설명합니다. 검증 결과는 Trust Center에 기록된 artifact·환경·transaction 범위에 한정됩니다."],
         ['1. Release 발견 및 입력 안정성','승인된 update input만 조사합니다. ZIP 존재나 크기 안정성만으로 신뢰하지 않으며 signed manifest, envelope, inventory, expected SHA-256, Product Release와 compatibility authority가 모두 일치해야 합니다. 복사 중인 artifact는 적용하지 않습니다.'],
         ['2. Single Writer','실제 apply transaction은 하나만 lifecycle을 소유합니다. 주기 실행, 수동 실행과 service restart가 겹쳐도 중복 writer를 만들지 않으며 lock 실패 시 apply와 활성 제품 변경은 0입니다.'],
         ['3. Pre-Switch 안전 검사','staging 또는 switch 전에 staging·rollback 용량, current release authority, policy generation, consumer pin과 previous known-good 자산을 확인합니다. 새 candidate 공간을 위해 rollback 자산을 삭제하지 않습니다.'],
@@ -58,17 +58,17 @@
         ['15. 전체 정상 흐름','DISCOVER → VERIFY INPUT STABILITY → VERIFY SIGNED AUTHORITY → CHECK RELEASE ORDER → ACQUIRE SINGLE-WRITER LOCK → CHECK CAPACITY → STAGE → PRE-SWITCH VERIFY → PREPARED → ATOMIC SWITCH → RUNTIME READINESS → HEALTH/PROTECTED REQUEST VERIFY → DURABLE COMMIT → RESTART RECOVERY CHECK → COMMITTED.'],
         ['16. 실패 및 자동 롤백 흐름','DISCOVER → VERIFY → STAGE → ATOMIC SWITCH → 필수 검증 FAIL → COMMIT 금지 → ROLLING_BACK → 이전 PRODUCT/POLICY/PIN/RUNTIME 복원 → HEALTH/PROTECTED REQUEST 재검증 → ROLLED_BACK. 최초 실패와 수정 Evidence를 보존합니다.'],
         ['17. Process Crash 자동복구 흐름','PROCESS RESTART → DURABLE JOURNAL READ → ACTUAL POINTER 확인 → PRODUCT/POLICY/PIN/RUNTIME 비교 → TRANSACTION PHASE 판정 → 안전한 재개 또는 자동 롤백 → HEALTH 재검증 → CANONICAL STATE 재구성 → COMMITTED 또는 ROLLED_BACK.'],
-        ['계약 경계','고객 배포본에 FULL AUM 관련 모듈이 물리적으로 포함될 수 있습니다. 그러나 계약은 변하지 않습니다. 고객에게 노출되는 업데이트 기능은 AUM이고, ODRE PQC 운영 서버는 동일 signed verification 기반에서 FULL AUM 전체 lifecycle을 실행합니다.']
-        ,['AUM / FULL AUM 차이','AUM은 승인된 업데이트를 선택·검증·허용하는 고객 노출 계약입니다. FULL AUM은 같은 검증 기반에 single-writer staging, atomic switch, 사후 검증, automatic rollback과 durable recovery를 결합한 ODRE 운영 서버 transaction lifecycle입니다.']
-        ,['최종 한 줄 요약','AUM은 검증된 고객 업데이트를 안전하게 허용하고, FULL AUM은 ODRE 서버 업데이트 transaction 전체를 완결하고 자동 복구합니다.']
+        ['계약 경계',"고객에게 노출되는 업데이트 기능 및 계약은 AUM입니다. FULL AUM은 ODRE 운영 서버의 lifecycle을 설명하며 배포본에 관련 모듈이 존재해도 고객 계약이 확대되지는 않습니다. 현재 RC2 검증 결과는 공개된 artifact·환경·transaction 범위에 한정됩니다."]
+        ,['AUM / FULL AUM 차이',"AUM은 승인된 고객 로컬 업데이트 입력을 검증합니다. FULL AUM은 동일한 서명 검증 기반의 ODRE 운영 서버 transaction lifecycle을 설명하며, 검증 범위는 공개 Evidence를 따릅니다."]
+        ,['최종 한 줄 요약',"AUM은 승인된 고객 로컬 업데이트 입력을 검증하고, FULL AUM은 공개 검증 범위 내 ODRE 서버 업데이트 transaction을 설명합니다."]
       ]
     },
     ja: {
-      close:'閉じる',definition:'AUM — Automatic Update Management',definitionBody:'AUMは顧客に公開される更新機能と契約です。承認済みODRE PQC Release候補を検出し、既存の署名authority、release ordering、compatibility規則で検証して許可された更新だけを適用します。不完全・改ざん・重複・低generationの候補は現行製品を変更せずFail-Closedで拒否します。',
+      close:'閉じる',definition:'AUM — Automatic Update Management',definitionBody:"設定済みのRC2顧客Updaterは承認済みローカル入力を15秒ごとに確認し、署名・完全性・互換性を検証してローカルAUMへ渡します。 現行RC2は中央更新サーバーから新しいリリースをダウンロードしません。",
       sections:[
-        ['AUMの主要範囲','承認済みReleaseの検出、signature・manifest・inventory・SHA-256・envelope・release ordering・compatibility検証、partial・改ざん・重複・低generation拒否、顧客契約で許可されたupdate適用を含みます。'],
+        ['AUMの主要範囲',"設定済みのRC2顧客Updaterは承認済みローカル入力を15秒ごとに確認し、署名・完全性・互換性を検証してローカルAUMへ渡します。 現行RC2は中央更新サーバーから新しいリリースをダウンロードしません。"],
         ['AUMの基本原則','未検証updateは適用しません。ファイル名や新しさはauthorityではなく、verification failureを成功に変換しません。'],
-        ['FULL AUMの定義','FULL AUMはODRE PQC運用サーバーで同じsigned verification基盤を準備、atomic transition、post-switch verification、automatic rollback、crash/restart recovery、durable lifecycle state全体へ拡張します。別の検証システムではありません。'],
+        ['FULL AUMの定義',"FULL AUMはODRE運用サーバーの更新lifecycleを説明します。検証結果はTrust Centerに記録されたartifact・環境・transactionの範囲に限られます。"],
         ['1. Release検出と入力安定性','承認済みinputだけを調査します。ZIPの存在やサイズ安定だけでは信頼せず、signed manifest、envelope、inventory、expected SHA-256、Product Release、compatibility authorityの全一致を要求し、コピー途中のartifactは適用しません。'],
         ['2. Single Writer','apply transactionのwriterは常に1つです。定期実行・手動実行・service restartが重なっても重複writerを作らず、lock失敗時はapplyも現行製品変更も行いません。'],
         ['3. Pre-Switch安全検査','staging/rollback容量、current release authority、policy generation、consumer pin、previous known-good資産をswitch前に確認し、新候補のためにrollback資産を削除しません。'],
@@ -86,17 +86,17 @@
         ['15. 正常フロー','DISCOVER → INPUT/SIGNED AUTHORITY/ORDER検証 → SINGLE-WRITER LOCK → CAPACITY → STAGE → PRE-SWITCH VERIFY → PREPARED → ATOMIC SWITCH → READINESS → HEALTH/PROTECTED REQUEST → DURABLE COMMIT → RESTART RECOVERY CHECK → COMMITTED。'],
         ['16. 失敗と自動Rollbackフロー','VERIFY/STAGE/SWITCH後の必須検証FAIL → COMMIT禁止 → ROLLING_BACK → 以前のPRODUCT/POLICY/PIN/RUNTIME復元 → HEALTH/PROTECTED REQUEST再検証 → ROLLED_BACK。初回失敗Evidenceを保持します。'],
         ['17. Process Crash自動Recoveryフロー','PROCESS RESTART → JOURNAL READ → POINTER確認 → PRODUCT/POLICY/PIN/RUNTIME比較 → PHASE判定 → 安全な再開または自動Rollback → HEALTH再検証 → STATE再構築 → COMMITTEDまたはROLLED_BACK。'],
-        ['契約境界','顧客配布物にFULL AUM関連moduleが物理的に含まれる場合がありますが契約は変わりません。顧客公開機能はAUM、ODRE PQC運用serverは同じ署名検証基盤上でFULL AUM全lifecycleを実行します。']
-        ,['AUM / FULL AUMの違い','AUMは承認済みupdateを選択・検証・許可する顧客向け契約です。FULL AUMは同じ検証基盤にsingle-writer staging、atomic switch、事後検証、automatic rollback、durable recoveryを加えたODRE運用server transaction lifecycleです。']
-        ,['一行要約','AUMは検証済み顧客updateを安全に許可し、FULL AUMはODRE server update transaction全体を完結・自動復旧します。']
+        ['契約境界',"顧客に公開される更新機能と契約はAUMです。FULL AUMはODRE運用サーバーのlifecycleを説明し、配布物に関連moduleが存在しても顧客契約は拡張されません。現行RC2の検証結果は公開されたartifact・環境・transactionの範囲に限られます。"]
+        ,['AUM / FULL AUMの違い',"AUMは承認済みの顧客ローカル更新入力を検証します。FULL AUMは同じ署名検証基盤上のODRE運用サーバーtransaction lifecycleを説明し、検証範囲は公開Evidenceに従います。"]
+        ,['一行要約',"AUMは承認済みの顧客ローカル更新入力を検証し、FULL AUMは公開検証範囲内のODREサーバー更新transactionを説明します。"]
       ]
     },
     de: {
-      close:'Schließen',definition:'AUM — Automatic Update Management',definitionBody:'AUM ist die kundenseitige Updatefunktion und der zugehörige Vertrag. Freigegebene ODRE-PQC-Release-Kandidaten werden anhand der bestehenden signierten Authority, Reihenfolge- und Kompatibilitätsregeln geprüft; nur zulässige Updates werden angewendet. Unvollständige, manipulierte, doppelte oder niedrigere Kandidaten werden ohne Änderung des aktiven Kundenprodukts fail-closed abgewiesen.',
+      close:'Schließen',definition:'AUM — Automatic Update Management',definitionBody:"Der konfigurierte RC2-Kunden-Updater prüft freigegebene lokale Eingaben alle 15 Sekunden und übergibt sie nach Signatur-, Integritäts- und Kompatibilitätsprüfung an die lokale AUM. Die aktuelle RC2 lädt keine neuen Releases von einem zentralen Update-Server herunter.",
       sections:[
-        ['AUM-Umfang','Erkennung freigegebener Releases; Prüfung von Signature, Manifest, Inventory, SHA-256, Envelope, Release Ordering und Compatibility; Ablehnung partieller, manipulierter, doppelter und niedrigerer Kandidaten; Anwendung nur vertraglich zulässiger Updates.'],
+        ['AUM-Umfang',"Der konfigurierte RC2-Kunden-Updater prüft freigegebene lokale Eingaben alle 15 Sekunden und übergibt sie nach Signatur-, Integritäts- und Kompatibilitätsprüfung an die lokale AUM. Die aktuelle RC2 lädt keine neuen Releases von einem zentralen Update-Server herunter."],
         ['AUM-Kernprinzip','Unverifizierte Updates werden nicht angewendet. Dateiname oder scheinbare Aktualität sind keine Authority; Verification Failure wird nie zu Erfolg umgedeutet.'],
-        ['FULL-AUM-Definition','FULL AUM erweitert auf dem ODRE-PQC-Betriebsserver dieselbe Signed-Verification-Basis um Vorbereitung, Atomic Transition, Post-Switch Verification, Automatic Rollback, Crash/Restart Recovery und Durable Lifecycle State. Es ist kein getrenntes Prüfsystem.'],
+        ['FULL-AUM-Definition',"FULL AUM beschreibt den Update-Lifecycle des ODRE-Betriebsservers. Verifikationsergebnisse gelten nur für die im Trust Center dokumentierten Artefakte, Umgebungen und Transaktionen."],
         ['1. Release-Erkennung und Eingangsstabilität','Nur der freigegebene Eingang wird geprüft. ZIP-Existenz oder stabile Größe reichen nicht: Signed Manifest, Envelope, Inventar, erwarteter SHA-256, Product Release und Compatibility Authority müssen übereinstimmen; teilweise kopierte Artefakte werden nicht angewendet.'],
         ['2. Single Writer','Genau ein Writer besitzt die Apply-Transaktion. Zeitplan, manueller Aufruf und Service-Neustart erzeugen keine Doppelanwendung; ein fehlgeschlagener Lock ändert das aktive Produkt nicht.'],
         ['3. Pre-Switch-Sicherheitsprüfung','Staging- und Rollback-Kapazität, aktuelle Authority, Policy Generation, Consumer Pin und Previous-known-good-Assets werden vorab geprüft. Rollback-Material wird nie für Staging-Platz gelöscht.'],
@@ -114,17 +114,17 @@
         ['15. Normaler Ablauf','DISCOVER → INPUT/SIGNED AUTHORITY/ORDER VERIFY → SINGLE-WRITER LOCK → CAPACITY → STAGE → PRE-SWITCH VERIFY → PREPARED → ATOMIC SWITCH → READINESS → HEALTH/PROTECTED REQUEST → DURABLE COMMIT → RESTART RECOVERY CHECK → COMMITTED.'],
         ['16. Fehler- und Rollback-Ablauf','Pflichtprüfung FAIL → COMMIT verboten → ROLLING_BACK → Previous PRODUCT/POLICY/PIN/RUNTIME wiederherstellen → HEALTH/PROTECTED REQUEST erneut prüfen → ROLLED_BACK. Initial Failure Evidence bleibt erhalten.'],
         ['17. Process-Crash-Recovery-Ablauf','PROCESS RESTART → JOURNAL READ → POINTER INSPECT → PRODUCT/POLICY/PIN/RUNTIME COMPARE → PHASE DETERMINE → SAFE RESUME oder AUTOMATIC ROLLBACK → HEALTH VERIFY → STATE REBUILD → COMMITTED oder ROLLED_BACK.'],
-        ['Vertragsgrenze','FULL-AUM-Module dürfen physisch in der Kundenauslieferung enthalten sein. Der Vertrag bleibt: Kunden sehen AUM; der ODRE-PQC-Betriebsserver führt auf derselben signierten Verifikationsbasis den vollständigen FULL-AUM-Lifecycle aus.']
-        ,['Unterschied AUM / FULL AUM','AUM ist der kundenseitige Vertrag für Auswahl, Prüfung und Zulassung freigegebener Updates. FULL AUM ist der ODRE-Betriebsserver-Transaction-Lifecycle mit Single-Writer Staging, Atomic Switch, Nachprüfung, Automatic Rollback und Durable Recovery auf derselben Basis.']
-        ,['Zusammenfassung','AUM erlaubt verifizierte Kundenupdates sicher; FULL AUM vollendet und rekonstruiert die gesamte ODRE-Server-Update-Transaktion.']
+        ['Vertragsgrenze',"Die kundenseitige Updatefunktion und der Vertrag bleiben AUM. FULL AUM beschreibt den Lifecycle des ODRE-Betriebsservers; enthaltene Module erweitern den Kundenvertrag nicht. Aktuelle RC2-Verifikationsergebnisse gelten nur für die veröffentlichten Artefakte, Umgebungen und Transaktionen."]
+        ,['Unterschied AUM / FULL AUM',"AUM prüft freigegebene lokale Update-Eingaben des Kunden. FULL AUM beschreibt den Transaktions-Lifecycle des ODRE-Betriebsservers auf derselben signierten Verifikationsbasis; veröffentlichte Nachweise bestimmen den Verifikationsumfang."]
+        ,['Zusammenfassung',"AUM prüft freigegebene lokale Kunden-Update-Eingaben; FULL AUM beschreibt ODRE-Server-Update-Transaktionen im veröffentlichten Verifikationsumfang."]
       ]
     },
     es: {
-      close:'Cerrar',definition:'AUM — Automatic Update Management',definitionBody:'AUM es la función y el contrato de actualización expuestos al cliente. Detecta Releases aprobadas de ODRE PQC, las verifica con la authority firmada y las reglas de orden y compatibilidad existentes, y permite solo actualizaciones válidas. Un candidato incompleto, alterado, duplicado o inferior se rechaza fail-closed sin cambiar el producto activo.',
+      close:'Cerrar',definition:'AUM — Automatic Update Management',definitionBody:"El Updater RC2 configurado comprueba entradas locales aprobadas cada 15 segundos y las entrega al AUM local tras verificar firma, integridad y compatibilidad. RC2 actual no descarga nuevas versiones desde un servidor central de actualizaciones.",
       sections:[
-        ['Alcance de AUM','Descubre Releases aprobadas; verifica signature, manifest, inventory, SHA-256, envelope, release ordering y compatibility; rechaza candidatos parciales, alterados, duplicados o inferiores; y aplica solo updates permitidos por el contrato.'],
+        ['Alcance de AUM',"El Updater RC2 configurado comprueba entradas locales aprobadas cada 15 segundos y las entrega al AUM local tras verificar firma, integridad y compatibilidad. RC2 actual no descarga nuevas versiones desde un servidor central de actualizaciones."],
         ['Principio esencial de AUM','Una actualización no verificada nunca se aplica. El nombre o la aparente novedad no son authority y un verification failure nunca se convierte en éxito.'],
-        ['Definición de FULL AUM','FULL AUM extiende en el servidor operativo ODRE PQC la misma base signed verification a preparación, atomic transition, post-switch verification, automatic rollback, crash/restart recovery y durable lifecycle state. No es un sistema de verificación separado.'],
+        ['Definición de FULL AUM',"FULL AUM describe el ciclo de actualización del servidor operativo ODRE. Los resultados de verificación se limitan a los artefactos, entornos y transacciones documentados en Trust Center."],
         ['1. Detección y estabilidad de entrada','Solo se inspecciona la entrada aprobada. La existencia o tamaño estable del ZIP no basta: signed manifest, envelope, inventory, SHA-256 esperado, Product Release y compatibility authority deben coincidir; un artefacto en copia no se aplica.'],
         ['2. Single Writer','Solo un writer posee la transacción apply. La ejecución periódica, manual y el reinicio del servicio no producen duplicados; si falla el lock no hay apply ni cambio del producto activo.'],
         ['3. Comprobación Pre-Switch','Antes del cambio se verifican capacidad de staging/rollback, authority actual, policy generation, consumer pin y assets previous known-good. Nunca se eliminan assets de rollback para crear espacio.'],
@@ -142,9 +142,9 @@
         ['15. Flujo normal','DISCOVER → VERIFY INPUT/SIGNED AUTHORITY/ORDER → SINGLE-WRITER LOCK → CAPACITY → STAGE → PRE-SWITCH VERIFY → PREPARED → ATOMIC SWITCH → READINESS → HEALTH/PROTECTED REQUEST → DURABLE COMMIT → RESTART RECOVERY CHECK → COMMITTED.'],
         ['16. Flujo de fallo y rollback','Verificación obligatoria FAIL → COMMIT prohibido → ROLLING_BACK → restaurar PRODUCT/POLICY/PIN/RUNTIME anterior → reverificar HEALTH/PROTECTED REQUEST → ROLLED_BACK. Se conserva el Evidence del fallo inicial.'],
         ['17. Flujo de Process Crash Recovery','PROCESS RESTART → JOURNAL READ → POINTER INSPECT → PRODUCT/POLICY/PIN/RUNTIME COMPARE → PHASE DETERMINE → SAFE RESUME o AUTOMATIC ROLLBACK → HEALTH VERIFY → STATE REBUILD → COMMITTED o ROLLED_BACK.'],
-        ['Límite contractual','Los módulos de FULL AUM pueden existir físicamente en la entrega al cliente. El contrato no cambia: el cliente ve AUM y el servidor operativo ODRE PQC ejecuta el lifecycle FULL AUM completo sobre la misma base de verificación firmada.']
-        ,['Diferencia AUM / FULL AUM','AUM es el contrato del cliente que selecciona, verifica y permite updates aprobados. FULL AUM es el transaction lifecycle del servidor operativo ODRE con single-writer staging, atomic switch, verificación posterior, automatic rollback y durable recovery sobre la misma base.']
-        ,['Resumen final','AUM permite de forma segura updates verificados del cliente; FULL AUM completa y recupera toda la transacción de actualización del servidor ODRE.']
+        ['Límite contractual',"La función y el contrato de actualización del cliente siguen siendo AUM. FULL AUM describe el ciclo del servidor operativo ODRE; la presencia de módulos en una entrega no amplía el contrato del cliente. Los resultados de RC2 actual se limitan a los artefactos, entornos y transacciones publicados."]
+        ,['Diferencia AUM / FULL AUM',"AUM verifica entradas locales aprobadas del cliente. FULL AUM describe el ciclo de transacciones del servidor operativo ODRE sobre la misma base de verificación firmada; la evidencia publicada define el alcance verificado."]
+        ,['Resumen final',"AUM verifica entradas locales aprobadas del cliente; FULL AUM describe las transacciones de actualización del servidor ODRE dentro del alcance de verificación publicado."]
       ]
     }
   };
