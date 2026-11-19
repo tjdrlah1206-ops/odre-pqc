@@ -2,8 +2,8 @@
   'use strict';
   var PADDLE_CHECKOUT = Object.freeze({
     environment: 'production',
-    // Public Live checkout enabled by owner request on 2026-09-21.
-    publicCheckoutEnabled: true,
+    // Public purchase disabled by owner request on 2026-11-19.
+    publicCheckoutEnabled: false,
     productId: 'pro_01m1p28azxeewd9syewtj13f58',
     clientToken: 'live_92a112a9e75e51a31ebe4862254',
     priceIds: Object.freeze({
